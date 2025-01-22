@@ -19,3 +19,4 @@ The purpose of this project is to migrate the Student Government Association's w
 ## Contributors
 Yurika
 Arshia
+Molly
