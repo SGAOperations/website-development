@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import instaLogo from './assets/instaLogo.png';
+import tiktokLogo from './assets/tiktokLogo.png';
 import './App.css'
 
 function App() {
@@ -8,26 +10,20 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+
+      {/* Footer */}
+      <footer className="footer">
+      <div className="logo-container">
+        <div className="logo-item"> <p>SGA</p> <img src={instaLogo} alt="SGA"/> </div>
+        <div className="logo-item"> <p>Campus Affairs</p> <img src={instaLogo} alt="Campus Affairs" /> </div>
+        <div className="logo-item"> <p>SGA</p> <img src={tiktokLogo} alt="SGA" /> </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+        <p>Northeastern University Student Government Association 
+        332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115
+        Webmaster: sgaOperations@northeastern.edu
+        Media Inquiries: sgaExternalAffairs@northeastern.edu</p>
+      </footer>
     </>
   )
 }

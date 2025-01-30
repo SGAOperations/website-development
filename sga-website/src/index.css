@@ -68,3 +68,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.footer {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
