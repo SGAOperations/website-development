@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/jsrepo@1.29.1/schemas/project-config.json",
+  "repos": [
+    "https://reactbits.dev/tailwind",
+    "github/ieedan/std",
+    "github/ieedan/std"
+  ],
+  "includeTests": false,
+  "watermark": true,
+  "formatter": "prettier",
+  "paths": {
+    "*": "./src/blocks"
+  }
+}
