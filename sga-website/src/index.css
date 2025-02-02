@@ -12,6 +12,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overfloW-x: hidden;
 }
 
 .text-sga-red {
@@ -22,10 +23,15 @@
   background-color: #c8102e !important;
 }
 
-body {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 h1 {
