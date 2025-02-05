@@ -1,36 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import instaLogo from './assets/instaLogo.png';
-import tiktokLogo from './assets/tiktokLogo.png';
-import './App.css'
+import './App.css';
+import Header from './components/Header';
+import RollingGallery from './blocks/Components/RollingGallery/RollingGallery.jsx';
+import Footer from './components/Footer';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      {/* Footer */}
-      <footer className="footer">
-        <div className = "button-container">
-          <button class="button">GIVE FEEDBACK</button>
-          <button class="button">MAILING LIST</button>
-          <button class="button">GET INVOLVED</button>
-        </div>
-        <div className="logo-container">
-          <div className="logo-item"> <p>SGA</p> <img src={instaLogo} alt="SGA"/> </div>
-          <div className="logo-item"> <p>Campus Affairs</p> <img src={instaLogo} alt="Campus Affairs" /> </div>
-          <div className="logo-item"> <p>SGA</p> <img src={tiktokLogo} alt="SGA" /> </div>
-        </div>
+    <div>
+      <div className="absolute top-0 left-0 w-full z-20">
+        <Header />
+      </div>
 
-        <p>Northeastern University Student Government Association </p>
-        <p>332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115</p>
-        <p>Webmaster: <a href="mailto:sgaOperations@northeastern.edu">sgaOperations@northeastern.edu</a></p>
-        <p>Media Inquiries: <a href="mailto:sgaExternalAffairs@northeastern.edu">sgaExternalAffairs@northeastern.edu</a></p>
+      <div className="relative w-full h-screen overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[75%] overflow-hidden">
+          <iframe 
+            className="w-full h-full scale-200 pointer-events-none transform origin-center"
+            src="https://www.youtube.com/embed/xQSHCjnSL6U?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=xQSHCjnSL6U"
+            title="YouTube Video"
+            allow="autoplay; fullscreen"
+            playsInline
+          ></iframe>
+        </div>
+      </div>
 
-      </footer>
-    </>
-  )
+      <div style={{ marginTop: '-160px' }} className="mb-8">
+        <h2 className="text-7xl mb-4 font-bold text-sga-red text-center">Northeastern University</h2>
+        <h3 className="text-5xl font-bold text-black text-center">Student Government Association</h3>
+      </div>
+      <div className="mb-10">
+        <RollingGallery autoplay={true} pauseOnHover={true} />
+      </div>
+      <Footer />
+    </div>
+  );
 }
-
-export default App
