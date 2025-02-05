@@ -15,6 +15,40 @@ backend:
 
 ## Setting up the development environment
 
+### BACKEND
+
+1. Before running the project, ensure you have the following installed:
+
+Node.js (Download from nodejs.org)
+MongoDB 
+Express.js
+
+2. Install Dependencies: `npm install` This will install all required Node.js dependencies from package.json.
+
+3. Set Up Environment Variables:
+   
+Inside the backend folder, create a .env file: `touch .env`
+
+Open .env and add the following:
+```
+MONGO_URI=mongodb://localhost:27017/usersdb
+PORT=3000
+```
+
+4. Start MongoDB
+
+`brew services start mongodb-community`
+
+5. Run the Server
+
+`npm start` or if using nodemon use `npm run dev`
+
+You should see:
+```
+Server running on http://localhost:3000
+MongoDB connected successfully
+```
+
 ## Running the app
 
 ## To Do List:
