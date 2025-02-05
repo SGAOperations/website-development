@@ -9,6 +9,8 @@ frontend：
   
 backend:
 - mongodb: Good for storing data, uses a JSON like schema to keep track of objects and information, easy to setup and to add/delete/update objects in the databse
+- Node.js: allows you to use JavaScript for both the frontend (in the browser) and the backend (on the server). Also scalability features + can run npm
+- Express.js: minimal and lightweight. Express has a powerful and flexible routing system that lets us define RESTful Api's too with lots of ease and is very flexible
 ## Deployment
 
 ## Setting up the development environment
