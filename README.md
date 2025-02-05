@@ -7,6 +7,7 @@ frontend：
 - mongodb: reason
   
 backend:
+- mongodb: Good for storing data, uses a JSON like schema to keep track of objects and information, easy to setup and to add/delete/update objects in the databse
 ## Deployment
 
 ## Setting up the development environment
