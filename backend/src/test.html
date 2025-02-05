@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User List</title>
+</head>
+<body>
+  <h1>Users</h1>
+  <div id="user-list"></div>
+
+  <script>
+    // Fetch users from the backend
+    fetch('http://localhost:5000/users')
+      .then(response => response.json())
+      .then(users => {
+        const userList = document.getElementById('user-list');
+        
+        // Render each user's info
+        users.forEach(user => {
+          const userDiv = document.createElement('div');
+          userDiv.classList.add('user');
+          
+          // Name and position
+          const userName = document.createElement('h2');
+          userName.textContent = user.name;
+          userDiv.appendChild(userName);
+          
+          const userPosition = document.createElement('p');
+          userPosition.textContent = user.position;
+          userDiv.appendChild(userPosition);
+          
+          // Image
+          const userImage = document.createElement('img');
+          userImage.src = user.pictureUrl;
+          userImage.alt = user.name;
+          userImage.width = 100; // Adjust the size if needed
+          userDiv.appendChild(userImage);
+          
+          // Append the user div to the list
+          userList.appendChild(userDiv);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching users:', error);
+      });
+  </script>
+</body>
+</html>
