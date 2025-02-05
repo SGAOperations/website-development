@@ -4,7 +4,8 @@ The purpose of this project is to migrate the Student Government Association's w
 
 ## Technologies
 frontend：
-- mongodb: reason
+- React.js: Allows for the use of reusable components so that big chunks of code don't have to be written again in different files.
+- Tailwind CSS: Instead of writing an extensive list of styles in CSS files, Tailwind CSS allows styling through classes.
   
 backend:
 - mongodb: Good for storing data, uses a JSON like schema to keep track of objects and information, easy to setup and to add/delete/update objects in the databse
