@@ -17,7 +17,7 @@ export default function App() {
             src="https://www.youtube.com/embed/xQSHCjnSL6U?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=xQSHCjnSL6U"
             title="YouTube Video"
             allow="autoplay; fullscreen"
-            playsInline
+            // playsInline
           ></iframe>
         </div>
       </div>
