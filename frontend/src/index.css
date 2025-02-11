@@ -12,7 +12,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overfloW-x: hidden;
+  overflow-x: hidden;
 }
 
 .text-sga-red {
@@ -52,9 +52,6 @@ button {
   :root {
     color: #213547;
     background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
   }
 }
 

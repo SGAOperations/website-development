@@ -24,7 +24,7 @@ const AcademicAffairs = () => {
     {
       name: 'Veer Dave',
       title: 'Assistant Vice President for Academic Affairs',
-      image: ''
+      image: 'https://media.licdn.com/dms/image/v2/D4E03AQHFgwlJSfp-_Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1695110008299?e=2147483647&v=beta&t=aOSJSBzlSk55p57SPjIsdnLDp1bEi-tTgyx0zn0b11g'
     },
     // TODO: replace website image urls with downloaded image urls
   ]
@@ -73,7 +73,7 @@ const AcademicAffairs = () => {
           </div>
         </div>
       </div>
-
+      <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaAcademicAffairs@northeastern.edu">sgaAcademicAffairs@northeastern.edu</a></p>
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
         <div className="flex justify-center">
