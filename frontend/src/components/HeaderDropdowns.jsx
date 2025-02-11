@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 
 export default function HeaderDropdowns() {
-  const [openDropdown, setOpenDropdown] = useState(null); // Track which dropdown is open
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   const handleMouseEnter = (index) => setOpenDropdown(index);
   const handleMouseLeave = () => setOpenDropdown(null);
 
-  // Define unique menu items for each main item
   const dropdownMenus = [
-    [],
-    [
+    [], // empty for the Home dropdown
+    [   // About
       { label: 'What is SGA?', href: '#' },
       { label: 'Structure', href: '#' },
       { label: 'Divisions', href: '#' },
@@ -21,7 +20,7 @@ export default function HeaderDropdowns() {
       { label: 'Alumni', href: '#' },
 
     ],
-    [
+    [   // Get Involved 
       { label: 'Overview', href: '#' },
       { label: 'Join a Committee', href: '#' },
       { label: 'Join a Board', href: '#' },
@@ -30,33 +29,33 @@ export default function HeaderDropdowns() {
       { label: 'Leadership and Board Applications', href: '#' },
       { label: 'Mailing List', href: '#' },
     ],
-    [
+    [   // Senate
       { label: 'About', href: '#' },
       { label: 'Legislation', href: '#' },
       { label: 'Points of Information', href: '#' },
       { label: 'Resources', href: '#' },
     ],
-    [
+    [   // Executive Branch
       { label: 'Office of the President', href: '#' },
-      { label: 'Academic Affairs', href: '#' },
+      { label: 'Academic Affairs', href: '/academic-affairs' },
       { label: 'Campus Affairs', href: '#' },
       { label: 'Student Success', href: '#' },
       { label: 'Diversity, Equity, and Inclusion', href: '#' },
       { label: 'External Affairs', href: '#' },
       { label: 'Operational Affairs', href: '#' },
     ],
-    [
+    [   // Judicial Branch
       { label: 'Operational Appeals Board', href: '#' },
       { label: 'Appeal Process', href: '#' },
     ],
-    [
+    [   // Elections
       { label: 'Elections Board', href: '#' },
       { label: 'Election', href: '#' },
       { label: 'Referenda', href: '#' },
       { label: 'Past Elections', href: '#' },
       { label: 'How to Run', href: '#' },
     ],
-    [
+    [   // Student Organizations
       { label: 'Overview', href: '#' },
       { label: 'Student Involvement', href: '#' },
       { label: 'Finance Board', href: '#' },
@@ -73,9 +72,14 @@ export default function HeaderDropdowns() {
         {['Home', 'About', 'Get Involved', 'Senate', 'Executive Branch', 'Judicial Branch', 'Elections', 'Student Organizations'].map((item, index) => (
           <div
             key={index}
-            className="relative" // Make this div relative for absolute positioning of dropdown
+            className="relative"
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={handleMouseLeave}
+            onClick={() => {
+              if (item === 'Home') {
+                window.location.href = '/';
+              }
+            }}
           >
             <div className="whitespace-nowrap inline-flex justify-center cursor-pointer mx-7 pt-5 pb-2 text-lg font-semibold text-white hover:text-black transition duration-300">
               {item}
