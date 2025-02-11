@@ -3,6 +3,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
 import Committes from '../../components/Committees';
+import Boards from '../../components/Boards';
 
 const AcademicAffairs = () => {
   const leader = {
@@ -40,8 +41,9 @@ const AcademicAffairs = () => {
       description: 'The Sustainability Committee works to create, support, and implement sustainable practices and initiatives on campus and in the global Northeastern community. Taking an interdisciplinary approach, members work with other SGA divisions, student organizations, and administrative departments to best address the needs of students and to create a more sustainable campus. The Sustainability Committee is open to all undergraduate students with no prior experience and no commitment necessary. If you are interested, just show up!',
       image: 'https://damore-mckim.northeastern.edu/wp-content/uploads/2021/04/Sustainability-1680x705-1-1680x705.jpg'
     }
-    
-  ]
+  ];
+
+  const boards = [];
 
   return (
     <>
@@ -79,6 +81,14 @@ const AcademicAffairs = () => {
         <div className="flex justify-center">
           <div>
             <Committes committes={committees}/>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Boards</h3>
+        <div className="flex justify-center">
+          <div>
+            <Boards boards={boards}/>
           </div>
         </div>
       </div>
