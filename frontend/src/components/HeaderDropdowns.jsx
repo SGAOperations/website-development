@@ -36,7 +36,7 @@ export default function HeaderDropdowns() {
       { label: 'Resources', href: '/resources' },
     ],
     [   // Executive Branch
-      { label: 'Office of the President', href: '#' },
+      { label: 'Office of the President', href: '/office-of-the-president' },
       { label: 'Academic Affairs', href: '/academic-affairs' },
       { label: 'Campus Affairs', href: '/campus-affairs' },
       { label: 'Student Success', href: '/student-success' },
