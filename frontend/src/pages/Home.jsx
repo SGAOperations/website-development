@@ -1,9 +1,8 @@
-import './App.css';
-import Header from './components/Header';
-import RollingGallery from './blocks/Components/RollingGallery/RollingGallery.jsx';
-import Footer from './components/Footer';
+import Header from '../components/Header';
+import RollingGallery from '../blocks/Components/RollingGallery/RollingGallery.jsx';
+import Footer from '../components/Footer';
 
-export default function App() {
+export default function Home() {
   return (
     <div>
       <div className="absolute top-0 left-0 w-full z-20">
@@ -17,7 +16,7 @@ export default function App() {
             src="https://www.youtube.com/embed/xQSHCjnSL6U?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=xQSHCjnSL6U"
             title="YouTube Video"
             allow="autoplay; fullscreen"
-            playsInline
+            // playsInline
           ></iframe>
         </div>
       </div>
