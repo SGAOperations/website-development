@@ -19,25 +19,53 @@ const ExBranchTemp = () => {
   }
 
   {/* LEADER */}  
-  const leader = {
+  const [leader, setLeader] = useState({
     name: 'Insert name',
     title: 'Insert title',
     image: ''
+  });
+
+  const handleEditLeader = () => {
+    setLeader((prevLeader) => ({
+      ...prevLeader,
+      isEditing: !prevLeader.isEditing
+    }));
+  }
+
+  const handleLeaderChange = (field, value) => {
+    setLeader((prevLeader) => ({
+      ...prevLeader,
+      [field]: value
+    }));
   }
 
   {/* MEMBERS */}  
-  const members = [
+  const [members, setMembers] = useState([
     {
       name: 'Insert name', 
       title: 'Insert title',
-      image: '' 
+      image: '', 
+      isEditing: false
     },
     {
       name: 'Insert name', 
       title: 'Insert title',
-      image: ''
+      image: '',
+      isEditing: false
     },
-  ]
+  ]);
+
+  const handleEditMember = (index) => {
+    const updatedMembers = [...members];
+    updatedMembers[index].isEditing = !updatedMembers[index].isEditing;
+    setMembers(updatedMembers);
+  }
+
+  const handleMemberChange = (index, field, value) => {
+    const updatedMembers = [...members];
+    updatedMembers[index][field] = value;
+    setMembers(updatedMembers);
+  }
 
   {/* COMMITTEES */}  
   const [committees, setCommittees] = useState([
@@ -74,20 +102,38 @@ const ExBranchTemp = () => {
   }
 
   {/* BOARDS */}  
-  const boards = [
+  const [boards, setBoards] = useState([
     {
       title: 'Insert title', 
       description: 'Insert description',
-      image: '' 
+      image: '',
+      isEditing: false
     },
     {
       title: 'Insert title', 
       description: 'Insert description',
-      image: ''
+      image: '',
+      isEditing: false
     }
-  ];
+  ]);
 
-  
+  const handleEditBoard = (index) => {
+    const updatedBoards = [...boards];
+    updatedBoards[index].isEditing = true;
+    setBoards(updatedBoards);  {/* FIXED HERE */}
+  }
+
+  const handleSaveBoard = (index) => {
+    const updatedBoards = [...boards];
+    updatedBoards[index].isEditing = false;
+    setBoards(updatedBoards);  {/* FIXED HERE */}
+  }
+
+  const handleBoardChange = (index, field, value) => {
+    const updatedBoards = [...boards];
+    updatedBoards[index][field] = value;
+    setBoards(updatedBoards);  {/* FIXED HERE */}
+  }
 
   return (
     <>
@@ -120,66 +166,91 @@ const ExBranchTemp = () => {
             <p>{aboutText}</p>
           )}
         </div>
-        
         <div className="flex justify-center mt-4">
           {!isEditing && (
             <button
               className="bg-sga-red text-white p-2 rounded-md"
               onClick={handleEditToggle}
             >
-              Edit
+              Edit About Section
             </button>
           )}
         </div>
+      </div>
 
-        {/* LEADER AND MEMBERS */}  
-        <div className="flex justify-center">
-          <div>
-            <Pictures leader={leader} members={members}/>
+      {/* LEADER AND MEMBERS */}  
+      <div className="flex justify-center space-x-8 mt-16">
+        <div>
+          <h3 className="text-3xl font-bold text-sga-red text-center">Leader</h3>
+          <div className="mb-6">
+            <input
+              type="text"
+              value={leader.name}
+              onChange={(e) => handleLeaderChange('name', e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+              readOnly={!leader.isEditing}
+            />
+            <input
+              type="text"
+              value={leader.title}
+              onChange={(e) => handleLeaderChange('title', e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+              readOnly={!leader.isEditing}
+            />
+            <div>
+              {leader.isEditing ? (
+                <button
+                  className="bg-sga-red text-white p-2 rounded-md mt-2"
+                  onClick={handleEditLeader}
+                >
+                  Save Leader
+                </button>
+              ) : (
+                <button
+                  className="bg-sga-red text-white p-2 rounded-md mt-2"
+                  onClick={handleEditLeader}
+                >
+                  Edit Leader
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaAcademicAffairs@northeastern.edu">sgaAcademicAffairs@northeastern.edu</a></p>
-      <div>
 
-      {/* COMMITTEES */}  
-        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
-        <div className="flex justify-center">
-          <div>
-            {committees.map((committee, index) => (
+        <div>
+          <h3 className="text-3xl font-bold text-sga-red text-center">Members</h3>
+          <div className="flex justify-center space-x-8 mt-4">
+            {members.map((member, index) => (
               <div key={index} className="mb-6">
-                <div className="text-center">
-                  {committee.isEditing ? (
-                    <div>
-                      <input 
-                        type="text"
-                        value={committee.title}
-                        onChange={(e) => handleCommitteeChange(index, 'title', e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
-                      />
-                      <textarea
-                        value={committee.description}
-                        onChange={(e) => handleCommitteeChange(index, 'description', e.target.value)}
-                        className="w-full p-4 border border-gray-300 rounded-lg mb-2 text-black"
-                        rows="4"
-                      />
-                      <button 
-                        className="bg-sga-red text-white p-2 rounded-md" 
-                        onClick={() => handleSaveCommittee(index)}>
-                        Save
-                      </button>
-                    </div>
+                <input
+                  type="text"
+                  value={member.name}
+                  onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+                  readOnly={!member.isEditing}
+                />
+                <input
+                  type="text"
+                  value={member.title}
+                  onChange={(e) => handleMemberChange(index, 'title', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+                  readOnly={!member.isEditing}
+                />
+                <div>
+                  {member.isEditing ? (
+                    <button
+                      className="bg-sga-red text-white p-2 rounded-md mt-2"
+                      onClick={() => handleEditMember(index)}
+                    >
+                      Save Member
+                    </button>
                   ) : (
-                    <div>
-                      <h4 className="font-bold">{committee.title}</h4>
-                      <p>{committee.description}</p>
-                      <button 
-                        className="bg-sga-red text-white p-2 rounded-md mt-2"
-                        onClick={() => handleEditCommittee(index)}
-                      >
-                        Edit
-                      </button>
-                    </div>
+                    <button
+                      className="bg-sga-red text-white p-2 rounded-md mt-2"
+                      onClick={() => handleEditMember(index)}
+                    >
+                      Edit Member
+                    </button>
                   )}
                 </div>
               </div>
@@ -187,17 +258,103 @@ const ExBranchTemp = () => {
           </div>
         </div>
       </div>
-      <div>
-        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Boards</h3>
-        <div className="flex justify-center">
-          <div>
-            <Boards boards={boards}/>
-          </div>
+      
+      <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaAcademicAffairs@northeastern.edu">sgaAcademicAffairs@northeastern.edu</a></p>
+
+      {/* COMMITTEES */}  
+      <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
+      <div className="flex justify-center">
+        <div>
+          {committees.map((committee, index) => (
+            <div key={index} className="mb-6">
+              <div className="text-center">
+                <div>
+                  <input
+                    type="text"
+                    value={committee.title}
+                    onChange={(e) => handleCommitteeChange(index, 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+                    readOnly={!committee.isEditing} 
+                  />
+                  <textarea
+                    value={committee.description}
+                    onChange={(e) => handleCommitteeChange(index, 'description', e.target.value)}
+                    className="w-full p-4 border border-gray-300 rounded-lg mb-2 text-black"
+                    rows="4"
+                    readOnly={!committee.isEditing} 
+                  />
+                  {!committee.isEditing && (
+                    <button 
+                      className="bg-sga-red text-white p-2 rounded-md"
+                      onClick={() => handleEditCommittee(index)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {committee.isEditing && (
+                    <button 
+                      className="bg-sga-red text-white p-2 rounded-md"
+                      onClick={() => handleSaveCommittee(index)}
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* BOARDS */}  
+      <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Boards</h3>
+      <div className="flex justify-center">
+        <div>
+          {boards.map((board, index) => (
+            <div key={index} className="mb-6">
+              <div className="text-center">
+                <div>
+                  <input
+                    type="text"
+                    value={board.title}
+                    onChange={(e) => handleBoardChange(index, 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-black"
+                    readOnly={!board.isEditing} 
+                  />
+                  <textarea
+                    value={board.description}
+                    onChange={(e) => handleBoardChange(index, 'description', e.target.value)}
+                    className="w-full p-4 border border-gray-300 rounded-lg mb-2 text-black"
+                    rows="4"
+                    readOnly={!board.isEditing} 
+                  />
+                  {!board.isEditing && (
+                    <button 
+                      className="bg-sga-red text-white p-2 rounded-md"
+                      onClick={() => handleEditBoard(index)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {board.isEditing && (
+                    <button 
+                      className="bg-sga-red text-white p-2 rounded-md"
+                      onClick={() => handleSaveBoard(index)}
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* FOOTER */}
       <Footer />
     </>
   );
-};
+}
 
 export default ExBranchTemp;
