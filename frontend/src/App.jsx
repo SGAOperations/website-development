@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // Pages
 import Home from './pages/Home';
 
+import ExBranchTemp from './pages/executive-branch/ExBranchTemp';
 import OfficeOfThePresident from './pages/executive-branch/OfficeOfThePresident';
 import AcademicAffairs from './pages/executive-branch/AcademicAffairs';
 import CampusAffairs from './pages/executive-branch/CampusAffairs';
@@ -17,6 +18,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
 
+            <Route path="/ex-branch-temp" element = {<ExBranchTemp />} />
             <Route path="/office-of-the-president" element={<OfficeOfThePresident />} />
             <Route path="/academic-affairs" element={<AcademicAffairs />} />
             <Route path="/campus-affairs" element={<CampusAffairs />} />

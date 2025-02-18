@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
@@ -27,7 +27,6 @@ const AcademicAffairs = () => {
       title: 'Assistant Vice President for Academic Affairs',
       image: 'https://media.licdn.com/dms/image/v2/D4E03AQHFgwlJSfp-_Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1695110008299?e=2147483647&v=beta&t=aOSJSBzlSk55p57SPjIsdnLDp1bEi-tTgyx0zn0b11g'
     },
-    // TODO: replace website image urls with downloaded image urls
   ]
 
   const committees = [
@@ -45,30 +44,61 @@ const AcademicAffairs = () => {
 
   const boards = [];
 
+  // Editable content state
+  const [aboutText, setAboutText] = useState(
+    'The Academic Affairs division advocates for student needs related to academic services and practices. ' + 
+    'It connects students, faculty, and administration on all academic matters, including close collaboration with the faculty senate and the provost\'s office. ' +
+    'Our goal is to continually enhance the academic experience at Northeastern by evolving and adapting to new ideas and changes.'
+  );
+  
+  const [isEditing, setIsEditing] = useState(false); // To track if the content is in edit mode
+
+  const handleEditToggle = () => {
+    setIsEditing(true); // Enable editing when clicked
+  }
+
+  const handleSave = () => {
+    setIsEditing(false); // Save and exit edit mode
+    // Optionally, you can handle saving this data to a backend or local storage.
+  }
+
   return (
     <>
-      {/* uncomment when bg image is implemented */}
-      {/* <div className="absolute top-0 left-0 w-full z-20"> */}
-        <Header />
-      {/* </div> */}
-
-      {/* <div className="relative w-full h-screen overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[75%] overflow-hidden">
-          <img 
-            className="w-full h-full scale-200 transform origin-center"
-            src="" />
-        </div>
-      </div> */}
-      {/* bg image goes ^^^ */}
-
+      <Header />
       <div className="text-7xl mb-4 font-bold text-black text-center my-8">Academic Affairs</div>
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">About the Division</h3>
-        <p className="text-center text-black mx-30 mt-6 mb-2">
-          The Academic Affairs division advocates for student needs related to academic services and practices. 
-          It connects students, faculty, and administration on all academic matters, including close collaboration with the faculty senate and the provost's office. 
-          Our goal is to continually enhance the academic experience at Northeastern by evolving and adapting to new ideas and changes.
-        </p>
+        <div className="text-center text-black mx-30 mt-6 mb-2">
+          {isEditing ? (
+            <div>
+              <textarea
+                className="w-full p-4 border border-gray-300 rounded-lg"
+                rows="6"
+                value={aboutText}
+                onChange={(e) => setAboutText(e.target.value)} 
+              />
+              <div className="flex justify-center mt-4">
+                <button 
+                  className="bg-sga-red text-white p-2 rounded-md" 
+                  onClick={handleSave}>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p>{aboutText}</p>
+          )}
+        </div>
+        <div className="flex justify-center mt-4">
+          {!isEditing && (
+            <button
+              className="bg-blue-500 text-white p-2 rounded-md"
+              onClick={handleEditToggle}
+            >
+              Edit
+            </button>
+          )}
+        </div>
         <div className="flex justify-center">
           <div>
             <Pictures leader={leader} members={members}/>
@@ -94,7 +124,7 @@ const AcademicAffairs = () => {
       </div>
       <Footer />
     </>
-  )
-}
+  );
+};
 
 export default AcademicAffairs;
