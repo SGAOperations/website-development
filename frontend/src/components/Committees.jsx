@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Committes = ({ committes = [] }) => {
+const Committees = ({ committes = [] }) => {
   const [hoverStyle, setHoverStyle] = useState({});
 
   const handleMouseMove = (e, index) => {
@@ -43,4 +43,4 @@ const Committes = ({ committes = [] }) => {
   );
 };
 
-export default Committes;
+export default Committees;
