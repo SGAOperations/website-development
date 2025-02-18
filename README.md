@@ -1,4 +1,4 @@
-# SGA Website Migration: Internal Custom CMS Form
+# SGA Website Migration: Internal Custom CMS Application
 
 This project aims to develop an internal application that enables administrators to efficiently update and manage the Student Government Association's website. It ensures a smooth content management process while maintaining a consistent visual template across all division board pages.
 
