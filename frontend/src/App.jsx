@@ -10,6 +10,7 @@ import AcademicAffairs from './pages/executive-branch/AcademicAffairs';
 import CampusAffairs from './pages/executive-branch/CampusAffairs';
 import StudentSuccess from './pages/executive-branch/StudentSuccess';
 import DiversityEquityInclusion from './pages/executive-branch/DiversityEquityInclusion';
+import EditMode from './pages/EditMode.jsx';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/campus-affairs" element={<CampusAffairs />} />
             <Route path="/student-success" element={<StudentSuccess />} />
             <Route path="/diversity-equity-inclusion" element={<DiversityEquityInclusion />} />
+            <Route path="/edit-mode" element={<EditMode />} />
 
           </Routes>
         </div>

@@ -5,13 +5,14 @@ import Pictures from '../../components/Pictures';
 import Committes from '../../components/Committees';
 import Boards from '../../components/Boards';
 
-const AcademicAffairs = () => {
-  const leader = {
+const AcademicAffairs = (leader, members, committees, boards) => {
+  // hardcoded for now, use axios for fetching later in EditMode.jsx then pass data as props here
+  leader = {
     name: 'Devyani Anand',
     title: 'Vice President for Academic Affairs',
     image: 'https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/c78acba7-ca19-457c-8c4d-1df2451316cb/Devyani+Anand.jpg?format=2500w'
   }
-  const members = [
+  members = [
     {
       name: 'Quella Wang', 
       title: 'Curriculum Committee Representative',
@@ -29,7 +30,7 @@ const AcademicAffairs = () => {
     },
   ]
 
-  const committees = [
+  committees = [
     {
       title: 'Academic Affairs Committee', 
       description: 'The academic affairs committee focuses on all projects within the division. Our goal is to collaborate with all colleges as well as other SGA committees to work on university wide initiatives.',
@@ -42,25 +43,25 @@ const AcademicAffairs = () => {
     }
   ];
 
-  const boards = [];
+  boards = [];
 
-  // Editable content state
-  const [aboutText, setAboutText] = useState(
-    'The Academic Affairs division advocates for student needs related to academic services and practices. ' + 
-    'It connects students, faculty, and administration on all academic matters, including close collaboration with the faculty senate and the provost\'s office. ' +
-    'Our goal is to continually enhance the academic experience at Northeastern by evolving and adapting to new ideas and changes.'
-  );
+  // // Editable content state
+  // const [aboutText, setAboutText] = useState(
+  //   'The Academic Affairs division advocates for student needs related to academic services and practices. ' + 
+  //   'It connects students, faculty, and administration on all academic matters, including close collaboration with the faculty senate and the provost\'s office. ' +
+  //   'Our goal is to continually enhance the academic experience at Northeastern by evolving and adapting to new ideas and changes.'
+  // );
   
-  const [isEditing, setIsEditing] = useState(false); // To track if the content is in edit mode
+  // const [isEditing, setIsEditing] = useState(false); // To track if the content is in edit mode
 
-  const handleEditToggle = () => {
-    setIsEditing(true); // Enable editing when clicked
-  }
+  // const handleEditToggle = () => {
+  //   setIsEditing(true); // Enable editing when clicked
+  // }
 
-  const handleSave = () => {
-    setIsEditing(false); // Save and exit edit mode
-    // Optionally, you can handle saving this data to a backend or local storage.
-  }
+  // const handleSave = () => {
+  //   setIsEditing(false); // Save and exit edit mode
+  //   // Optionally, you can handle saving this data to a backend or local storage.
+  // }
 
   return (
     <>
@@ -68,7 +69,7 @@ const AcademicAffairs = () => {
       <div className="text-7xl mb-4 font-bold text-black text-center my-8">Academic Affairs</div>
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">About the Division</h3>
-        <div className="text-center text-black mx-30 mt-6 mb-2">
+        {/* <div className="text-center text-black mx-30 mt-6 mb-2">
           {isEditing ? (
             <div>
               <textarea
@@ -88,8 +89,8 @@ const AcademicAffairs = () => {
           ) : (
             <p>{aboutText}</p>
           )}
-        </div>
-        <div className="flex justify-center mt-4">
+        </div> */}
+        {/* <div className="flex justify-center mt-4">
           {!isEditing && (
             <button
               className="bg-blue-500 text-white p-2 rounded-md"
@@ -98,7 +99,7 @@ const AcademicAffairs = () => {
               Edit
             </button>
           )}
-        </div>
+        </div> */}
         <div className="flex justify-center">
           <div>
             <Pictures leader={leader} members={members}/>
