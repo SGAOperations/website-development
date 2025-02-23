@@ -109,6 +109,7 @@ const EditMode = () => {
         ]
       });
     }
+
     setIsLeaderEditing(false);
     setEditingMemberIndex(null);
     setEditingCommitteeIndex(null);
@@ -131,7 +132,7 @@ const EditMode = () => {
       leader: leaderEditData
     });
     // axios.post('/api/updatePage', { page: selectedPage, leader: leaderEditData })
-    //   .then(response => return response.json()))
+    //   .then(response => response.json())
     //   .catch(err => console.error(err));
     setIsLeaderEditing(false);
   };
@@ -150,19 +151,33 @@ const EditMode = () => {
     setMemberEditData(pageData.members[index]);
   };
 
+  const handleMemberAdd = () => {
+    setEditingMemberIndex(-1); // -1 indicates a new member
+    setMemberEditData({ name: '', title: '', image: '' });
+  };
+
   const handleMemberSave = () => {
-    const updatedMembers = [...pageData.members];
-    updatedMembers[editingMemberIndex] = memberEditData;
-    setPageData({ ...pageData, members: updatedMembers });
+    if (editingMemberIndex === -1) {
+      setPageData({
+        ...pageData,
+        members: [...pageData.members, memberEditData]
+      });
+    } else {
+      const updatedMembers = [...pageData.members];
+      updatedMembers[editingMemberIndex] = memberEditData;
+      setPageData({ ...pageData, members: updatedMembers });
+    }
     setEditingMemberIndex(null);
     setMemberEditData(null);
   };
 
   const handleMemberDelete = () => {
-    const updatedMembers = pageData.members.filter(
-      (_, idx) => idx !== editingMemberIndex
-    );
-    setPageData({ ...pageData, members: updatedMembers });
+    if (editingMemberIndex !== -1) {
+      const updatedMembers = pageData.members.filter(
+        (_, idx) => idx !== editingMemberIndex
+      );
+      setPageData({ ...pageData, members: updatedMembers });
+    }
     setEditingMemberIndex(null);
     setMemberEditData(null);
   };
@@ -173,19 +188,33 @@ const EditMode = () => {
     setCommitteeEditData(pageData.committees[index]);
   };
 
+  const handleCommitteeAdd = () => {
+    setEditingCommitteeIndex(-1); // -1 indicates a new committee
+    setCommitteeEditData({ title: '', description: '', image: '' });
+  };
+
   const handleCommitteeSave = () => {
-    const updatedCommittees = [...pageData.committees];
-    updatedCommittees[editingCommitteeIndex] = committeeEditData;
-    setPageData({ ...pageData, committees: updatedCommittees });
+    if (editingCommitteeIndex === -1) {
+      setPageData({
+        ...pageData,
+        committees: [...pageData.committees, committeeEditData]
+      });
+    } else {
+      const updatedCommittees = [...pageData.committees];
+      updatedCommittees[editingCommitteeIndex] = committeeEditData;
+      setPageData({ ...pageData, committees: updatedCommittees });
+    }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
   };
 
   const handleCommitteeDelete = () => {
-    const updatedCommittees = pageData.committees.filter(
-      (_, idx) => idx !== editingCommitteeIndex
-    );
-    setPageData({ ...pageData, committees: updatedCommittees });
+    if (editingCommitteeIndex !== -1) {
+      const updatedCommittees = pageData.committees.filter(
+        (_, idx) => idx !== editingCommitteeIndex
+      );
+      setPageData({ ...pageData, committees: updatedCommittees });
+    }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
   };
@@ -196,19 +225,33 @@ const EditMode = () => {
     setBoardEditData(pageData.boards[index]);
   };
 
+  const handleBoardAdd = () => {
+    setEditingBoardIndex(-1);
+    setBoardEditData({ title: '', description: '', image: '' });
+  };
+
   const handleBoardSave = () => {
-    const updatedBoards = [...pageData.boards];
-    updatedBoards[editingBoardIndex] = boardEditData;
-    setPageData({ ...pageData, boards: updatedBoards });
+    if (editingBoardIndex === -1) {
+      setPageData({
+        ...pageData,
+        boards: [...pageData.boards, boardEditData]
+      });
+    } else {
+      const updatedBoards = [...pageData.boards];
+      updatedBoards[editingBoardIndex] = boardEditData;
+      setPageData({ ...pageData, boards: updatedBoards });
+    }
     setEditingBoardIndex(null);
     setBoardEditData(null);
   };
 
   const handleBoardDelete = () => {
-    const updatedBoards = pageData.boards.filter(
-      (_, idx) => idx !== editingBoardIndex
-    );
-    setPageData({ ...pageData, boards: updatedBoards });
+    if (editingBoardIndex !== -1) {
+      const updatedBoards = pageData.boards.filter(
+        (_, idx) => idx !== editingBoardIndex
+      );
+      setPageData({ ...pageData, boards: updatedBoards });
+    }
     setEditingBoardIndex(null);
     setBoardEditData(null);
   };
@@ -248,19 +291,21 @@ const EditMode = () => {
           <h2 className="text-2xl font-bold mb-4">Leader</h2>
           <div className="flex items-center gap-4">
             <img
-              src={pageData.leader.image}
-              alt={pageData.leader.name}
+              src={pageData.leader.image || 'https://via.placeholder.com/150'}
+              alt={pageData.leader.name || 'Leader'}
               className="w-32 h-32 object-cover rounded"
             />
             <div>
-              <p className="font-semibold">{pageData.leader.name}</p>
-              <p>{pageData.leader.title}</p>
+              <p className="font-semibold">
+                {pageData.leader.name || 'No Leader Added'}
+              </p>
+              <p>{pageData.leader.title || 'Leader Title'}</p>
             </div>
             <button
               onClick={handleLeaderEditOpen}
               className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-all duration-200"
             >
-              Edit Leader
+              {pageData.leader.name ? 'Edit Leader' : 'Add Leader'}
             </button>
           </div>
         </div>
@@ -274,7 +319,7 @@ const EditMode = () => {
               className="flex items-center gap-4 my-4 border-b pb-4"
             >
               <img
-                src={member.image}
+                src={member.image || 'https://via.placeholder.com/150'}
                 alt={member.name}
                 className="w-20 h-20 object-cover rounded"
               />
@@ -290,6 +335,12 @@ const EditMode = () => {
               </button>
             </div>
           ))}
+          <button
+            onClick={handleMemberAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Member
+          </button>
         </div>
 
         {/* committees section */}
@@ -301,7 +352,7 @@ const EditMode = () => {
               className="flex items-center gap-4 my-4 border-b pb-4"
             >
               <img
-                src={committee.image}
+                src={committee.image || 'https://via.placeholder.com/150'}
                 alt={committee.title}
                 className="w-20 h-20 object-cover rounded"
               />
@@ -317,6 +368,12 @@ const EditMode = () => {
               </button>
             </div>
           ))}
+          <button
+            onClick={handleCommitteeAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Committee
+          </button>
         </div>
 
         {/* boards section */}
@@ -329,7 +386,7 @@ const EditMode = () => {
                 className="flex items-center gap-4 my-4 border-b pb-4"
               >
                 <img
-                  src={board.image}
+                  src={board.image || 'https://via.placeholder.com/150'}
                   alt={board.title}
                   className="w-20 h-20 object-cover rounded"
                 />
@@ -348,9 +405,15 @@ const EditMode = () => {
           ) : (
             <p>No boards available for this page.</p>
           )}
+          <button
+            onClick={handleBoardAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Board
+          </button>
         </div>
 
-        {/* leader editing */}
+        {/* leader editing modal */}
         {isLeaderEditing && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
@@ -359,7 +422,7 @@ const EditMode = () => {
               <div className="bg-sga-red text-white p-4 rounded-xl shadow w-72 transition-all transform duration-300 relative mx-auto my-4">
                 <img
                   src={leaderEditData.image || 'https://via.placeholder.com/150'}
-                  alt={leaderEditData.name}
+                  alt={leaderEditData.name || 'Leader'}
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h2 className="text-xl font-bold mt-3">
@@ -409,12 +472,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleLeaderDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Leader
-                </button>
+                {leaderEditData.name && (
+                  <button
+                    onClick={handleLeaderDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Leader
+                  </button>
+                )}
                 <button
                   onClick={() => setIsLeaderEditing(false)}
                   className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -426,16 +491,18 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* member editing */}
+        {/* member editing modal */}
         {editingMemberIndex !== null && memberEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Member Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingMemberIndex === -1 ? 'Add Member' : 'Edit Member Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-col items-center bg-white text-black p-4 rounded-xl shadow w-72 transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={memberEditData.image || 'https://via.placeholder.com/150'}
-                  alt={memberEditData.name}
+                  alt={memberEditData.name || 'Member'}
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h3 className="text-xl font-semibold mt-3">
@@ -485,12 +552,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleMemberDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Member
-                </button>
+                {editingMemberIndex !== -1 && (
+                  <button
+                    onClick={handleMemberDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Member
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingMemberIndex(null);
@@ -505,16 +574,18 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* committee editing */}
+        {/* committee editing modal */}
         {editingCommitteeIndex !== null && committeeEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Committee Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingCommitteeIndex === -1 ? 'Add Committee' : 'Edit Committee Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
                 <img
                   src={committeeEditData.image || 'https://via.placeholder.com/150'}
-                  alt={committeeEditData.title}
+                  alt={committeeEditData.title || 'Committee'}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
                 <div className="flex flex-col mx-5 items-center">
@@ -565,12 +636,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleCommitteeDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Committee
-                </button>
+                {editingCommitteeIndex !== -1 && (
+                  <button
+                    onClick={handleCommitteeDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Committee
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingCommitteeIndex(null);
@@ -585,16 +658,18 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* board editing */}
+        {/* board editing modal */}
         {editingBoardIndex !== null && boardEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Board Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingBoardIndex === -1 ? 'Add Board' : 'Edit Board Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
                 <img
                   src={boardEditData.image || 'https://via.placeholder.com/150'}
-                  alt={boardEditData.title}
+                  alt={boardEditData.title || 'Board'}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
                 <div className="flex flex-col mx-5 items-center">
@@ -645,12 +720,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleBoardDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Board
-                </button>
+                {editingBoardIndex !== -1 && (
+                  <button
+                    onClick={handleBoardDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Board
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingBoardIndex(null);
