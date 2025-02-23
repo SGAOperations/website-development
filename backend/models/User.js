@@ -18,16 +18,18 @@ const DivisionNames = Object.freeze({
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   pictureUrl: { type: String, required: true },
-  position: { type: String, required: true },
+  position: { type: String, required: false },
   divisionName: { type: String, 
                   enum: Object.values(DivisionNames),
                   required: true },
-  divisionBlurb: { type: String, required: true },
-  header: { type: String, required: true },
-  blurb: { type: String, required: true },
+  role: { type: String,
+          enum: ['leader', 'member', 'committee', 'board'],
+          required: true
+  },
+  // divisionBlurb: { type: String, required: true },
+  // header: { type: String, required: true },
+  blurb: { type: String, required: false },
   links: { type: String, required: false },
-
-
 });
 
 module.exports = mongoose.model('User', userSchema);
