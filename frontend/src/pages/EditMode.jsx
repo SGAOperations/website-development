@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Header from '../components/Header';
+import { createUser, updateUser, deleteUser, getUsers } from '../api/api';
+
+const pageOptions = [
+  'Office of the President',
+  'Academic Affairs',
+  'Campus Affairs',
+  'Student Success',
+  'Diversity, Equity, and Inclusion',
+  'External Affairs',
+  'Operational Affairs'
+];
 
 const EditMode = () => {
-  const pageOptions = [
-    'Academic Affairs',
-    'Campus Affairs',
-    'Diversity Equity',
-    'Office Of The President',
-    'Student Success'
-  ];
-
   const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
-    leader: { name: '', title: '', image: '' },
+    leader: { name: '', title: '', image: '', id: '' },
     members: [],
     committees: [],
     boards: []
@@ -31,84 +33,25 @@ const EditMode = () => {
   const [editingBoardIndex, setEditingBoardIndex] = useState(null);
   const [boardEditData, setBoardEditData] = useState(null);
 
-  // dummy data
+  // fetch + group users based on the selected division
   useEffect(() => {
-    if (selectedPage === 'Academic Affairs') {
-      setPageData({
-        leader: {
-          name: 'Devyani Anand',
-          title: 'Vice President for Academic Affairs',
-          image:
-            'https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/c78acba7-ca19-457c-8c4d-1df2451316cb/Devyani+Anand.jpg?format=2500w'
-        },
-        members: [
-          {
-            name: 'Quella Wang',
-            title: 'Curriculum Committee Representative',
-            image:
-              'https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/07681b43-eb1c-4245-be7f-2e5c9adcbbc0/Quella+Wang.jpeg?format=2500w'
-          },
-          {
-            name: 'Ada Spiwak',
-            title: 'Faculty Senate Representative',
-            image:
-              'https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/7a50538e-5f0c-45c8-8769-3916e083bc19/Ada+Spiwek.jpg?format=2500w'
-          },
-          {
-            name: 'Veer Dave',
-            title: 'Assistant Vice President for Academic Affairs',
-            image:
-              'https://media.licdn.com/dms/image/v2/D4E03AQHFgwlJSfp-_Q/profile-displayphoto-shrink_200_200/0/1695110008299?e=2147483647&v=beta&t=aOSJSBzlSk55p57SPjIsdnLDp1bEi-tTgyx0zn0b11g'
-          }
-        ],
-        committees: [
-          {
-            title: 'Academic Affairs Committee',
-            description:
-              'The academic affairs committee focuses on all projects within the division. Our goal is to collaborate with all colleges as well as other SGA committees to work on university wide initiatives.',
-            image:
-              'https://law.northeastern.edu/wp-content/uploads/2021/02/16x9-Students1.jpg'
-          },
-          {
-            title: 'Sustainability Committee',
-            description:
-              'The Sustainability Committee works to create, support, and implement sustainable practices and initiatives on campus and in the global community.',
-            image:
-              'https://damore-mckim.northeastern.edu/wp-content/uploads/2021/04/Sustainability-1680x705-1-1680x705.jpg'
-          }
-        ],
-        boards: []
-      });
-    } else {
-      setPageData({
-        leader: {
-          name: 'Default Leader',
-          title: `${selectedPage} Leader Title`,
-          image: 'https://via.placeholder.com/150'
-        },
-        members: [
-          {
-            name: 'Default Member',
-            title: 'Member Title',
-            image: 'https://via.placeholder.com/150'
-          }
-        ],
-        committees: [
-          {
-            title: 'Default Committee',
-            description: `Committee description for ${selectedPage}`,
-            image: 'https://via.placeholder.com/150'
-          }
-        ],
-        boards: [
-          {
-            title: 'Default Board',
-            description: `Board description for ${selectedPage}`,
-            image: 'https://via.placeholder.com/150'
-          }
-        ]
-      });
+    async function fetchUsers() {
+      try {
+        const allUsers = await getUsers();
+        const divisionUsers = allUsers.filter(
+          (user) => user.divisionName === selectedPage
+        );
+        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', image: '', id: '' };
+        const members = divisionUsers.filter((user) => user.role === 'member');
+        const committees = divisionUsers.filter((user) => user.role === 'committee');
+        const boards = divisionUsers.filter((user) => user.role === 'board');
+        setPageData({ leader, members, committees, boards });
+      } catch (error) {
+        console.error(error);
+      }
     }
+    fetchUsers();
+
     setIsLeaderEditing(false);
     setEditingMemberIndex(null);
     setEditingCommitteeIndex(null);
@@ -119,101 +62,206 @@ const EditMode = () => {
     setBoardEditData(null);
   }, [selectedPage]);
 
-  // leader handlers
+  // --- Leader Handlers ---
   const handleLeaderEditOpen = () => {
     setIsLeaderEditing(true);
     setLeaderEditData(pageData.leader);
   };
 
-  const handleLeaderSave = () => {
-    setPageData({
-      ...pageData,
-      leader: leaderEditData
-    });
-    // axios.post('/api/updatePage', { page: selectedPage, leader: leaderEditData })
-    //   .then(response => return response.json()))
-    //   .catch(err => console.error(err));
+  const handleLeaderSave = async () => {
+    try {
+      const userData = {
+        name: leaderEditData.name,
+        pictureUrl: leaderEditData.image,
+        position: leaderEditData.title,
+        divisionName: selectedPage,
+        role: 'leader' // assign role
+      };
+      const res = await createUser(userData);
+      setPageData((prev) => ({
+        ...prev,
+        leader: { ...leaderEditData, id: res._id }
+      }));
+    } catch (err) {
+      console.error(err);
+    }
     setIsLeaderEditing(false);
   };
 
-  const handleLeaderDelete = () => {
-    setPageData({
-      ...pageData,
-      leader: { name: '', title: '', image: '' }
-    });
+  const handleLeaderDelete = async () => {
+    if (pageData.leader.id) {
+      try {
+        await deleteUser(pageData.leader.id);
+        setPageData((prev) => ({
+          ...prev,
+          leader: { name: '', title: '', image: '', id: '' }
+        }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     setIsLeaderEditing(false);
   };
 
-  // member handlers
+  // --- Member Handlers ---
   const handleMemberEditOpen = (index) => {
     setEditingMemberIndex(index);
     setMemberEditData(pageData.members[index]);
   };
 
-  const handleMemberSave = () => {
-    const updatedMembers = [...pageData.members];
-    updatedMembers[editingMemberIndex] = memberEditData;
-    setPageData({ ...pageData, members: updatedMembers });
+  const handleMemberAdd = async () => {
+    setMemberEditData({ name: '', title: '', image: '' });
+    setEditingMemberIndex(-1);
+  };
+
+  const handleMemberSave = async () => {
+    try {
+      const userData = {
+        name: memberEditData.name,
+        pictureUrl: memberEditData.image,
+        position: memberEditData.title,
+        divisionName: selectedPage,
+        role: 'member'
+      };
+      let res;
+      let updatedMembers = [...pageData.members];
+      if (editingMemberIndex === -1) {
+        res = await createUser(userData);
+        updatedMembers.push({ ...memberEditData, id: res._id });
+      } else {
+        res = await updateUser({ ...userData, id: pageData.members[editingMemberIndex].id });
+        updatedMembers[editingMemberIndex] = { ...memberEditData, id: res._id };
+      }
+      setPageData((prev) => ({ ...prev, members: updatedMembers }));
+    } catch (err) {
+      console.error(err);
+    }
     setEditingMemberIndex(null);
     setMemberEditData(null);
   };
 
-  const handleMemberDelete = () => {
-    const updatedMembers = pageData.members.filter(
-      (_, idx) => idx !== editingMemberIndex
-    );
-    setPageData({ ...pageData, members: updatedMembers });
+  const handleMemberDelete = async () => {
+    if (pageData.members[editingMemberIndex]?.id) {
+      try {
+        await deleteUser(pageData.members[editingMemberIndex].id);
+        const updatedMembers = pageData.members.filter(
+          (_, idx) => idx !== editingMemberIndex
+        );
+        setPageData((prev) => ({ ...prev, members: updatedMembers }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     setEditingMemberIndex(null);
     setMemberEditData(null);
   };
 
-  // committee handlers
+  // --- Committee Handlers ---
   const handleCommitteeEditOpen = (index) => {
     setEditingCommitteeIndex(index);
     setCommitteeEditData(pageData.committees[index]);
   };
 
-  const handleCommitteeSave = () => {
-    const updatedCommittees = [...pageData.committees];
-    updatedCommittees[editingCommitteeIndex] = committeeEditData;
-    setPageData({ ...pageData, committees: updatedCommittees });
+  const handleCommitteeAdd = () => {
+    setEditingCommitteeIndex(-1);
+    setCommitteeEditData({ title: '', description: '', image: '' });
+  };
+
+  const handleCommitteeSave = async () => {
+    try {
+      const data = {
+        name: committeeEditData.title,
+        pictureUrl: committeeEditData.image,
+        blurb: committeeEditData.description,
+        divisionName: selectedPage,
+        role: 'committee'
+      };
+      let res;
+      let updatedCommittees = [...pageData.committees];
+      if (editingCommitteeIndex === -1) {
+        res = await createUser(data);
+        updatedCommittees.push({ ...committeeEditData, id: res._id });
+      } else {
+        res = await updateUser({ ...data, id: pageData.committees[editingCommitteeIndex].id });
+        updatedCommittees[editingCommitteeIndex] = { ...committeeEditData, id: res._id };
+      }
+      setPageData((prev) => ({ ...prev, committees: updatedCommittees }));
+    } catch (err) {
+      console.error(err);
+    }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
   };
 
-  const handleCommitteeDelete = () => {
-    const updatedCommittees = pageData.committees.filter(
-      (_, idx) => idx !== editingCommitteeIndex
-    );
-    setPageData({ ...pageData, committees: updatedCommittees });
+  const handleCommitteeDelete = async () => {
+    if (pageData.committees[editingCommitteeIndex]?.id) {
+      try {
+        await deleteUser(pageData.committees[editingCommitteeIndex].id);
+        const updatedCommittees = pageData.committees.filter(
+          (_, idx) => idx !== editingCommitteeIndex
+        );
+        setPageData((prev) => ({ ...prev, committees: updatedCommittees }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
   };
 
-  // board handlers
+  // --- Board Handlers ---
   const handleBoardEditOpen = (index) => {
     setEditingBoardIndex(index);
     setBoardEditData(pageData.boards[index]);
   };
 
-  const handleBoardSave = () => {
-    const updatedBoards = [...pageData.boards];
-    updatedBoards[editingBoardIndex] = boardEditData;
-    setPageData({ ...pageData, boards: updatedBoards });
+  const handleBoardAdd = () => {
+    setEditingBoardIndex(-1);
+    setBoardEditData({ title: '', description: '', image: '' });
+  };
+
+  const handleBoardSave = async () => {
+    try {
+      const userData = {
+        name: boardEditData.title,
+        pictureUrl: boardEditData.image,
+        position: boardEditData.description,
+        divisionName: selectedPage,
+        role: 'board'
+      };
+      let res;
+      let updatedBoards = [...pageData.boards];
+      if (editingBoardIndex === -1) {
+        res = await createUser(userData);
+        updatedBoards.push({ ...boardEditData, id: res._id });
+      } else {
+        res = await updateUser({ ...userData, id: pageData.boards[editingBoardIndex].id });
+        updatedBoards[editingBoardIndex] = { ...boardEditData, id: res._id };
+      }
+      setPageData((prev) => ({ ...prev, boards: updatedBoards }));
+    } catch (err) {
+      console.error(err);
+    }
     setEditingBoardIndex(null);
     setBoardEditData(null);
   };
 
-  const handleBoardDelete = () => {
-    const updatedBoards = pageData.boards.filter(
-      (_, idx) => idx !== editingBoardIndex
-    );
-    setPageData({ ...pageData, boards: updatedBoards });
+  const handleBoardDelete = async () => {
+    if (pageData.boards[editingBoardIndex]?.id) {
+      try {
+        await deleteUser(pageData.boards[editingBoardIndex].id);
+        const updatedBoards = pageData.boards.filter(
+          (_, idx) => idx !== editingBoardIndex
+        );
+        setPageData((prev) => ({ ...prev, boards: updatedBoards }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     setEditingBoardIndex(null);
     setBoardEditData(null);
   };
 
-  // page dropdown
   const handlePageChange = (e) => {
     setSelectedPage(e.target.value);
   };
@@ -222,9 +270,7 @@ const EditMode = () => {
     <>
       <Header />
       <div className="container mx-auto p-6 my-4 text-black bg-gray-50 rounded-lg min-h-screen">
-        <h1 className="text-3xl font-bold text-center mb-8 text-sga-red">
-          Edit Mode
-        </h1>
+        <h1 className="text-3xl font-bold text-center mb-8 text-sga-red">Edit Mode</h1>
         <div className="mb-8 flex justify-center items-center">
           <label htmlFor="pageSelect" className="mr-4 font-medium">
             Select Page:
@@ -243,16 +289,16 @@ const EditMode = () => {
           </select>
         </div>
 
-        {/* leader section */}
+        {/* Leader Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Leader</h2>
           <div className="flex items-center gap-4">
             <img
-              src={pageData.leader.image}
+              src={pageData.leader.pictureUrl}
               alt={pageData.leader.name}
               className="w-32 h-32 object-cover rounded"
             />
-            <div>
+            <div className="flex flex-col items-start">
               <p className="font-semibold">{pageData.leader.name}</p>
               <p>{pageData.leader.title}</p>
             </div>
@@ -265,22 +311,19 @@ const EditMode = () => {
           </div>
         </div>
 
-        {/* members section */}
+        {/* Members Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Members</h2>
           {pageData.members.map((member, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 my-4 border-b pb-4"
-            >
+            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
               <img
-                src={member.image}
+                src={member.pictureUrl || member.image}
                 alt={member.name}
                 className="w-20 h-20 object-cover rounded"
               />
-              <div>
+              <div className="flex flex-col items-start">
                 <p className="font-semibold">{member.name}</p>
-                <p>{member.title}</p>
+                <p>{member.position}</p>
               </div>
               <button
                 onClick={() => handleMemberEditOpen(index)}
@@ -290,23 +333,26 @@ const EditMode = () => {
               </button>
             </div>
           ))}
+          <button
+            onClick={handleMemberAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Member
+          </button>
         </div>
 
-        {/* committees section */}
+        {/* Committees Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Committees</h2>
           {pageData.committees.map((committee, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 my-4 border-b pb-4"
-            >
+            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
               <img
-                src={committee.image}
-                alt={committee.title}
+                src={committee.pictureUrl}
+                alt={committee.name}
                 className="w-20 h-20 object-cover rounded"
               />
-              <div>
-                <p className="font-semibold">{committee.title}</p>
+              <div className="flex flex-col items-start">
+                <p className="font-semibold">{committee.name}</p>
                 <p className="text-sm">{committee.description}</p>
               </div>
               <button
@@ -317,24 +363,27 @@ const EditMode = () => {
               </button>
             </div>
           ))}
+          <button
+            onClick={handleCommitteeAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Committee
+          </button>
         </div>
 
-        {/* boards section */}
+        {/* Boards Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Boards</h2>
           {pageData.boards && pageData.boards.length > 0 ? (
             pageData.boards.map((board, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 my-4 border-b pb-4"
-              >
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
                 <img
-                  src={board.image}
-                  alt={board.title}
+                  src={board.pictureUrl}
+                  alt={board.name}
                   className="w-20 h-20 object-cover rounded"
                 />
-                <div>
-                  <p className="font-semibold">{board.title}</p>
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{board.name}</p>
                   <p className="text-sm">{board.description}</p>
                 </div>
                 <button
@@ -348,9 +397,15 @@ const EditMode = () => {
           ) : (
             <p>No boards available for this page.</p>
           )}
+          <button
+            onClick={handleBoardAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Board
+          </button>
         </div>
 
-        {/* leader editing */}
+        {/* Leader Editing Modal */}
         {isLeaderEditing && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
@@ -358,7 +413,7 @@ const EditMode = () => {
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="bg-sga-red text-white p-4 rounded-xl shadow w-72 transition-all transform duration-300 relative mx-auto my-4">
                 <img
-                  src={leaderEditData.image || 'https://via.placeholder.com/150'}
+                  src={leaderEditData.pictureUrl}
                   alt={leaderEditData.name}
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
@@ -384,9 +439,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={leaderEditData.title}
+                  value={leaderEditData.position}
                   onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, title: e.target.value })
+                    setLeaderEditData({ ...leaderEditData, position: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -395,9 +450,9 @@ const EditMode = () => {
                 <label className="block font-medium">Image URL:</label>
                 <input
                   type="text"
-                  value={leaderEditData.image}
+                  value={leaderEditData.pictureUrl}
                   onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, image: e.target.value })
+                    setLeaderEditData({ ...leaderEditData, pictureUrl: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -426,20 +481,22 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* member editing */}
+        {/* Member Editing Modal */}
         {editingMemberIndex !== null && memberEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Member Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingMemberIndex === -1 ? 'Add Member' : 'Edit Member Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-col items-center bg-white text-black p-4 rounded-xl shadow w-72 transition-all transform duration-400 relative mx-auto my-4">
                 <img
-                  src={memberEditData.image || 'https://via.placeholder.com/150'}
+                  src={memberEditData.pictureUrl}
                   alt={memberEditData.name}
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h3 className="text-xl font-semibold mt-3">
-                  {memberEditData.title || 'Title'}
+                  {memberEditData.position || 'Title'}
                 </h3>
                 <p className="text-gray-700 mt-2">
                   {memberEditData.name || 'Name'}
@@ -460,9 +517,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={memberEditData.title}
+                  value={memberEditData.position}
                   onChange={(e) =>
-                    setMemberEditData({ ...memberEditData, title: e.target.value })
+                    setMemberEditData({ ...memberEditData, position: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -471,9 +528,9 @@ const EditMode = () => {
                 <label className="block font-medium">Image URL:</label>
                 <input
                   type="text"
-                  value={memberEditData.image}
+                  value={memberEditData.pictureUrl}
                   onChange={(e) =>
-                    setMemberEditData({ ...memberEditData, image: e.target.value })
+                    setMemberEditData({ ...memberEditData, pictureUrl: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -485,12 +542,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleMemberDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Member
-                </button>
+                {editingMemberIndex !== -1 && (
+                  <button
+                    onClick={handleMemberDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Member
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingMemberIndex(null);
@@ -505,15 +564,17 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* committee editing */}
+        {/* Committee Editing Modal */}
         {editingCommitteeIndex !== null && committeeEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Committee Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingCommitteeIndex === -1 ? 'Add Committee' : 'Edit Committee Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
                 <img
-                  src={committeeEditData.image || 'https://via.placeholder.com/150'}
+                  src={committeeEditData.image}
                   alt={committeeEditData.title}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
@@ -565,12 +626,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleCommitteeDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Committee
-                </button>
+                {editingCommitteeIndex !== -1 && (
+                  <button
+                    onClick={handleCommitteeDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Committee
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingCommitteeIndex(null);
@@ -585,15 +648,17 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* board editing */}
+        {/* Board Editing Modal */}
         {editingBoardIndex !== null && boardEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
-              <h3 className="text-xl font-bold mb-4">Edit Board Information</h3>
+              <h3 className="text-xl font-bold mb-4">
+                {editingBoardIndex === -1 ? 'Add Board' : 'Edit Board Information'}
+              </h3>
               <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
                 <img
-                  src={boardEditData.image || 'https://via.placeholder.com/150'}
+                  src={boardEditData.image}
                   alt={boardEditData.title}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
@@ -645,12 +710,14 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                <button
-                  onClick={handleBoardDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
-                >
-                  Delete Board
-                </button>
+                {editingBoardIndex !== -1 && (
+                  <button
+                    onClick={handleBoardDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Board
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setEditingBoardIndex(null);
