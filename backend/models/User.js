@@ -17,7 +17,7 @@ const DivisionNames = Object.freeze({
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  pictureUrl: { type: String, required: true },
+  pictureUrl: { type: String, required: false },
   position: { type: String, required: false },
   divisionName: { type: String, 
                   enum: Object.values(DivisionNames),

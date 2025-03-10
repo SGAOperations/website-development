@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { createUser, updateUser, deleteUser, getUsers } from '../api/api';
 
@@ -15,7 +15,7 @@ const pageOptions = [
 const EditMode = () => {
   const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
-    leader: { name: '', title: '', image: '', id: '' },
+    leader: { name: '', title: '', image: '', _id: '' },
     members: [],
     committees: [],
     boards: []
@@ -41,7 +41,7 @@ const EditMode = () => {
         const divisionUsers = allUsers.filter(
           (user) => user.divisionName === selectedPage
         );
-        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', image: '', id: '' };
+        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', image: '', _id: '' };
         const members = divisionUsers.filter((user) => user.role === 'member');
         const committees = divisionUsers.filter((user) => user.role === 'committee');
         const boards = divisionUsers.filter((user) => user.role === 'board');
@@ -80,7 +80,7 @@ const EditMode = () => {
       const res = await createUser(userData);
       setPageData((prev) => ({
         ...prev,
-        leader: { ...leaderEditData, id: res._id }
+        leader: { ...leaderEditData, _id: res._id }
       }));
     } catch (err) {
       console.error(err);
@@ -89,12 +89,12 @@ const EditMode = () => {
   };
 
   const handleLeaderDelete = async () => {
-    if (pageData.leader.id) {
+    if (pageData.leader._id) {
       try {
-        await deleteUser(pageData.leader.id);
+        await deleteUser(pageData.leader._id);
         setPageData((prev) => ({
           ...prev,
-          leader: { name: '', title: '', image: '', id: '' }
+          leader: { name: '', title: '', image: '', _id: '' }
         }));
       } catch (err) {
         console.error(err);
@@ -118,8 +118,8 @@ const EditMode = () => {
     try {
       const userData = {
         name: memberEditData.name,
-        pictureUrl: memberEditData.image,
-        position: memberEditData.title,
+        pictureUrl: memberEditData.image || memberEditData.pictureUrl,
+        position: memberEditData.title || memberEditData.position,
         divisionName: selectedPage,
         role: 'member'
       };
@@ -127,10 +127,10 @@ const EditMode = () => {
       let updatedMembers = [...pageData.members];
       if (editingMemberIndex === -1) {
         res = await createUser(userData);
-        updatedMembers.push({ ...memberEditData, id: res._id });
+        updatedMembers.push({ ...memberEditData, _id: res._id });
       } else {
-        res = await updateUser({ ...userData, id: pageData.members[editingMemberIndex].id });
-        updatedMembers[editingMemberIndex] = { ...memberEditData, id: res._id };
+        res = await updateUser({ ...userData, _id: pageData.members[editingMemberIndex]._id });
+        updatedMembers[editingMemberIndex] = { ...memberEditData, _id: res._id };
       }
       setPageData((prev) => ({ ...prev, members: updatedMembers }));
     } catch (err) {
@@ -141,9 +141,9 @@ const EditMode = () => {
   };
 
   const handleMemberDelete = async () => {
-    if (pageData.members[editingMemberIndex]?.id) {
+    if (pageData.members[editingMemberIndex]?._id) {
       try {
-        await deleteUser(pageData.members[editingMemberIndex].id);
+        await deleteUser(pageData.members[editingMemberIndex]._id);
         const updatedMembers = pageData.members.filter(
           (_, idx) => idx !== editingMemberIndex
         );
@@ -180,10 +180,10 @@ const EditMode = () => {
       let updatedCommittees = [...pageData.committees];
       if (editingCommitteeIndex === -1) {
         res = await createUser(data);
-        updatedCommittees.push({ ...committeeEditData, id: res._id });
+        updatedCommittees.push({ ...committeeEditData, _id: res._id });
       } else {
-        res = await updateUser({ ...data, id: pageData.committees[editingCommitteeIndex].id });
-        updatedCommittees[editingCommitteeIndex] = { ...committeeEditData, id: res._id };
+        res = await updateUser({ ...data, _id: pageData.committees[editingCommitteeIndex]._id });
+        updatedCommittees[editingCommitteeIndex] = { ...committeeEditData, _id: res._id };
       }
       setPageData((prev) => ({ ...prev, committees: updatedCommittees }));
     } catch (err) {
@@ -194,9 +194,9 @@ const EditMode = () => {
   };
 
   const handleCommitteeDelete = async () => {
-    if (pageData.committees[editingCommitteeIndex]?.id) {
+    if (pageData.committees[editingCommitteeIndex]?._id) {
       try {
-        await deleteUser(pageData.committees[editingCommitteeIndex].id);
+        await deleteUser(pageData.committees[editingCommitteeIndex]._id);
         const updatedCommittees = pageData.committees.filter(
           (_, idx) => idx !== editingCommitteeIndex
         );
@@ -233,10 +233,10 @@ const EditMode = () => {
       let updatedBoards = [...pageData.boards];
       if (editingBoardIndex === -1) {
         res = await createUser(userData);
-        updatedBoards.push({ ...boardEditData, id: res._id });
+        updatedBoards.push({ ...boardEditData, _id: res._id });
       } else {
-        res = await updateUser({ ...userData, id: pageData.boards[editingBoardIndex].id });
-        updatedBoards[editingBoardIndex] = { ...boardEditData, id: res._id };
+        res = await updateUser({ ...userData, _id: pageData.boards[editingBoardIndex]._id });
+        updatedBoards[editingBoardIndex] = { ...boardEditData, _id: res._id };
       }
       setPageData((prev) => ({ ...prev, boards: updatedBoards }));
     } catch (err) {
@@ -247,9 +247,9 @@ const EditMode = () => {
   };
 
   const handleBoardDelete = async () => {
-    if (pageData.boards[editingBoardIndex]?.id) {
+    if (pageData.boards[editingBoardIndex]?._id) {
       try {
-        await deleteUser(pageData.boards[editingBoardIndex].id);
+        await deleteUser(pageData.boards[editingBoardIndex]._id);
         const updatedBoards = pageData.boards.filter(
           (_, idx) => idx !== editingBoardIndex
         );
@@ -410,7 +410,6 @@ const EditMode = () => {
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">Edit Leader Information</h3>
-              <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="bg-sga-red text-white p-4 rounded-xl shadow w-72 transition-all transform duration-300 relative mx-auto my-4">
                 <img
                   src={leaderEditData.pictureUrl}
@@ -439,9 +438,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={leaderEditData.position}
+                  value={leaderEditData.title}
                   onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, position: e.target.value })
+                    setLeaderEditData({ ...leaderEditData, title: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -488,7 +487,6 @@ const EditMode = () => {
               <h3 className="text-xl font-bold mb-4">
                 {editingMemberIndex === -1 ? 'Add Member' : 'Edit Member Information'}
               </h3>
-              <p className="mb-2 font-medium text-center">Live Preview:</p>
               <div className="flex flex-col items-center bg-white text-black p-4 rounded-xl shadow w-72 transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={memberEditData.pictureUrl}
@@ -567,12 +565,11 @@ const EditMode = () => {
         {/* Committee Editing Modal */}
         {editingCommitteeIndex !== null && committeeEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
-            <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
+            <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-lg max-h-screen overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">
                 {editingCommitteeIndex === -1 ? 'Add Committee' : 'Edit Committee Information'}
               </h3>
-              <p className="mb-2 font-medium text-center">Live Preview:</p>
-              <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
+              <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-lg w-full transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={committeeEditData.image}
                   alt={committeeEditData.title}
@@ -651,12 +648,11 @@ const EditMode = () => {
         {/* Board Editing Modal */}
         {editingBoardIndex !== null && boardEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
-            <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-xl max-h-screen overflow-y-auto">
+            <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-lg max-h-screen overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">
                 {editingBoardIndex === -1 ? 'Add Board' : 'Edit Board Information'}
               </h3>
-              <p className="mb-2 font-medium text-center">Live Preview:</p>
-              <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 duration-400 relative mx-auto my-4">
+              <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-lg w-full transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={boardEditData.image}
                   alt={boardEditData.title}
