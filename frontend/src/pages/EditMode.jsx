@@ -547,23 +547,23 @@ const EditMode = () => {
                 </p>
               </div>
               <div className="mb-4">
-                <label className="block font-medium">Name:</label>
-                <input
-                  type="text"
-                  value={leaderEditData.name}
-                  onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, name: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div className="mb-4">
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
                   value={leaderEditData.position}
                   onChange={(e) =>
                     setLeaderEditData({ ...leaderEditData, title: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Name:</label>
+                <input
+                  type="text"
+                  value={leaderEditData.name}
+                  onChange={(e) =>
+                    setLeaderEditData({ ...leaderEditData, name: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -624,23 +624,23 @@ const EditMode = () => {
                 </p>
               </div>
               <div className="mb-4">
-                <label className="block font-medium">Name:</label>
-                <input
-                  type="text"
-                  value={memberEditData.name}
-                  onChange={(e) =>
-                    setMemberEditData({ ...memberEditData, name: e.target.value })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div className="mb-4">
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
                   value={memberEditData.position}
                   onChange={(e) =>
                     setMemberEditData({ ...memberEditData, position: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Name:</label>
+                <input
+                  type="text"
+                  value={memberEditData.name}
+                  onChange={(e) =>
+                    setMemberEditData({ ...memberEditData, name: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -685,25 +685,25 @@ const EditMode = () => {
           </div>
         )}
 
-        {/* Committee Editing Modal */}
-        {editingCommitteeIndex !== null && committeeEditData && (
+         {/* Committee Editing Modal */}
+         {editingCommitteeIndex !== null && committeeEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-lg max-h-screen overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">
-                {editingCommitteeIndex === -1 ? 'Add Committee' : 'Edit Committee Information'}
+                {editingCommitteeIndex === -1 ? 'Add Board' : 'Edit Board Information'}
               </h3>
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-lg w-full transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={committeeEditData.image}
-                  alt={committeeEditData.title}
+                  alt={committeeEditData.name || committeeEditData.title || ''}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
                 <div className="flex flex-col mx-5 items-center">
                   <h3 className="text-xl font-semibold mt-6">
-                    {committeeEditData.title || 'Title'}
+                    {committeeEditData.name || committeeEditData.title || 'Title'}
                   </h3>
                   <p className="text-gray-700 mt-4 mx-5">
-                    {committeeEditData.description || 'Description'}
+                    {committeeEditData.blurb || 'Description'}
                   </p>
                 </div>
               </div>
@@ -711,9 +711,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={committeeEditData.title}
+                  value={committeeEditData.name || committeeEditData.title || ''}
                   onChange={(e) =>
-                    setCommitteeEditData({ ...committeeEditData, title: e.target.value })
+                    setCommitteeEditData({ ...committeeEditData, name: e.target.value, title: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -721,9 +721,9 @@ const EditMode = () => {
               <div className="mb-4">
                 <label className="block font-medium">Description:</label>
                 <textarea
-                  value={committeeEditData.description}
+                  value={committeeEditData.blurb}
                   onChange={(e) =>
-                    setCommitteeEditData({ ...committeeEditData, description: e.target.value })
+                    setCommitteeEditData({ ...committeeEditData, blurb: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -732,9 +732,9 @@ const EditMode = () => {
                 <label className="block font-medium">Image URL:</label>
                 <input
                   type="text"
-                  value={committeeEditData.image}
+                  value={committeeEditData.pictureUrl || committeeEditData.image}
                   onChange={(e) =>
-                    setCommitteeEditData({ ...committeeEditData, image: e.target.value })
+                    setCommitteeEditData({ ...committeeEditData, pictureUrl: e.target.value, image: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -746,12 +746,12 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                {editingCommitteeIndex !== -1 && (
+                {committeeEditData !== -1 && (
                   <button
                     onClick={handleCommitteeDelete}
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
                   >
-                    Delete Committee
+                    Delete Board
                   </button>
                 )}
                 <button
