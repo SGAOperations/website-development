@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
                   enum: Object.values(DivisionNames),
                   required: true },
   role: { type: String,
-          enum: ['leader', 'member', 'committee', 'board'],
+          enum: ['leader', 'member', 'committee', 'board', 'workingGroup'],
           required: true
   },
   // divisionBlurb: { type: String, required: true },

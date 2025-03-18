@@ -3,10 +3,9 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
 import Committees from '../../components/Committees';
-import Boards from '../../components/Boards';
 import { fetchData } from '../../api/api';
 
-const DiversityEquityInclusion = () => {
+const OperationalAffairs = () => {
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '' },
     members: [],
@@ -18,7 +17,7 @@ const DiversityEquityInclusion = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchData('Diversity, Equity, and Inclusion');
+        const data = await fetchData('Operational Affairs');
         setPageData(data);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -44,17 +43,20 @@ const DiversityEquityInclusion = () => {
       </div> */}
       {/* bg image goes ^^^ */}
 
-      <div className="text-7xl mb-4 font-bold text-black text-center my-8">Diversity, Equity, and Inclusion</div>
+      <div className="text-7xl mb-4 font-bold text-black text-center my-8">Operational Affairs</div>
       
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">About the Division</h3>
         <p className="text-center text-black mx-30 mt-6 mb-2">
-        The Diversity, Equity, and Inclusion Division drives change by actively addressing both internal and external 
-        DEI challenges. Through collaboration with a wide array of student organizations, cultural centers, and university 
-        leadership, DEI aims to foster an inclusive environment that empowers every voice. A single dedicated committee 
-        orchestrates these efforts, ensuring that the Division’s initiatives resonate across the campus community.
+        The Division of Operational Affairs is the cornerstone of internal management within SGA, 
+        responsible for maintaining up-to-date records, overseeing Senate activities, coordinating room bookings, and managing finances. 
+        This division ensures the smooth functioning of all operational aspects and is also responsible for digital innovation. 
+        By leading teams that develop custom solutions, it drives technological advancements tailored specifically to the needs of the SGA.
         </p>
 
+        <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaOperations@northeastern.edu">sgaOperations@northeastern.edu</a></p>
+
+        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Division Leadership</h3>
         <div className="flex justify-center">
           <div>
             <Pictures leader={pageData.leader} members={pageData.members}/>
@@ -62,7 +64,6 @@ const DiversityEquityInclusion = () => {
         </div>
       </div>
 
-      <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaCampusAffairs@northeastern.edu">sgaCampusAffairs@northeastern.edu</a></p>
       
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
@@ -70,19 +71,11 @@ const DiversityEquityInclusion = () => {
           <div>
             <Committees committees={pageData.committees}/>
           </div>
-        </div>
-
-        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Boards</h3>
-        <div className="flex justify-center">
-          <div>
-            <Boards boards={pageData.boards}/>
-          </div>
-        </div>
-
+        </div>        
       </div>
       <Footer />
     </>
   )
 }
 
-export default DiversityEquityInclusion;
+export default OperationalAffairs;

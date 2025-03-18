@@ -15,10 +15,11 @@ const pageOptions = [
 const EditMode = () => {
   const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
-    leader: { name: '', title: '', image: '', _id: '' },
+    leader: { name: '', title: '', pictureUrl: '', _id: '' },
     members: [],
     committees: [],
-    boards: []
+    boards: [],
+    workingGroups: []
   });
 
   const [isLeaderEditing, setIsLeaderEditing] = useState(false);
@@ -33,6 +34,9 @@ const EditMode = () => {
   const [editingBoardIndex, setEditingBoardIndex] = useState(null);
   const [boardEditData, setBoardEditData] = useState(null);
 
+  const [editingWorkingGroupIndex, setEditingWorkingGroupIndex] = useState(null);
+  const [workingGroupEditData, setWorkingGroupEditData] = useState(null);
+
   // fetch + group users based on the selected division
   useEffect(() => {
     async function fetchUsers() {
@@ -41,11 +45,12 @@ const EditMode = () => {
         const divisionUsers = allUsers.filter(
           (user) => user.divisionName === selectedPage
         );
-        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', image: '', _id: '' };
+        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', pictureUrl: '', _id: '' };
         const members = divisionUsers.filter((user) => user.role === 'member');
         const committees = divisionUsers.filter((user) => user.role === 'committee');
         const boards = divisionUsers.filter((user) => user.role === 'board');
-        setPageData({ leader, members, committees, boards });
+        const workingGroups = divisionUsers.filter((user) => user.role === 'workingGroup');
+        setPageData({ leader, members, committees, boards, workingGroups });
       } catch (error) {
         console.error(error);
       }
@@ -56,10 +61,12 @@ const EditMode = () => {
     setEditingMemberIndex(null);
     setEditingCommitteeIndex(null);
     setEditingBoardIndex(null);
+    setEditingWorkingGroupIndex(null);
     setLeaderEditData(pageData.leader);
     setMemberEditData(null);
     setCommitteeEditData(null);
     setBoardEditData(null);
+    setWorkingGroupEditData(null);
   }, [selectedPage]);
 
   // --- Leader Handlers ---
@@ -72,15 +79,19 @@ const EditMode = () => {
     try {
       const userData = {
         name: leaderEditData.name,
-        pictureUrl: leaderEditData.image,
+        pictureUrl: leaderEditData.pictureUrl || '',
         position: leaderEditData.title,
         divisionName: selectedPage,
-        role: 'leader' // assign role
+        role: 'leader'
       };
       const res = await createUser(userData);
       setPageData((prev) => ({
         ...prev,
-        leader: { ...leaderEditData, _id: res._id }
+        leader: { 
+          ...leaderEditData,
+          pictureUrl: leaderEditData.pictureUrl || '',
+          _id: res._id 
+        }
       }));
     } catch (err) {
       console.error(err);
@@ -94,7 +105,7 @@ const EditMode = () => {
         await deleteUser(pageData.leader._id);
         setPageData((prev) => ({
           ...prev,
-          leader: { name: '', title: '', image: '', _id: '' }
+          leader: { name: '', title: '', pictureUrl: '', _id: '' }
         }));
       } catch (err) {
         console.error(err);
@@ -170,9 +181,9 @@ const EditMode = () => {
   const handleCommitteeSave = async () => {
     try {
       const data = {
-        name: committeeEditData.title,
-        pictureUrl: committeeEditData.image,
-        blurb: committeeEditData.description,
+        name: committeeEditData.name || committeeEditData.title,
+        pictureUrl: committeeEditData.pictureUrl || committeeEditData.image,
+        blurb: committeeEditData.blurb || committeeEditData.description,
         divisionName: selectedPage,
         role: 'committee'
       };
@@ -217,15 +228,15 @@ const EditMode = () => {
 
   const handleBoardAdd = () => {
     setEditingBoardIndex(-1);
-    setBoardEditData({ title: '', description: '', image: '' });
+    setBoardEditData({ name: '', blurb: '', pictureUrl: '' });
   };
 
   const handleBoardSave = async () => {
     try {
       const userData = {
-        name: boardEditData.title,
-        pictureUrl: boardEditData.image,
-        position: boardEditData.description,
+        name: boardEditData.name || boardEditData.title,
+        pictureUrl: boardEditData.pictureUrl || boardEditData.image,
+        blurb: boardEditData.blurb,
         divisionName: selectedPage,
         role: 'board'
       };
@@ -233,10 +244,20 @@ const EditMode = () => {
       let updatedBoards = [...pageData.boards];
       if (editingBoardIndex === -1) {
         res = await createUser(userData);
-        updatedBoards.push({ ...boardEditData, _id: res._id });
+        updatedBoards.push({ 
+          name: userData.name,
+          pictureUrl: userData.pictureUrl,
+          blurb: userData.blurb,
+          _id: res._id 
+        });
       } else {
         res = await updateUser({ ...userData, _id: pageData.boards[editingBoardIndex]._id });
-        updatedBoards[editingBoardIndex] = { ...boardEditData, _id: res._id };
+        updatedBoards[editingBoardIndex] = { 
+          name: userData.name,
+          pictureUrl: userData.pictureUrl,
+          blurb: userData.blurb,
+          _id: res._id 
+        };
       }
       setPageData((prev) => ({ ...prev, boards: updatedBoards }));
     } catch (err) {
@@ -260,6 +281,69 @@ const EditMode = () => {
     }
     setEditingBoardIndex(null);
     setBoardEditData(null);
+  };
+
+  // --- Working Group Handlers ---
+  const handleWorkingGroupEditOpen = (index) => {
+    setEditingWorkingGroupIndex(index);
+    setWorkingGroupEditData(pageData.workingGroups[index]);
+  };
+
+  const handleWorkingGroupAdd = () => {
+    setEditingWorkingGroupIndex(-1);
+    setWorkingGroupEditData({ name: '', blurb: '', pictureUrl: '' });
+  };
+
+  const handleWorkingGroupSave = async () => {
+    try {
+      const userData = {
+        name: workingGroupEditData.name || workingGroupEditData.title,
+        pictureUrl: workingGroupEditData.pictureUrl || workingGroupEditData.image,
+        blurb: workingGroupEditData.blurb,
+        divisionName: selectedPage,
+        role: 'workingGroup'
+      };
+      let res;
+      let updatedWorkingGroups = [...pageData.workingGroups];
+      if (editingWorkingGroupIndex === -1) {
+        res = await createUser(userData);
+        updatedWorkingGroups.push({ 
+          name: userData.name,
+          pictureUrl: userData.pictureUrl,
+          blurb: userData.blurb,
+          _id: res._id 
+        });
+      } else {
+        res = await updateUser({ ...userData, _id: pageData.workingGroups[editingWorkingGroupIndex]._id });
+        updatedWorkingGroups[editingWorkingGroupIndex] = { 
+          name: userData.name,
+          pictureUrl: userData.pictureUrl,
+          blurb: userData.blurb,
+          _id: res._id 
+        };
+      }
+      setPageData((prev) => ({ ...prev, workingGroups: updatedWorkingGroups }));
+    } catch (err) {
+      console.error(err);
+    }
+    setEditingWorkingGroupIndex(null);
+    setWorkingGroupEditData(null);
+  };
+
+  const handleWorkingGroupDelete = async () => {
+    if (pageData.workingGroups[editingWorkingGroupIndex]?._id) {
+      try {
+        await deleteUser(pageData.workingGroups[editingWorkingGroupIndex]._id);
+        const updatedWorkingGroups = pageData.workingGroups.filter(
+          (_, idx) => idx !== editingWorkingGroupIndex
+        );
+        setPageData((prev) => ({ ...prev, workingGroups: updatedWorkingGroups }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setEditingWorkingGroupIndex(null);
+    setWorkingGroupEditData(null);
   };
 
   const handlePageChange = (e) => {
@@ -294,7 +378,7 @@ const EditMode = () => {
           <h2 className="text-2xl font-bold mb-4">Leader</h2>
           <div className="flex items-center gap-4">
             <img
-              src={pageData.leader.pictureUrl}
+              src={pageData.leader.pictureUrl || ''}
               alt={pageData.leader.name}
               className="w-32 h-32 object-cover rounded"
             />
@@ -344,25 +428,29 @@ const EditMode = () => {
         {/* Committees Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Committees</h2>
-          {pageData.committees.map((committee, index) => (
-            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
-              <img
-                src={committee.pictureUrl}
-                alt={committee.name}
-                className="w-20 h-20 object-cover rounded"
-              />
-              <div className="flex flex-col items-start">
-                <p className="font-semibold">{committee.name}</p>
-                <p className="text-sm">{committee.description}</p>
+          {pageData.committees && pageData.committees.length > 0 ? (
+            pageData.committees.map((committee, index) => (
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+                <img
+                  src={committee.pictureUrl || ''}
+                  alt={committee.name || committee.title}
+                  className="w-20 h-20 object-cover rounded"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{committee.name || committee.title}</p>
+                  <p className="text-sm">{committee.blurb || committee.description}</p>
+                </div>
+                <button
+                  onClick={() => handleCommitteeEditOpen(index)}
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
+                >
+                  Edit Committee
+                </button>
               </div>
-              <button
-                onClick={() => handleCommitteeEditOpen(index)}
-                className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-              >
-                Edit Committee
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No committees available for this page.</p>
+          )}
           <button
             onClick={handleCommitteeAdd}
             className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -371,6 +459,7 @@ const EditMode = () => {
           </button>
         </div>
 
+
         {/* Boards Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Boards</h2>
@@ -378,13 +467,13 @@ const EditMode = () => {
             pageData.boards.map((board, index) => (
               <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
                 <img
-                  src={board.pictureUrl}
+                  src={board.pictureUrl || ''}
                   alt={board.name}
                   className="w-20 h-20 object-cover rounded"
                 />
                 <div className="flex flex-col items-start">
                   <p className="font-semibold">{board.name}</p>
-                  <p className="text-sm">{board.description}</p>
+                  <p className="text-sm">{board.blurb}</p>
                 </div>
                 <button
                   onClick={() => handleBoardEditOpen(index)}
@@ -405,6 +494,40 @@ const EditMode = () => {
           </button>
         </div>
 
+        {/* Working Groups Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Working Groups</h2>
+          {pageData.workingGroups && pageData.workingGroups.length > 0 ? (
+            pageData.workingGroups.map((workingGroup, index) => (
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+                <img
+                  src={workingGroup.pictureUrl}
+                  alt={workingGroup.name}
+                  className="w-20 h-20 object-cover rounded"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{workingGroup.name}</p>
+                  <p className="text-sm">{workingGroup.blurb}</p>
+                </div>
+                <button
+                  onClick={() => handleWorkingGroupEditOpen(index)}
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
+                >
+                  Edit Working Group
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>No working groups available for this page.</p>
+          )}
+          <button
+            onClick={handleWorkingGroupAdd}
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Add Working Group
+          </button>
+        </div>
+
         {/* Leader Editing Modal */}
         {isLeaderEditing && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
@@ -412,7 +535,7 @@ const EditMode = () => {
               <h3 className="text-xl font-bold mb-4">Edit Leader Information</h3>
               <div className="bg-sga-red text-white p-4 rounded-xl shadow w-72 transition-all transform duration-300 relative mx-auto my-4">
                 <img
-                  src={leaderEditData.pictureUrl}
+                  src={leaderEditData.pictureUrl || ''}
                   alt={leaderEditData.name}
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
@@ -438,7 +561,7 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={leaderEditData.title}
+                  value={leaderEditData.position}
                   onChange={(e) =>
                     setLeaderEditData({ ...leaderEditData, title: e.target.value })
                   }
@@ -655,15 +778,15 @@ const EditMode = () => {
               <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-lg w-full transition-all transform duration-400 relative mx-auto my-4">
                 <img
                   src={boardEditData.image}
-                  alt={boardEditData.title}
+                  alt={boardEditData.name || boardEditData.title || ''}
                   className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
                 />
                 <div className="flex flex-col mx-5 items-center">
                   <h3 className="text-xl font-semibold mt-6">
-                    {boardEditData.title || 'Title'}
+                    {boardEditData.name || boardEditData.title || 'Title'}
                   </h3>
                   <p className="text-gray-700 mt-4 mx-5">
-                    {boardEditData.description || 'Description'}
+                    {boardEditData.blurb || 'Description'}
                   </p>
                 </div>
               </div>
@@ -671,9 +794,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={boardEditData.title}
+                  value={boardEditData.name || boardEditData.title || ''}
                   onChange={(e) =>
-                    setBoardEditData({ ...boardEditData, title: e.target.value })
+                    setBoardEditData({ ...boardEditData, name: e.target.value, title: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -681,9 +804,9 @@ const EditMode = () => {
               <div className="mb-4">
                 <label className="block font-medium">Description:</label>
                 <textarea
-                  value={boardEditData.description}
+                  value={boardEditData.blurb}
                   onChange={(e) =>
-                    setBoardEditData({ ...boardEditData, description: e.target.value })
+                    setBoardEditData({ ...boardEditData, blurb: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -692,9 +815,9 @@ const EditMode = () => {
                 <label className="block font-medium">Image URL:</label>
                 <input
                   type="text"
-                  value={boardEditData.image}
+                  value={boardEditData.pictureUrl || boardEditData.image}
                   onChange={(e) =>
-                    setBoardEditData({ ...boardEditData, image: e.target.value })
+                    setBoardEditData({ ...boardEditData, pictureUrl: e.target.value, image: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -718,6 +841,97 @@ const EditMode = () => {
                   onClick={() => {
                     setEditingBoardIndex(null);
                     setBoardEditData(null);
+                  }}
+                  className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition-all duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Working Group Editing Modal */}
+        {editingWorkingGroupIndex !== null && workingGroupEditData && (
+          <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
+            <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-lg max-h-screen overflow-y-auto">
+              <h3 className="text-xl font-bold mb-4">
+                {editingWorkingGroupIndex === -1 ? 'Add Working Group' : 'Edit Working Group Information'}
+              </h3>
+              <div className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-lg w-full transition-all transform duration-400 relative mx-auto my-4">
+                <img
+                  src={workingGroupEditData.pictureUrl || workingGroupEditData.image || ''}
+                  alt={workingGroupEditData.name || workingGroupEditData.title || ''}
+                  className="max-w-[165px] h-[100px] object-cover rounded-lg shadow"
+                />
+                <div className="flex flex-col mx-5 items-center">
+                  <h3 className="text-xl font-semibold mt-6">
+                    {workingGroupEditData.name || workingGroupEditData.title || 'Title'}
+                  </h3>
+                  <p className="text-gray-700 mt-4 mx-5">
+                    {workingGroupEditData.blurb || 'Description'}
+                  </p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Title:</label>
+                <input
+                  type="text"
+                  value={workingGroupEditData.name || workingGroupEditData.title || ''}
+                  onChange={(e) =>
+                    setWorkingGroupEditData({ 
+                      ...workingGroupEditData, 
+                      name: e.target.value,
+                      title: e.target.value 
+                    })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Description:</label>
+                <textarea
+                  value={workingGroupEditData.blurb || ''}
+                  onChange={(e) =>
+                    setWorkingGroupEditData({ ...workingGroupEditData, blurb: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Image URL:</label>
+                <input
+                  type="text"
+                  value={workingGroupEditData.pictureUrl || workingGroupEditData.image || ''}
+                  onChange={(e) =>
+                    setWorkingGroupEditData({ 
+                      ...workingGroupEditData, 
+                      pictureUrl: e.target.value,
+                      image: e.target.value 
+                    })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="flex justify-center space-x-4 mt-4">
+                <button
+                  onClick={handleWorkingGroupSave}
+                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
+                >
+                  Save
+                </button>
+                {editingWorkingGroupIndex !== -1 && (
+                  <button
+                    onClick={handleWorkingGroupDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
+                  >
+                    Delete Working Group
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setEditingWorkingGroupIndex(null);
+                    setWorkingGroupEditData(null);
                   }}
                   className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition-all duration-200"
                 >

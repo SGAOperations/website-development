@@ -50,3 +50,50 @@ export const deleteUser = async (userId) => {
     throw err;
   })
 };
+
+export const fetchData = async (division) => {
+  try {
+    const allUsers = await getUsers();
+    const divisionUsers = allUsers.filter((user) => user.divisionName === division);
+    
+    const leader = divisionUsers.find((user) => user.role === 'leader') || {};
+    const leaderData = { 
+      name: leader.name || '', 
+      title: leader.position || '', 
+      image: leader.pictureUrl || ''
+    };
+
+    const members = divisionUsers.filter((user) => user.role === 'member')
+      .map(member => ({ 
+        name: member.name, 
+        title: member.position, 
+        image: member.pictureUrl 
+      }));
+
+    const committees = divisionUsers.filter((user) => user.role === 'committee')
+      .map(committee => ({ 
+        title: committee.name, 
+        description: committee.blurb, 
+        image: committee.pictureUrl 
+      }));
+
+    const boards = divisionUsers.filter((user) => user.role === 'board')
+      .map(board => ({ 
+        title: board.name, 
+        description: board.blurb, 
+        image: board.pictureUrl 
+      }));
+
+    const workingGroups = divisionUsers.filter((user) => user.role === 'workingGroup')
+      .map(group => ({ 
+        title: group.name, 
+        description: group.blurb, 
+        image: group.pictureUrl 
+      }));
+
+    return { leader: leaderData, members, committees, boards, workingGroups };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
