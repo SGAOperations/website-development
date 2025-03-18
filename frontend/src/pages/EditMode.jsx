@@ -181,9 +181,9 @@ const EditMode = () => {
   const handleCommitteeSave = async () => {
     try {
       const data = {
-        name: committeeEditData.title,
-        pictureUrl: committeeEditData.image,
-        blurb: committeeEditData.description,
+        name: committeeEditData.name || committeeEditData.title,
+        pictureUrl: committeeEditData.pictureUrl || committeeEditData.image,
+        blurb: committeeEditData.blurb || committeeEditData.description,
         divisionName: selectedPage,
         role: 'committee'
       };
@@ -428,25 +428,29 @@ const EditMode = () => {
         {/* Committees Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Committees</h2>
-          {pageData.committees.map((committee, index) => (
-            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
-              <img
-                src={committee.pictureUrl}
-                alt={committee.name}
-                className="w-20 h-20 object-cover rounded"
-              />
-              <div className="flex flex-col items-start">
-                <p className="font-semibold">{committee.name}</p>
-                <p className="text-sm">{committee.blurb}</p>
+          {pageData.committees && pageData.committees.length > 0 ? (
+            pageData.committees.map((committee, index) => (
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+                <img
+                  src={committee.pictureUrl || ''}
+                  alt={committee.name || committee.title}
+                  className="w-20 h-20 object-cover rounded"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{committee.name || committee.title}</p>
+                  <p className="text-sm">{committee.blurb || committee.description}</p>
+                </div>
+                <button
+                  onClick={() => handleCommitteeEditOpen(index)}
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
+                >
+                  Edit Committee
+                </button>
               </div>
-              <button
-                onClick={() => handleCommitteeEditOpen(index)}
-                className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-              >
-                Edit Committee
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No committees available for this page.</p>
+          )}
           <button
             onClick={handleCommitteeAdd}
             className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -454,6 +458,7 @@ const EditMode = () => {
             Add Committee
           </button>
         </div>
+
 
         {/* Boards Section */}
         <div className="mb-8">

@@ -34,7 +34,7 @@ const Boards = ({ boards = [] }) => {
             <div className="flex flex-col mx-5 items-center">
               <h3 className="text-xl font-semibold mt-6">{board.title}</h3>
               <p className="text-gray-700 mt-4 mx-5">{board.description}</p>
-              <button className="w-50 bg-sga-red text-white m-4 transition-all transform hover:-translate-y-1 hover:shadow-md transition duration-400" onclick="#" type="button">Learn More</button>
+              <button className="w-50 bg-sga-red text-white m-4 transition-all transform hover:-translate-y-1 hover:shadow-md transition duration-400" onClick={() => {}} type="button">Learn More</button>
             </div>
           </div>
         ))}
