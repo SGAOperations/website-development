@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { createUser, updateUser, deleteUser, getUsers } from '../api/api';
+import { useNavigate } from 'react-router-dom';
 
 const pageOptions = [
   'Office of the President',
@@ -355,8 +356,15 @@ const EditMode = () => {
     setSelectedPage(e.target.value);
   };
 
+  const navigate = useNavigate(); 
+
+  const exitEditMode = () => {
+    navigate('/');
+  };
+
   return (
     <>
+      
       <Header />
       <div className="container mx-auto p-6 my-4 text-black bg-gray-50 rounded-lg min-h-screen">
         <h1 className="text-3xl font-bold text-center mb-8 text-sga-red">Edit Mode</h1>
@@ -377,6 +385,7 @@ const EditMode = () => {
             ))}
           </select>
         </div>
+
 
         {/* Leader Section */}
         <div className="mb-8">
@@ -875,8 +884,18 @@ const EditMode = () => {
                 </button>
               </div>
             </div>
+          </div>)}
+          {/* Exit Edit Mode Button */}
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={exitEditMode} 
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-all duration-200"
+            >
+            Exit Edit Mode
+            </button>
           </div>
-        )}
+          
+          
       </div>
     </>
   );
