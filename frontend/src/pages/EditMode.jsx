@@ -437,8 +437,7 @@ const EditMode = () => {
                 </div>
                 <button
                   onClick={() => handleCommitteeEditOpen(index)}
-                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-                >
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200">
                   Edit Committee
                 </button>
               </div>
@@ -460,15 +459,14 @@ const EditMode = () => {
           <h2 className="text-2xl font-bold mb-4">Boards</h2>
           {pageData.boards && pageData.boards.length > 0 ? (
             pageData.boards.map((board, index) => (
-              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+              <div key={index} className="flex items-left gap-4 my-4 border-b pb-4">
                 <div className="flex flex-col items-start">
                   <p className="font-semibold">{board.name}</p>
                   <p className="text-left text-sm">{board.blurb}</p>
                 </div>
                 <button
                   onClick={() => handleBoardEditOpen(index)}
-                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-                >
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200">
                   Edit Board
                 </button>
               </div>
@@ -489,7 +487,7 @@ const EditMode = () => {
           <h2 className="text-2xl font-bold mb-4">Working Groups</h2>
           {pageData.workingGroups && pageData.workingGroups.length > 0 ? (
             pageData.workingGroups.map((workingGroup, index) => (
-              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+              <div key={index} className="flex items-left gap-4 my-4 border-b pb-4">
                 <div className="flex flex-col items-start">
                   <p className="font-semibold">{workingGroup.name}</p>
                   <p className="text-left text-sm">{workingGroup.blurb}</p>

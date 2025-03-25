@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/users/';
+const BASE_URL = 'http://localhost:3000/users/';
 
 // Get all users
 export const getUsers = async () => {
