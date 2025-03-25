@@ -14,7 +14,10 @@ const pageOptions = [
 ];
 
 const EditMode = () => {
-  const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
+  const [selectedPage, setSelectedPage] = useState(() => {
+    // get the last selected tab from local storage or default to the first one
+    return localStorage.getItem('selectedPage') || pageOptions[0];
+  });
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '', _id: '' },
     members: [],
@@ -40,6 +43,8 @@ const EditMode = () => {
 
   // fetch + group users based on the selected division
   useEffect(() => {
+    // save selected tab to local storage whenever it changes
+    localStorage.setItem('selectedPage', selectedPage);
     async function fetchUsers() {
       try {
         const allUsers = await getUsers();
