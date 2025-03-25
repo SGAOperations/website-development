@@ -26,10 +26,12 @@ const userSchema = new mongoose.Schema({
           enum: ['leader', 'member', 'committee', 'board', 'workingGroup'],
           required: true
   },
-  // divisionBlurb: { type: String, required: true },
-  // header: { type: String, required: true },
   blurb: { type: String, required: false },
   links: { type: String, required: false },
 });
 
-module.exports = mongoose.model('User', userSchema);
+userSchema.index({ name: 1, divisionName: 1 }, { unique: true });
+const User = mongoose.model('User', userSchema);
+
+User.syncIndexes().catch(err => console.error("Index sync error:", err));
+module.exports = { User, DivisionNames };

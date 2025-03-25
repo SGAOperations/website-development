@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
-import { createUser, updateUser, deleteUser, getUsers } from '../api/api';
-
-const pageOptions = [
-  'Office of the President',
-  'Academic Affairs',
-  'Campus Affairs',
-  'Student Success',
-  'Diversity, Equity, and Inclusion',
-  'External Affairs',
-  'Operational Affairs'
-];
+import { createUser, updateUser, deleteUser, getUsers, getDivisions } from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditMode = () => {
+  const [pageOptions, setPageOptions] = useState([]);
   const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '', _id: '' },
@@ -37,8 +30,25 @@ const EditMode = () => {
   const [editingWorkingGroupIndex, setEditingWorkingGroupIndex] = useState(null);
   const [workingGroupEditData, setWorkingGroupEditData] = useState(null);
 
+  useEffect(() => {
+    async function fetchDivisions() {
+      try {
+        const response = await getDivisions();
+        const divisionsArray = Object.values(response);
+        setPageOptions(divisionsArray);
+        if (divisionsArray.length > 0) {
+          setSelectedPage(divisionsArray[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching divisions:", error);
+      }
+    }
+    fetchDivisions();
+  }, []);
+
   // fetch + group users based on the selected division
   useEffect(() => {
+    if (!selectedPage) return;
     async function fetchUsers() {
       try {
         const allUsers = await getUsers();
@@ -139,13 +149,44 @@ const EditMode = () => {
       if (editingMemberIndex === -1) {
         res = await createUser(userData);
         updatedMembers.push({ ...memberEditData, _id: res._id });
+        toast.success("Member added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...userData, _id: pageData.members[editingMemberIndex]._id });
         updatedMembers[editingMemberIndex] = { ...memberEditData, _id: res._id };
+        toast.success("Member added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, members: updatedMembers }));
     } catch (err) {
       console.error(err);
+      toast.error("A member with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      
     }
     setEditingMemberIndex(null);
     setMemberEditData(null);
@@ -353,6 +394,7 @@ const EditMode = () => {
   return (
     <>
       <Header />
+      <ToastContainer />
       <div className="container mx-auto p-6 my-4 text-black bg-gray-50 rounded-lg min-h-screen">
         <h1 className="text-3xl font-bold text-center mb-8 text-sga-red">Edit Mode</h1>
         <div className="mb-8 flex justify-center items-center">
