@@ -2,6 +2,15 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000/users/';
 
+export const getDivisions = async () => {
+  return axios.get('http://localhost:5000/divisions')
+  .then(res =>  res.data)
+  .catch(err => {
+    console.error('Error fetching divisions:', err)
+    throw err;
+  })
+}
+
 // Get all users
 export const getUsers = async () => {
   return axios.get(BASE_URL)
