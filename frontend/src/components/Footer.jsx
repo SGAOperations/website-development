@@ -50,7 +50,7 @@ function Footer() {
         </p>
       </div>
       <div className="pt-6 mb-4">
-        {}
+        {/*edit mode navigation (will navigate to sign in page when implemented)*/} 
         <button 
           className="button bg-red-500 text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-red-500"
           onClick={goToEditMode} 
