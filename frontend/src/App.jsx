@@ -12,6 +12,7 @@ import DiversityEquityInclusion from './pages/executive-branch/DiversityEquityIn
 import ExternalAffairs from './pages/executive-branch/ExternalAffairs';
 import OperationalAffairs from './pages/executive-branch/OperationalAffairs';
 import EditMode from './pages/EditMode.jsx';
+import SignIn from './pages/SignIn.jsx';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/external-affairs" element={<ExternalAffairs />} />
             <Route path="/operational-affairs" element={<OperationalAffairs />} />
             <Route path="/edit-mode" element={<EditMode />} />
+            <Route path="/sign-in" element={<SignIn />} />
           </Routes>
         </div>
     </Router>
