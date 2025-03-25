@@ -39,9 +39,10 @@ export default function HeaderDropdowns() {
       { label: 'Office of the President', href: '/office-of-the-president' },
       { label: 'Academic Affairs', href: '/academic-affairs' },
       { label: 'Campus Affairs', href: '/campus-affairs' },
-      { label: 'Student Success', href: '/student-success' },
       { label: 'Diversity, Equity, and Inclusion', href: '/diversity-equity-inclusion' },
       { label: 'External Affairs', href: '/external-affairs' },
+      { label: 'Student Involvement', href: '/student-involvement' },
+      { label: 'Student Success', href: '/student-success' },
       { label: 'Operational Affairs', href: '/operational-affairs' },
     ],
     [   // Judicial Branch

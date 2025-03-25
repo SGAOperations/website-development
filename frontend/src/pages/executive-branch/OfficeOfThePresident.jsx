@@ -66,6 +66,17 @@ const OfficeOfThePresident = () => {
         </div>
       </div>
 
+      <div className="mb-20">
+        <h3 className="text-5xl font-bold text-sga-red text-center mt-16">Presidential Priorities</h3>
+        <li>
+          <ul className="text-left text-black mx-30 mb-3"><span className="font-bold">&#8226; &nbsp; Boost Campus Spirit: </span>Organize fun and engaging events to enhance school spirit and foster a vibrant campus community.</ul>
+          <ul className="text-left text-black mx-30 mb-3"><span className="font-bold">&#8226; &nbsp; Enhance the Student Organization Experience: </span>Improve support and resources for student organizations to enrich involvement and ensure a positive experience for all members.</ul>
+          <ul className="text-left text-black mx-30 mb-3"><span className="font-bold">&#8226; &nbsp; Strengthen Connections: </span>Build stronger relationships between students and administrators to ensure student voices are heard and considered in university decisions.</ul>
+          <ul className="text-left text-black mx-30 mb-3"><span className="font-bold">&#8226; &nbsp; Expand SGA Accessibility: </span>Make the Student Government Association more accessible to all students and broaden our reach to ensure representation across the entire student body.</ul>
+
+        </li>
+      </div>
+
 
       <Footer />
     </>

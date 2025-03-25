@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Boards = ({ boards = [] }) => {
+const Cards = ({ cards = [] }) => {
   const [hoverStyle, setHoverStyle] = useState({});
 
   const handleMouseMove = (e, index) => {
@@ -18,7 +18,7 @@ const Boards = ({ boards = [] }) => {
     <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-6 h-auto">
 
       <div className="grid grid-flow-row gap-8">
-        {boards.map((board, index) => (
+        {cards.map((card, index) => (
           <div
             key={index}
             className="flex flex-row items-center bg-white text-black p-10 rounded-xl shadow-xl w-full transition-all transform hover:-translate-y-2 hover:shadow-2xl transition duration-400 relative"
@@ -26,14 +26,9 @@ const Boards = ({ boards = [] }) => {
             onMouseMove={(e) => handleMouseMove(e, index, false)}
             onMouseLeave={() => handleMouseLeave(index)}
           >
-            <img
-              src={board.image}
-              alt={board.title}
-              className="max-w-165 h-100 object-cover rounded-lg shadow"
-            />
             <div className="flex flex-col mx-5 items-center">
-              <h3 className="text-xl font-semibold mt-6">{board.title}</h3>
-              <p className="text-gray-700 mt-4 mx-5">{board.description}</p>
+              <h3 className="text-xl font-semibold mt-6">{card.title}</h3>
+              <p className="text-gray-700 mt-4 mx-5">{card.description}</p>
               <button className="w-50 bg-sga-red text-white m-4 transition-all transform hover:-translate-y-1 hover:shadow-md transition duration-400" onClick={() => {}} type="button">Learn More</button>
             </div>
           </div>
@@ -43,4 +38,4 @@ const Boards = ({ boards = [] }) => {
   );
 };
 
-export default Boards;
+export default Cards;
