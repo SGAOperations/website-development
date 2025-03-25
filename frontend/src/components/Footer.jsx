@@ -1,8 +1,13 @@
 import '../App.css';
 import instaLogo from '../assets/instaLogo.png';
 import tiktokLogo from '../assets/tiktokLogo.png';
+import { useNavigate } from 'react-router-dom';
 
 function Footer() {
+  const navigate = useNavigate(); 
+  const goToEditMode = () => {
+    navigate('/edit-mode');
+  };
   return (
     <footer className="bg-black relative bottom-0 left-0 w-screen text-center overflow-hidden mx-0 px-0">
       <div className="button-container flex justify-center items-center pt-10">
@@ -43,6 +48,15 @@ function Footer() {
             sgaExternalAffairs@northeastern.edu
           </a>
         </p>
+      </div>
+      <div className="pt-6 mb-4">
+        {/*edit mode navigation (will navigate to sign in page when implemented)*/} 
+        <button 
+          className="button bg-red-500 text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-red-500"
+          onClick={goToEditMode} 
+        >
+          EDIT MODE
+        </button>
       </div>
     </footer>
   );

@@ -21,6 +21,13 @@ backend:
 
 Node.js (Download from nodejs.org)
 MongoDB 
+- setting up shared mongodb:
+    1. Make sure to have latest .env file pulled https://github.com/SGAOperationalAffairs/website-development/blob/main/backend/.env 
+    2. Download MongoDB Compass https://www.mongodb.com/products/tools/compass
+    3. Add a new connection using the database URI: mongodb+srv://SGA:Password1!@sgacluster.6dveb.mongodb.net/
+    4. npm run backend folder
+    5. npm run frontend folder
+    6. navigate to localhost:/5000/ edit-mode
 Express.js
 
 2. Install Dependencies: `npm install` This will install all required Node.js dependencies from package.json.
