@@ -97,12 +97,21 @@ const EditMode = () => {
     try {
       const userData = {
         name: leaderEditData.name,
-        pictureUrl: leaderEditData.pictureUrl || '',
-        position: leaderEditData.title,
+        pictureUrl: leaderEditData.image || leaderEditData.pictureUrl,
+        position: leaderEditData.title || leaderEditData.position,
         divisionName: selectedPage,
         role: 'leader'
       };
-      const res = await createUser(userData);
+      // create user if not already in db. check if an id exists
+      let res;
+      if (!pageData.leader._id) {
+        res = await createUser(userData);
+      }
+      // update if it is in db
+      else {
+        res = await updateUser({ ...userData, _id: pageData.leader._id});
+      }
+      // update pageData w/ returned data
       setPageData((prev) => ({
         ...prev,
         leader: {
@@ -440,8 +449,8 @@ const EditMode = () => {
               className="w-32 h-32 object-cover rounded"
             />
             <div className="flex flex-col items-start">
-              <p className="font-semibold">{pageData.leader.name}</p>
-              <p>{pageData.leader.title}</p>
+              <p className="font-semibold">{pageData.leader.position}</p>
+              <p>{pageData.leader.name}</p>
             </div>
             <button
               onClick={handleLeaderEditOpen}
@@ -460,11 +469,11 @@ const EditMode = () => {
               <img
                 src={member.pictureUrl || member.image}
                 alt={member.name}
-                className="w-20 h-20 object-cover rounded"
+                className="w-25 h-25 object-cover rounded"
               />
               <div className="flex flex-col items-start">
-                <p className="font-semibold">{member.name}</p>
-                <p>{member.position}</p>
+                <p className="font-semibold">{member.position}</p>
+                <p>{member.name}</p>
               </div>
               <button
                 onClick={() => handleMemberEditOpen(index)}
@@ -580,7 +589,7 @@ const EditMode = () => {
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h2 className="text-xl font-bold mt-3">
-                  {leaderEditData.title || 'Title'}
+                  {leaderEditData.position || 'Title'}
                 </h2>
                 <p className="text-gray-200 mt-2">
                   {leaderEditData.name || 'Name'}
@@ -592,7 +601,7 @@ const EditMode = () => {
                   type="text"
                   value={leaderEditData.position}
                   onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, title: e.target.value })
+                    setLeaderEditData({ ...leaderEditData, position: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
