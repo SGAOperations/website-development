@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
-import Committes from '../../components/Committees';
-import Boards from '../../components/Boards';
+import Cards from '../../components/Cards';
 
 const ExBranchTemp = () => {
   {/* ABOUT */}  

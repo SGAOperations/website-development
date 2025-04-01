@@ -5,7 +5,7 @@ import Pictures from '../../components/Pictures';
 import Cards from '../../components/Cards';
 import { fetchData } from '../../api/api';
 
-const CampusAffairs = () => {
+const StudentInvolvement = () => {
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '' },
     members: [],
@@ -17,9 +17,8 @@ const CampusAffairs = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchData('Campus Affairs');
+        const data = await fetchData('Student Involvement');
         setPageData(data);
-        console.log(data);
       } catch (err) {
         console.error('Error fetching data:', err);
       } 
@@ -44,20 +43,18 @@ const CampusAffairs = () => {
       </div> */}
       {/* bg image goes ^^^ */}
 
-      <div className="text-7xl mb-4 font-bold text-black text-center my-8">Campus Affairs</div>
+      <div className="text-7xl mb-4 font-bold text-black text-center my-8">Student Involvement</div>
       
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">About the Division</h3>
         <p className="text-center text-black mx-30 mt-6 mb-2">
-          The Campus Affairs division serves as the advocacy body for undergraduate students on issues related to 
-          campus dining, recreation, sustainability, development, transportation, safety, and facilities, among other 
-          services essential to student life. The various committees and boards that fall within the division work 
-          directly with Northeastern administration to ensure student voices are heard and represented in decisions made on 
-          campus.
+        The Student Involvement division represents the consensus of the Northeastern student organization community, and serves as the Student Government Association’s official liaison to student organizations.
+        This includes guiding new organizations through the official recognition process, managing constitutions, creating policy, mediating conflict within and between organizations, building collaborations, and various other support services.
         </p>
-
-        <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaCampusAffairs@northeastern.edu">sgaCampusAffairs@northeastern.edu</a></p>
         
+        <p className="text-center text-sga-red">✉️: <a className="text-center text-sga-red hover:underline transition-all duration-300" href="mailto:sgaStudentInvolvement@northeastern.edu">sgaStudentInvolvement@northeastern.edu</a></p>
+
+        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Division Leadership</h3>
         <div className="flex justify-center">
           <div>
             <Pictures leader={pageData.leader} members={pageData.members}/>
@@ -65,24 +62,28 @@ const CampusAffairs = () => {
         </div>
       </div>
 
+      
       <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
         <div className="flex justify-center">
           <div>
             <Cards cards={pageData.committees}/>
           </div>
-        </div>
+        </div>        
+      </div>
 
+      <div>
         <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Boards</h3>
         <div className="flex justify-center">
           <div>
             <Cards cards={pageData.boards}/>
           </div>
-        </div>
+        </div>        
       </div>
+
       <Footer />
     </>
   )
 }
 
-export default CampusAffairs;
+export default StudentInvolvement;
