@@ -249,13 +249,43 @@ const EditMode = () => {
       if (editingCommitteeIndex === -1) {
         res = await createUser(data);
         updatedCommittees.push({ ...committeeEditData, _id: res._id });
+        toast.success("Committee added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...data, _id: pageData.committees[editingCommitteeIndex]._id });
         updatedCommittees[editingCommitteeIndex] = { ...committeeEditData, _id: res._id };
+        toast.success("Committee added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, committees: updatedCommittees }));
     } catch (err) {
       console.error(err);
+      toast.error("A committee with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
@@ -307,6 +337,16 @@ const EditMode = () => {
           blurb: userData.blurb,
           _id: res._id
         });
+        toast.success("Board added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...userData, _id: pageData.boards[editingBoardIndex]._id });
         updatedBoards[editingBoardIndex] = {
@@ -315,10 +355,31 @@ const EditMode = () => {
           blurb: userData.blurb,
           _id: res._id
         };
+        toast.success("Board added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, boards: updatedBoards }));
     } catch (err) {
       console.error(err);
+      toast.error("A board with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
     }
     setEditingBoardIndex(null);
     setBoardEditData(null);
@@ -370,6 +431,16 @@ const EditMode = () => {
           blurb: userData.blurb,
           _id: res._id
         });
+        toast.success("Working Group added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...userData, _id: pageData.workingGroups[editingWorkingGroupIndex]._id });
         updatedWorkingGroups[editingWorkingGroupIndex] = {
@@ -378,10 +449,32 @@ const EditMode = () => {
           blurb: userData.blurb,
           _id: res._id
         };
+
+        toast.success("Working Group added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, workingGroups: updatedWorkingGroups }));
     } catch (err) {
       console.error(err);
+
+      toast.error("A working group with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setEditingWorkingGroupIndex(null);
     setWorkingGroupEditData(null);
@@ -409,9 +502,9 @@ const EditMode = () => {
 
   //const navigate = useNavigate(); 
 
-  const exitEditMode = () => {
-    navigate('/');
-  };
+  // const exitEditMode = () => {
+  //   navigate('/');
+  // };
 
   return (
     <>
@@ -946,8 +1039,6 @@ const EditMode = () => {
             Exit Edit Mode
           </button>
         </div>
-
-
       </div>
     </>
   );
