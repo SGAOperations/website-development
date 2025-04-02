@@ -502,9 +502,9 @@ const EditMode = () => {
 
   //const navigate = useNavigate(); 
 
-  // const exitEditMode = () => {
-  //   navigate('/');
-  // };
+  const exitEditMode = () => {
+     navigate('/');
+  };
 
   return (
     <>
