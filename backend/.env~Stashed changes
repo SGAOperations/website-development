@@ -1,4 +1,0 @@
-MONGO_URI=mongodb+srv://SGA:Password1!@sgacluster.6dveb.mongodb.net/
-PORT=5000
-# JWT_SECRET=YOUR_SECRET_KEY(look at readme)
-ADMIN_EMAILS=admin@example.com
