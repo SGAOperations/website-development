@@ -13,7 +13,8 @@ app.use(cors());
 connectDB();
 
 // Routes
-app.use('/', userRoutes);
+app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
