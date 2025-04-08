@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
     enum: ["leader", "member", "committee", "board"],
     required: true,
   },
+  displayOrder: { type: Number, default: 0 },
   blurb: { type: String, required: false },
   links: { type: String, required: false },
 });

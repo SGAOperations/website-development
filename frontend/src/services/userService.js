@@ -1,19 +1,25 @@
 import axios from 'axios';
+import { getToken } from './authService';
 
 const BASE_URL = 'http://localhost:5000/users/';
 
+const getAuthHeader = () => {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export const getDivisions = async () => {
-  return axios.get('http://localhost:5000/divisions')
+  return axios.get('http://localhost:5000/divisions/')
   .then(res =>  res.data)
   .catch(err => {
-    console.error('Error fetching divisions:', err)
+    console.error('Error fetching divisions:', err);
     throw err;
   })
 }
 
 // Get all users
 export const getUsers = async () => {
-  return axios.get(BASE_URL)
+  return axios.get(BASE_URL, { headers: getAuthHeader() })
   .then(res =>  res.data)
   .catch(err => {
     console.error('Error fetching users:', err)
@@ -23,7 +29,7 @@ export const getUsers = async () => {
 
 // Create a new user
 export const createUser = async (userData) => {
-  return axios.post(BASE_URL, userData)
+  return axios.post(BASE_URL, userData, { headers: getAuthHeader() })
   .then(res => {
     console.log("User created: ", res.data)
     return res.data
@@ -36,7 +42,7 @@ export const createUser = async (userData) => {
 
 // Update an existing user
 export const updateUser = async (userData) => {
-  return axios.put(`${BASE_URL}${userData._id}`, userData)
+  return axios.put(`${BASE_URL}${userData._id}`, userData, { headers: getAuthHeader() })
   .then(res => {
     console.log("User updated: ", res.data)
     return res.data
@@ -60,6 +66,7 @@ export const deleteUser = async (userId) => {
   })
 };
 
+// Fetch data for a specific division
 export const fetchData = async (division) => {
   try {
     const allUsers = await getUsers();

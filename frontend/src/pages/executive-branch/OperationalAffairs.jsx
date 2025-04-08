@@ -3,7 +3,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
 import Cards from '../../components/Cards';
-import { fetchData } from '../../api/api';
+import { fetchData } from '../../services/userService';
 
 const OperationalAffairs = () => {
   const [pageData, setPageData] = useState({

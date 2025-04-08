@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { ReactSortable } from 'react-sortablejs';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { createUser, updateUser, deleteUser, getUsers, getDivisions } from '../api/api';
+// import { createUser, updateUser, deleteUser, getUsers, getDivisions } from '../services/userService';
+import { createUser, updateUser, deleteUser, getUsers } from '../services/userService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,8 +36,9 @@ const EditMode = () => {
   useEffect(() => {
     async function fetchDivisions() {
       try {
-        const response = await getDivisions();
-        const divisionsArray = Object.values(response);
+        const response = await getUsers();
+        const divisionsSet = new Set(response.map(user => user.divisionName));
+        const divisionsArray = Array.from(divisionsSet).filter(Boolean);
         setPageOptions(divisionsArray);
         const savedSelectedPage = localStorage.getItem('selectedPage');
         // set selected page to the saved one, or default to the first one
@@ -407,7 +411,7 @@ const EditMode = () => {
     setSelectedPage(e.target.value);
   };
 
-  //const navigate = useNavigate(); 
+  const navigate = useNavigate(); 
 
   const exitEditMode = () => {
     navigate('/');
@@ -464,25 +468,35 @@ const EditMode = () => {
         {/* Members Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Members</h2>
-          {pageData.members.map((member, index) => (
-            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
-              <img
-                src={member.pictureUrl || member.image}
-                alt={member.name}
-                className="w-25 h-25 object-cover rounded"
-              />
-              <div className="flex flex-col items-start">
-                <p className="font-semibold">{member.position}</p>
-                <p>{member.name}</p>
+          <ReactSortable list={pageData.members || []} setList={(newState) => {
+            setPageData({...pageData, members: newState});
+            newState.forEach((member, index) => {
+              updateUser({
+                ...member,
+                displayOrder: index
+              })
+            })
+          }}>
+            {pageData.members.map((member, index) => (
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+                <img
+                  src={member.pictureUrl || member.image}
+                  alt={member.name}
+                  className="w-25 h-25 object-cover rounded"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{member.position}</p>
+                  <p>{member.name}</p>
+                </div>
+                <button
+                  onClick={() => handleMemberEditOpen(index)}
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
+                >
+                  Edit Member
+                </button>
               </div>
-              <button
-                onClick={() => handleMemberEditOpen(index)}
-                className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-              >
-                Edit Member
-              </button>
-            </div>
-          ))}
+            ))}
+          </ReactSortable>
           <button
             onClick={handleMemberAdd}
             className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -779,7 +793,7 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                {committeeEditData !== -1 && (
+                {editingCommitteeIndex !== -1 && (
                   <button
                     onClick={handleCommitteeDelete}
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
