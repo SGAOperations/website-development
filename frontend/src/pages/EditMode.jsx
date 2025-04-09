@@ -6,10 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditMode = () => {
   const [pageOptions, setPageOptions] = useState([]);
-  const [selectedPage, setSelectedPage] = useState(() => {
-    // get the last selected tab from local storage or default to the first one
-    return localStorage.getItem('selectedPage') || pageOptions[0];
-  });
+  const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '', _id: '' },
     members: [],
@@ -39,8 +36,12 @@ const EditMode = () => {
         const response = await getDivisions();
         const divisionsArray = Object.values(response);
         setPageOptions(divisionsArray);
-        if (divisionsArray.length > 0) {
-          setSelectedPage(divisionsArray[0]);
+        const savedSelectedPage = localStorage.getItem('selectedPage');
+        // set selected page to the saved one, or default to the first one
+        if (savedSelectedPage && divisionsArray.includes(savedSelectedPage)) {
+          setSelectedPage(savedSelectedPage);
+        } else {
+          setSelectedPage(divisionsArray[0]); // Default to first division if nothing saved
         }
       } catch (error) {
         console.error("Error fetching divisions:", error);
@@ -53,8 +54,10 @@ const EditMode = () => {
   useEffect(() => {
     if (!selectedPage) return;
     
+
+    // save selected tab to local storage whenever it changes
     localStorage.setItem('selectedPage', selectedPage);
-    
+
     async function fetchUsers() {
       try {
         const allUsers = await getUsers();
@@ -144,18 +147,27 @@ const EditMode = () => {
     try {
       const userData = {
         name: leaderEditData.name,
-        pictureUrl: leaderEditData.pictureUrl || '',
-        position: leaderEditData.title,
+        pictureUrl: leaderEditData.image || leaderEditData.pictureUrl,
+        position: leaderEditData.title || leaderEditData.position,
         divisionName: selectedPage,
         role: 'leader'
       };
-      const res = await createUser(userData);
+      // create user if not already in db. check if an id exists
+      let res;
+      if (!pageData.leader._id) {
+        res = await createUser(userData);
+      }
+      // update if it is in db
+      else {
+        res = await updateUser({ ...userData, _id: pageData.leader._id});
+      }
+      // update pageData w/ returned data
       setPageData((prev) => ({
         ...prev,
-        leader: { 
+        leader: {
           ...leaderEditData,
           pictureUrl: leaderEditData.pictureUrl || '',
-          _id: res._id 
+          _id: res._id
         }
       }));
     } catch (err) {
@@ -241,7 +253,7 @@ const EditMode = () => {
         progress: undefined,
         theme: "dark",
       });
-      
+
     }
     setEditingMemberIndex(null);
     setMemberEditData(null);
@@ -271,7 +283,7 @@ const EditMode = () => {
 
   const handleCommitteeAdd = () => {
     setEditingCommitteeIndex(-1);
-    setCommitteeEditData({ title: '', description: ''});
+    setCommitteeEditData({ title: '', description: '' });
   };
 
   const handleCommitteeSave = async () => {
@@ -369,11 +381,11 @@ const EditMode = () => {
       let updatedBoards = [...pageData.boards];
       if (editingBoardIndex === -1) {
         res = await createUser(userData);
-        updatedBoards.push({ 
+        updatedBoards.push({
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         });
         toast.success("Board added successfully!", {
           position: "top-center",
@@ -387,11 +399,11 @@ const EditMode = () => {
         });
       } else {
         res = await updateUser({ ...userData, _id: pageData.boards[editingBoardIndex]._id });
-        updatedBoards[editingBoardIndex] = { 
+        updatedBoards[editingBoardIndex] = {
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         };
         toast.success("Board added successfully!", {
           position: "top-center",
@@ -463,11 +475,11 @@ const EditMode = () => {
       let updatedWorkingGroups = [...pageData.workingGroups];
       if (editingWorkingGroupIndex === -1) {
         res = await createUser(userData);
-        updatedWorkingGroups.push({ 
+        updatedWorkingGroups.push({
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         });
         toast.success("Working Group added successfully!", {
           position: "top-center",
@@ -481,11 +493,11 @@ const EditMode = () => {
         });
       } else {
         res = await updateUser({ ...userData, _id: pageData.workingGroups[editingWorkingGroupIndex]._id });
-        updatedWorkingGroups[editingWorkingGroupIndex] = { 
+        updatedWorkingGroups[editingWorkingGroupIndex] = {
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         };
 
         toast.success("Working Group added successfully!", {
@@ -546,7 +558,7 @@ const EditMode = () => {
 
   return (
     <>
-      
+
       <Header />
       <ToastContainer />
       <div className="container mx-auto p-6 my-4 text-black bg-gray-50 rounded-lg min-h-screen">
@@ -580,8 +592,8 @@ const EditMode = () => {
               className="w-32 h-32 object-cover rounded"
             />
             <div className="flex flex-col items-start">
-              <p className="font-semibold">{pageData.leader.name}</p>
-              <p>{pageData.leader.title}</p>
+              <p className="font-semibold">{pageData.leader.position}</p>
+              <p>{pageData.leader.name}</p>
             </div>
             <button
               onClick={handleLeaderEditOpen}
@@ -600,11 +612,13 @@ const EditMode = () => {
               <img
                 src={member.pictureUrl || member.image}
                 alt={member.name}
-                className="w-20 h-20 object-cover rounded"
+                className="w-25 h-25 object-cover rounded"
               />
               <div className="flex flex-col items-start">
                 <p className="font-semibold">{member.name}</p>
                 <p>{member.title}</p>
+                <p className="font-semibold">{member.position}</p>
+                <p>{member.name}</p>
               </div>
               <button
                 onClick={() => handleMemberEditOpen(index)}
@@ -720,7 +734,7 @@ const EditMode = () => {
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h2 className="text-xl font-bold mt-3">
-                  {leaderEditData.title || 'Title'}
+                  {leaderEditData.position || 'Title'}
                 </h2>
                 <p className="text-gray-200 mt-2">
                   {leaderEditData.name || 'Name'}
@@ -732,7 +746,7 @@ const EditMode = () => {
                   type="text"
                   value={leaderEditData.title}
                   onChange={(e) =>
-                    setLeaderEditData({ ...leaderEditData, title: e.target.value })
+                    setLeaderEditData({ ...leaderEditData, position: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />
@@ -865,8 +879,8 @@ const EditMode = () => {
           </div>
         )}
 
-         {/* Committee Editing Modal */}
-         {editingCommitteeIndex !== null && committeeEditData && (
+        {/* Committee Editing Modal */}
+        {editingCommitteeIndex !== null && committeeEditData && (
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg w-11/12 md:w-3/4 lg:w-1/2 shadow-lg max-h-screen overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">
@@ -1022,10 +1036,10 @@ const EditMode = () => {
                   type="text"
                   value={workingGroupEditData.name || workingGroupEditData.title || ''}
                   onChange={(e) =>
-                    setWorkingGroupEditData({ 
-                      ...workingGroupEditData, 
+                    setWorkingGroupEditData({
+                      ...workingGroupEditData,
                       name: e.target.value,
-                      title: e.target.value 
+                      title: e.target.value
                     })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
@@ -1068,17 +1082,15 @@ const EditMode = () => {
               </div>
             </div>
           </div>)}
-          {/* Exit Edit Mode Button */}
-          {/* <div className="flex justify-center mt-8">
-            <button
-              onClick={exitEditMode} 
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-all duration-200"
-            >
+        {/* Exit Edit Mode Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={exitEditMode}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
             Exit Edit Mode
-            </button>
-          </div> */}
-          
-          
+          </button>
+        </div>
       </div>
     </>
   );

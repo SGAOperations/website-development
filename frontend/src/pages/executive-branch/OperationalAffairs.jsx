@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
-import Committees from '../../components/Committees';
+import Cards from '../../components/Cards';
 import { fetchData } from '../../api/api';
 
 const OperationalAffairs = () => {
@@ -64,15 +64,6 @@ const OperationalAffairs = () => {
         </div>
       </div>
 
-      
-      <div>
-        <h3 className="text-5xl font-bold text-sga-red text-center mt-16 mb-4">Our Committees</h3>
-        <div className="flex justify-center">
-          <div>
-            <Committees committees={pageData.committees}/>
-          </div>
-        </div>        
-      </div>
       <Footer />
     </>
   )
