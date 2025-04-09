@@ -68,14 +68,16 @@ export const fetchData = async (division) => {
     const leader = divisionUsers.find((user) => user.role === 'leader') || {};
     const leaderData = { 
       name: leader.name || '', 
-      title: leader.position || '', 
+      title: leader.positions.role || '', 
       image: leader.pictureUrl || ''
     };
+
+    console.log(leaderData);
 
     const members = divisionUsers.filter((user) => user.role === 'member')
       .map(member => ({ 
         name: member.name, 
-        title: member.position, 
+        title: member.positions.role, 
         image: member.pictureUrl 
       }));
 

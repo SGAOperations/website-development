@@ -16,21 +16,30 @@ const DivisionNames = Object.freeze({
 });
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, index: true },
   pictureUrl: { type: String, required: false },
-  position: { type: String, required: false },
-  divisionName: { type: String, 
-                  enum: Object.values(DivisionNames),
-                  required: true },
-  role: { type: String,
-          enum: ['leader', 'member', 'committee', 'board', 'workingGroup'],
-          required: true
-  },
-  blurb: { type: String, required: false },
-  links: { type: String, required: false },
+  positions: [{
+    title: { type: String, required: false },
+    divisionName: { 
+      type: String, 
+      enum: Object.values(DivisionNames),
+      required: true 
+    },
+    role: { 
+      type: String,
+      enum: ['leader', 'member', 'committee', 'board', 'workingGroup'],
+      required: true
+    },
+    blurb: { type: String, required: false },
+    links: { type: String, required: false }
+  }]
+}, {
+  collection: 'test'
 });
 
-userSchema.index({ name: 1, divisionName: 1 }, { unique: true });
+// Compound index to ensure unique position entries per member
+userSchema.index({ name: 1, "positions.divisionName": 1 }, { unique: true });
+
 const User = mongoose.model('User', userSchema);
 
 User.syncIndexes().catch(err => console.error("Index sync error:", err));
