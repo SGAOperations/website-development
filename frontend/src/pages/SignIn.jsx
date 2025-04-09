@@ -18,7 +18,6 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic to handle sign-in
     console.log('Signed in with:', credentials);
   };
 

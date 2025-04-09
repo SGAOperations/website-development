@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // Pages
 import Home from './pages/Home';
 
+import WhatIsSGA from './pages/about/WhatIsSGA'
+import Structure from './pages/about/Structure'
+
 import ExBranchTemp from './pages/executive-branch/ExBranchTemp';
 import OfficeOfThePresident from './pages/executive-branch/OfficeOfThePresident';
 import AcademicAffairs from './pages/executive-branch/AcademicAffairs';
@@ -14,6 +17,7 @@ import StudentSuccess from './pages/executive-branch/StudentSuccess';
 import OperationalAffairs from './pages/executive-branch/OperationalAffairs';
 import EditMode from './pages/EditMode.jsx';
 import SignIn from './pages/SignIn.jsx';
+import Template from './pages/Template.jsx';
 
 export default function App() {
   return (
@@ -22,7 +26,9 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
 
-            <Route path="/ex-branch-temp" element = {<ExBranchTemp />} />
+            <Route path="/about" element={<WhatIsSGA />} />
+            <Route path="/structure" element={<Structure />} />
+
             <Route path="/office-of-the-president" element={<OfficeOfThePresident />} />
             <Route path="/academic-affairs" element={<AcademicAffairs />} />
             <Route path="/campus-affairs" element={<CampusAffairs />} />
@@ -31,8 +37,12 @@ export default function App() {
             <Route path="/student-involvement" element={<StudentInvolvement />} />
             <Route path="/student-success" element={<StudentSuccess />} />
             <Route path="/operational-affairs" element={<OperationalAffairs />} />
+
             <Route path="/edit-mode" element={<EditMode />} />
             <Route path="/sign-in" element={<SignIn />} />
+
+            <Route path="/ex-branch-temp" element = {<ExBranchTemp />} />
+            <Route path="/template" element={<Template />} />
           </Routes>
         </div>
     </Router>
