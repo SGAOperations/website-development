@@ -57,6 +57,13 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
 
     const token = generateToken(user);
+
+    // set token as http only cookie
+    res.cookie("token", token, { 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
     res.json({ token, isAdmin: user.isAdmin, name: user.name });
   } catch (error) {
     res.status(500).json({ message: "Login failed" });

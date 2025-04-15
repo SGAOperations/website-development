@@ -17,7 +17,8 @@ const OfficeOfThePresident = () => {
     const getData = async () => {
       try {
         const data = await fetchData('Office of the President');
-        setPageData(data);
+        const sortedMembers = data.members.sort((a, b) => a.displayOrder - b.displayOrder);
+        setPageData({ ...data, members: sortedMembers });
       } catch (err) {
         console.error('Error fetching data:', err);
       } 
@@ -52,7 +53,7 @@ const OfficeOfThePresident = () => {
         The Office of the President is responsible for organizing the entire Student Government Association. This 
         includes executing all policies and objectives of the Association and overseeing external communications 
         with the community bodies and Boston-area student governance bodies. Additionally, the EVP serves to assist 
-        the President in long-term planning, special projects, and initiatives and oversees the Association’s internal 
+        the President in long-term planning, special projects, and initiatives and oversees the Association's internal 
         communications, all Senate communications, events, archives, fundraising, and alumni connections.
         </p>
         

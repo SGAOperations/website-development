@@ -18,7 +18,8 @@ const CampusAffairs = () => {
     const getData = async () => {
       try {
         const data = await fetchData('Campus Affairs');
-        setPageData(data);
+        const sortedMembers = data.members.sort((a, b) => a.displayOrder - b.displayOrder);
+        setPageData({ ...data, members: sortedMembers });
         console.log(data);
       } catch (err) {
         console.error('Error fetching data:', err);

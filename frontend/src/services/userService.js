@@ -83,7 +83,8 @@ export const fetchData = async (division) => {
       .map(member => ({ 
         name: member.name, 
         title: member.position, 
-        image: member.pictureUrl 
+        image: member.pictureUrl,
+        displayOrder: member.displayOrder,
       }));
 
     const committees = divisionUsers.filter((user) => user.role === 'committee')
