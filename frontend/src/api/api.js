@@ -72,8 +72,6 @@ export const fetchData = async (division) => {
       image: leader.pictureUrl || ''
     };
 
-    console.log(leaderData);
-
     const members = divisionUsers.filter((user) => user.role === 'member')
       .map(member => ({ 
         name: member.name, 
