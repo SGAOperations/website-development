@@ -56,6 +56,45 @@ Server running on http://localhost:3000
 MongoDB connected successfully
 ```
 
+### Authentication:
+
+First, install all dependencies:
+
+```sh
+npm install express mongoose dotenv jsonwebtoken bcryptjs cors
+```
+Create a .env file in the root directory and add the following:
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+PORT=5001
+
+
+Generate a secure JWT secret key (if you don’t have one, generate it using Node.js):
+`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
+
+Auth Endpoint Example: 
+Endpoint: POST /auth/register   (register a new user)
+Body Example:
+```
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "securepassword",
+  "divisionName": "Senate",
+  "role": "leader",
+  "isAdmin": true
+}
+```
+
+Response being successful:
+```
+{
+  "message": "User registered successfully"
+}
+```
+
+
 ## Running the app
 
 ## To Do List:

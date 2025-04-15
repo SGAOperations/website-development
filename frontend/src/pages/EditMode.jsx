@@ -1,23 +1,15 @@
 import { useState, useEffect } from 'react';
+import { ReactSortable } from 'react-sortablejs';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { createUser, updateUser, deleteUser, getUsers } from '../api/api';
-
-const pageOptions = [
-  'Office of the President',
-  'Academic Affairs',
-  'Campus Affairs',
-  'Diversity, Equity, and Inclusion',
-  'External Affairs',
-  'Student Involvement',
-  'Student Success',
-  'Operational Affairs'
-];
+// import { createUser, updateUser, deleteUser, getUsers, getDivisions } from '../services/userService';
+import { createUser, updateUser, deleteUser, getUsers } from '../services/userService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditMode = () => {
-  const [selectedPage, setSelectedPage] = useState(() => {
-    // get the last selected tab from local storage or default to the first one
-    return localStorage.getItem('selectedPage') || pageOptions[0];
-  });
+  const [pageOptions, setPageOptions] = useState([]);
+  const [selectedPage, setSelectedPage] = useState(pageOptions[0]);
   const [pageData, setPageData] = useState({
     leader: { name: '', title: '', pictureUrl: '', _id: '' },
     members: [],
@@ -41,10 +33,34 @@ const EditMode = () => {
   const [editingWorkingGroupIndex, setEditingWorkingGroupIndex] = useState(null);
   const [workingGroupEditData, setWorkingGroupEditData] = useState(null);
 
+  useEffect(() => {
+    async function fetchDivisions() {
+      try {
+        const response = await getUsers();
+        const divisionsSet = new Set(response.map(user => user.divisionName));
+        const divisionsArray = Array.from(divisionsSet).filter(Boolean);
+        setPageOptions(divisionsArray);
+        const savedSelectedPage = localStorage.getItem('selectedPage');
+        // set selected page to the saved one, or default to the first one
+        if (savedSelectedPage && divisionsArray.includes(savedSelectedPage)) {
+          setSelectedPage(savedSelectedPage);
+        } else {
+          setSelectedPage(divisionsArray[0]); // Default to first division if nothing saved
+        }
+      } catch (error) {
+        console.error("Error fetching divisions:", error);
+      }
+    }
+    fetchDivisions();
+  }, []);
+
   // fetch + group users based on the selected division
   useEffect(() => {
+    if (!selectedPage) return;
+
     // save selected tab to local storage whenever it changes
     localStorage.setItem('selectedPage', selectedPage);
+
     async function fetchUsers() {
       try {
         const allUsers = await getUsers();
@@ -102,10 +118,10 @@ const EditMode = () => {
       // update pageData w/ returned data
       setPageData((prev) => ({
         ...prev,
-        leader: { 
+        leader: {
           ...leaderEditData,
           pictureUrl: leaderEditData.pictureUrl || '',
-          _id: res._id 
+          _id: res._id
         }
       }));
     } catch (err) {
@@ -154,13 +170,44 @@ const EditMode = () => {
       if (editingMemberIndex === -1) {
         res = await createUser(userData);
         updatedMembers.push({ ...memberEditData, _id: res._id });
+        toast.success("Member added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...userData, _id: pageData.members[editingMemberIndex]._id });
         updatedMembers[editingMemberIndex] = { ...memberEditData, _id: res._id };
+        toast.success("Member added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, members: updatedMembers }));
     } catch (err) {
       console.error(err);
+      toast.error("A member with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
     }
     setEditingMemberIndex(null);
     setMemberEditData(null);
@@ -190,7 +237,7 @@ const EditMode = () => {
 
   const handleCommitteeAdd = () => {
     setEditingCommitteeIndex(-1);
-    setCommitteeEditData({ title: '', description: ''});
+    setCommitteeEditData({ title: '', description: '' });
   };
 
   const handleCommitteeSave = async () => {
@@ -206,13 +253,43 @@ const EditMode = () => {
       if (editingCommitteeIndex === -1) {
         res = await createUser(data);
         updatedCommittees.push({ ...committeeEditData, _id: res._id });
+        toast.success("Committee added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         res = await updateUser({ ...data, _id: pageData.committees[editingCommitteeIndex]._id });
         updatedCommittees[editingCommitteeIndex] = { ...committeeEditData, _id: res._id };
+        toast.success("Committee added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, committees: updatedCommittees }));
     } catch (err) {
       console.error(err);
+      toast.error("A committee with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setEditingCommitteeIndex(null);
     setCommitteeEditData(null);
@@ -258,24 +335,55 @@ const EditMode = () => {
       let updatedBoards = [...pageData.boards];
       if (editingBoardIndex === -1) {
         res = await createUser(userData);
-        updatedBoards.push({ 
+        updatedBoards.push({
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
+        });
+        toast.success("Board added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
       } else {
         res = await updateUser({ ...userData, _id: pageData.boards[editingBoardIndex]._id });
-        updatedBoards[editingBoardIndex] = { 
+        updatedBoards[editingBoardIndex] = {
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         };
+        toast.success("Board added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, boards: updatedBoards }));
     } catch (err) {
       console.error(err);
+      toast.error("A board with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
     }
     setEditingBoardIndex(null);
     setBoardEditData(null);
@@ -321,24 +429,56 @@ const EditMode = () => {
       let updatedWorkingGroups = [...pageData.workingGroups];
       if (editingWorkingGroupIndex === -1) {
         res = await createUser(userData);
-        updatedWorkingGroups.push({ 
+        updatedWorkingGroups.push({
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
+        });
+        toast.success("Working Group added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
       } else {
         res = await updateUser({ ...userData, _id: pageData.workingGroups[editingWorkingGroupIndex]._id });
-        updatedWorkingGroups[editingWorkingGroupIndex] = { 
+        updatedWorkingGroups[editingWorkingGroupIndex] = {
           name: userData.name,
           pictureUrl: userData.pictureUrl,
           blurb: userData.blurb,
-          _id: res._id 
+          _id: res._id
         };
+
+        toast.success("Working Group added successfully!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
       setPageData((prev) => ({ ...prev, workingGroups: updatedWorkingGroups }));
     } catch (err) {
       console.error(err);
+
+      toast.error("A working group with this name already exists in the same division.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setEditingWorkingGroupIndex(null);
     setWorkingGroupEditData(null);
@@ -364,9 +504,17 @@ const EditMode = () => {
     setSelectedPage(e.target.value);
   };
 
+  const navigate = useNavigate(); 
+
+  const exitEditMode = () => {
+     navigate('/');
+  };
+
   return (
     <>
+
       <Header />
+      <ToastContainer />
       <div className="container mx-auto p-6 my-4 text-black bg-gray-50 rounded-lg min-h-screen">
         <h1 className="text-3xl font-bold text-center mb-8 text-sga-red">Edit Mode</h1>
         <div className="mb-8 flex justify-center items-center">
@@ -386,6 +534,7 @@ const EditMode = () => {
             ))}
           </select>
         </div>
+
 
         {/* Leader Section */}
         <div className="mb-8">
@@ -412,25 +561,35 @@ const EditMode = () => {
         {/* Members Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Members</h2>
-          {pageData.members.map((member, index) => (
-            <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
-              <img
-                src={member.pictureUrl || member.image}
-                alt={member.name}
-                className="w-25 h-25 object-cover rounded"
-              />
-              <div className="flex flex-col items-start">
-                <p className="font-semibold">{member.position}</p>
-                <p>{member.name}</p>
+          <ReactSortable list={pageData.members || []} setList={(newState) => {
+            setPageData({...pageData, members: newState});
+            newState.forEach((member, index) => {
+              updateUser({
+                ...member,
+                displayOrder: index
+              })
+            })
+          }}>
+            {pageData.members.map((member, index) => (
+              <div key={index} className="flex items-center gap-4 my-4 border-b pb-4">
+                <img
+                  src={member.pictureUrl || member.image}
+                  alt={member.name}
+                  className="w-25 h-25 object-cover rounded"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="font-semibold">{member.position}</p>
+                  <p>{member.name}</p>
+                </div>
+                <button
+                  onClick={() => handleMemberEditOpen(index)}
+                  className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
+                >
+                  Edit Member
+                </button>
               </div>
-              <button
-                onClick={() => handleMemberEditOpen(index)}
-                className="ml-auto bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition-all duration-200"
-              >
-                Edit Member
-              </button>
-            </div>
-          ))}
+            ))}
+          </ReactSortable>
           <button
             onClick={handleMemberAdd}
             className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -727,7 +886,7 @@ const EditMode = () => {
                 >
                   Save
                 </button>
-                {committeeEditData !== -1 && (
+                {editingCommitteeIndex !== -1 && (
                   <button
                     onClick={handleCommitteeDelete}
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-all duration-200"
@@ -839,10 +998,10 @@ const EditMode = () => {
                   type="text"
                   value={workingGroupEditData.name || workingGroupEditData.title || ''}
                   onChange={(e) =>
-                    setWorkingGroupEditData({ 
-                      ...workingGroupEditData, 
+                    setWorkingGroupEditData({
+                      ...workingGroupEditData,
                       name: e.target.value,
-                      title: e.target.value 
+                      title: e.target.value
                     })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
@@ -884,8 +1043,16 @@ const EditMode = () => {
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          </div>)}
+        {/* Exit Edit Mode Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={exitEditMode}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-all duration-200"
+          >
+            Exit Edit Mode
+          </button>
+        </div>
       </div>
     </>
   );
