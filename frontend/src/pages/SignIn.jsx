@@ -21,7 +21,7 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log('Signed in with:', credentials);
     try {
       await login(credentials.username, credentials.password);
       navigate('/edit-mode');
