@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Pictures from '../../components/Pictures';
-import { fetchData } from '../../api/api';
+import { fetchData } from '../../services/userService';
 
 const OfficeOfThePresident = () => {
   const [pageData, setPageData] = useState({
