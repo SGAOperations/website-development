@@ -6,7 +6,6 @@ const User = require("../models/User");
 const dotenv = require("dotenv");
 const { protectAdmin } = require("../middleware/authMiddleware");
 
-
 dotenv.config();
 const router = express.Router();
 
@@ -44,7 +43,6 @@ router.post("/register", async (req, res) => {
       .json({ message: "Error registering user", error: error.message });
   }
 });
-
 
 // Login route
 router.post("/login", async (req, res) => {
