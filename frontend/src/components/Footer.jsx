@@ -1,13 +1,26 @@
 import '../App.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+//import { useAuth } from "../hooks/AuthContext";
+import sgaLogo from '../assets/sga-logo.png';
 import instaLogo from '../assets/instaLogo.png';
 import tiktokLogo from '../assets/tiktokLogo.png';
-import { useNavigate } from 'react-router-dom';
 
 function Footer() {
   const navigate = useNavigate(); 
+  //const { user } = useAuth();
+
+  const handleEditModeClick = () => {
+    if (user) {
+      navigate("/edit-mode");
+    } else {
+      navigate("/login");
+    }
+  };
   const goToEditMode = () => {
     navigate('/edit-mode');
   };
+
   return (
     <footer className="bg-black relative bottom-0 left-0 w-screen text-center overflow-hidden mx-0 px-0">
       <div className="button-container flex justify-center items-center pt-10">
@@ -18,15 +31,21 @@ function Footer() {
       <div className="flex justify-center items-center gap-5 py-6">
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">SGA</p>
-          <img src={instaLogo} alt="SGA" className="w-16 h-auto" />
+          <a href="https://www.instagram.com/northeasternsga/" target="_blank" rel="noopener noreferrer">
+            <img src={instaLogo} alt="SGA" className="w-16 h-auto cursor-pointer hover:opacity-80 transition-opacity" />
+          </a>
         </div>
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">Campus Affairs</p>
-          <img src={instaLogo} alt="Campus Affairs" className="w-16 h-auto" />
+          <a href="https://www.instagram.com/sgacampusaffairs/" target="_blank" rel="noopener noreferrer">
+            <img src={instaLogo} alt="Campus Affairs" className="w-16 h-auto cursor-pointer hover:opacity-80 transition-opacity" />
+          </a>
         </div>
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">SGA</p>
-          <img src={tiktokLogo} alt="SGA" className="w-16 h-auto" />
+          <a href="https://www.tiktok.com/@northeasternsga" target="_blank" rel="noopener noreferrer">
+            <img src={tiktokLogo} alt="SGA" className="w-16 h-auto cursor-pointer hover:opacity-80 transition-opacity" />
+          </a>
         </div>
       </div>
       <div className="pb-10">
