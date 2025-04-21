@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { login } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
@@ -16,17 +19,23 @@ const SignIn = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to handle sign-in
     console.log('Signed in with:', credentials);
+    try {
+      await login(credentials.username, credentials.password);
+      navigate('/edit-mode');
+      console.log('Signed in with:', credentials);
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
   };
 
   return (
     <>
       <Header />
       <div className="flex justify-center">
-        <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/4 bg-white p-8 shadow-lg rounded-lg">
+        <div className="w-full sm:w-1/3 md:w-1/3 lg:w-1/3 bg-white p-8 shadow-lg rounded-lg m-20">
           <h3 className="text-5xl font-bold text-sga-red text-center mt-4 mb-4">Sign In</h3>
           
           <form onSubmit={handleSubmit}>

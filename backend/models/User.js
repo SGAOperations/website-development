@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const DivisionNames = Object.freeze({
   OFFICE_OF_THE_PRESIDENT: "Office of the President",
@@ -16,7 +17,10 @@ const DivisionNames = Object.freeze({
 });
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true, index: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false },
   pictureUrl: { type: String, required: false },
   positions: [{
     title: { type: String, required: false },
@@ -31,11 +35,25 @@ const userSchema = new mongoose.Schema({
       required: true
     },
     blurb: { type: String, required: false },
-    links: { type: String, required: false }
-  }]
-}, {
-  collection: 'test'
+    links: { type: String, required: false },
+  }],
+  displayOrder: { type: Number, default: 0 },
+  blurb: { type: String, required: false },
+  links: { type: String, required: false },
 });
+
+// Hash password before saving
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Method to compare passwords
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 // Compound index to ensure unique position entries per member
 userSchema.index({ name: 1, "positions.divisionName": 1 }, { unique: true });
@@ -43,4 +61,5 @@ userSchema.index({ name: 1, "positions.divisionName": 1 }, { unique: true });
 const User = mongoose.model('User', userSchema);
 
 User.syncIndexes().catch(err => console.error("Index sync error:", err));
-module.exports = { User, DivisionNames };
+
+module.exports = mongoose.model("User", userSchema);
