@@ -18,15 +18,36 @@ function Footer() {
       <div className="flex justify-center items-center gap-5 py-6">
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">SGA</p>
-          <img src={instaLogo} alt="SGA" className="w-16 h-auto" />
+          <a 
+            href="https://www.instagram.com/northeasternsga/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity duration-300"
+          >
+            <img src={instaLogo} alt="SGA Instagram" className="w-16 h-auto" />
+          </a>
         </div>
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">Campus Affairs</p>
-          <img src={instaLogo} alt="Campus Affairs" className="w-16 h-auto" />
+          <a 
+            href="https://www.instagram.com/sgacampusaffairs/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity duration-300"
+          >
+            <img src={instaLogo} alt="Campus Affairs Instagram" className="w-16 h-auto" />
+          </a>
         </div>
         <div className="flex flex-col items-center px-5">
           <p className="text-white font-light pb-3">SGA</p>
-          <img src={tiktokLogo} alt="SGA" className="w-16 h-auto" />
+          <a 
+            href="https://www.tiktok.com/@northeasternsga" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity duration-300"
+          >
+            <img src={tiktokLogo} alt="SGA TikTok" className="w-16 h-auto" />
+          </a>
         </div>
       </div>
       <div className="pb-10">
