@@ -1,10 +1,22 @@
 import '../App.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/AuthContext";
+import sgaLogo from '../assets/sga-logo.png';
 import instaLogo from '../assets/instaLogo.png';
 import tiktokLogo from '../assets/tiktokLogo.png';
-import { useNavigate } from 'react-router-dom';
 
 function Footer() {
   const navigate = useNavigate(); 
+  const { user } = useAuth();
+
+  const handleEditModeClick = () => {
+    if (user) {
+      navigate("/edit-mode");
+    } else {
+      navigate("/login");
+    }
+  };
   const goToEditMode = () => {
     navigate('/edit-mode');
   };
@@ -53,7 +65,7 @@ function Footer() {
         {/*edit mode navigation (will navigate to sign in page when implemented)*/} 
         <button 
           className="button bg-red-500 text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-red-500"
-          onClick={goToEditMode} 
+          onClick={handleEditModeClick} 
         >
           EDIT MODE
         </button>
