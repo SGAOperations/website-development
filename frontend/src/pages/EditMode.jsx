@@ -57,6 +57,7 @@ const EditMode = () => {
   // fetch + group users based on the selected division
   useEffect(() => {
     if (!selectedPage) return;
+    
 
     // save selected tab to local storage whenever it changes
     localStorage.setItem('selectedPage', selectedPage);
@@ -64,17 +65,66 @@ const EditMode = () => {
     async function fetchUsers() {
       try {
         const allUsers = await getUsers();
-        const divisionUsers = allUsers.filter(
-          (user) => user.divisionName === selectedPage
+        const divisionUsers = allUsers.filter(user => 
+          user.positions.some(position => position.divisionName === selectedPage)
         );
-        const leader = divisionUsers.find((user) => user.role === 'leader') || { name: '', title: '', pictureUrl: '', _id: '' };
-        const members = divisionUsers.filter((user) => user.role === 'member');
-        const committees = divisionUsers.filter((user) => user.role === 'committee');
-        const boards = divisionUsers.filter((user) => user.role === 'board');
-        const workingGroups = divisionUsers.filter((user) => user.role === 'workingGroup');
-        setPageData({ leader, members, committees, boards, workingGroups });
+
+        // Find leader - looking in positions array
+        const leader = divisionUsers.find(user => 
+          user.positions.some(position => 
+            position.divisionName === selectedPage && position.role === 'leader'
+          )
+        ) || { name: '', pictureUrl: '', _id: '' };
+
+        // Extract leader's title from their position
+        const leaderPosition = leader.positions?.find(pos => pos.divisionName === selectedPage);
+        const leaderData = {
+          ...leader,
+          title: leaderPosition?.title || ''
+        };
+
+        // Filter and map other roles
+        const members = divisionUsers.filter(user => 
+          user.positions.some(position => 
+            position.divisionName === selectedPage && position.role === 'member'
+          )
+        ).map(user => {
+          const position = user.positions.find(pos => pos.divisionName === selectedPage);
+          return {
+            ...user,
+            title: position?.title || ''
+          };
+        });
+
+        const committees = divisionUsers.filter(user => 
+          user.positions.some(position => 
+            position.divisionName === selectedPage && position.role === 'committee'
+          )
+        );
+
+        const boards = divisionUsers.filter(user => 
+          user.positions.some(position => 
+            position.divisionName === selectedPage && position.role === 'board'
+          )
+        );
+
+        const workingGroups = divisionUsers.filter(user => 
+          user.positions.some(position => 
+            position.divisionName === selectedPage && position.role === 'workingGroup'
+          )
+        );
+
+        setPageData({ 
+          leader: leaderData, 
+          members, 
+          committees, 
+          boards, 
+          workingGroups 
+        });
+
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching users:", error);
+        toast.error("Failed to load user data");
       }
     }
     fetchUsers();
@@ -706,7 +756,7 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={leaderEditData.position}
+                  value={leaderEditData.title}
                   onChange={(e) =>
                     setLeaderEditData({ ...leaderEditData, position: e.target.value })
                   }
@@ -773,7 +823,7 @@ const EditMode = () => {
                   className="w-full h-64 object-cover rounded-lg shadow"
                 />
                 <h3 className="text-xl font-semibold mt-3">
-                  {memberEditData.position || 'Title'}
+                  {memberEditData.title || 'Title'}
                 </h3>
                 <p className="text-gray-700 mt-2">
                   {memberEditData.name || 'Name'}
@@ -783,9 +833,9 @@ const EditMode = () => {
                 <label className="block font-medium">Title:</label>
                 <input
                   type="text"
-                  value={memberEditData.position}
+                  value={memberEditData.title}
                   onChange={(e) =>
-                    setMemberEditData({ ...memberEditData, position: e.target.value })
+                    setMemberEditData({ ...memberEditData, title: e.target.value })
                   }
                   className="w-full p-2 border border-gray-300 rounded"
                 />

@@ -1,0 +1,1038 @@
+[
+  {
+    "_id": {
+      "$oid": "67d8e8401c41a49bf6100e3a"
+    },
+    "name": "Cassidy Donoghue",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/d28f9a4e-2677-4f38-9282-bebce6beb36d/Cassidy+Donoghue.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Executive Vice President",
+        "divisionName": "Office of the President",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d8e8531c41a49bf6100e3c"
+    },
+    "name": "Aashvi Govind",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/2abe54fb-5d4d-4a98-82b2-3d0be1b38091/Aashvi+Govind.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant to the Executive Vice President",
+        "divisionName": "Office of the President",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d8e89b1c41a49bf6100e45"
+    },
+    "name": "Isabella Quintero",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/60c67788-b400-4e91-bbae-8ee1ce3264ec/Isabella+Quintero-Socorro.JPG?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant to the Executive Vice President",
+        "divisionName": "Office of the President",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      },
+      {
+        "title": "Boston Intercollegiate Government Representative",
+        "divisionName": "External Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99c6f9d8852d44ace1523"
+    },
+    "name": "Devyani Anand",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/c78acba7-ca19-457c-8c4d-1df2451316cb/Devyani+Anand.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for Academic Affairs",
+        "divisionName": "Academic Affairs",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99d519d8852d44ace1555"
+    },
+    "name": "Veer Dave",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/258f36f9-2bdd-477b-9f1d-b63c9b3b42bc/Veer+Dave.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant Vice President for Academic Affairs",
+        "divisionName": "Academic Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99d6d9d8852d44ace1557"
+    },
+    "name": "Ada Spiwak",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/7a50538e-5f0c-45c8-8769-3916e083bc19/Ada+Spiwek.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Faculty Senate Representative",
+        "divisionName": "Academic Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99d829d8852d44ace1559"
+    },
+    "name": "Quella Wang",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/07681b43-eb1c-4245-be7f-2e5c9adcbbc0/Quella+Wang.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Curriculum Committee Representative",
+        "divisionName": "Academic Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      },
+      {
+        "title": "Boston Intercollegiate Government Representative",
+        "divisionName": "External Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99da89d8852d44ace155b"
+    },
+    "name": "Academic Affairs Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Academic Affairs",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99fdba5394771de7e2646"
+    },
+    "name": "Julian Herzing-Burkard",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/8f7e6b32-066b-4f27-8039-bcab851a0ee4/Julian+Herzing-Burkard.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for Campus Affairs",
+        "divisionName": "Campus Affairs",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d99ff8a5394771de7e2648"
+    },
+    "name": "Armaan Sarao",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/a0aa73e6-3c56-4aef-a174-02b740c4a9fb/Armaan+Sarao.JPG?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Campus Services",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a00da5394771de7e264a"
+    },
+    "name": "Alexandra Vergara-Anglim",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/0e552b60-1def-4f38-86bd-c29ed2af06ae/Alexandra+Vergara-Anglim.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Sustainability",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a021a5394771de7e264c"
+    },
+    "name": "Patricia Perez-Maldonado",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/fa7b8318-136c-465a-98fd-08cf3c5a57f4/Patricia+Perez-Maldonado.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Communication Manager",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a036a5394771de7e264e"
+    },
+    "name": "Isabella Heilbron",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/dbdfd4d6-2b0d-4d54-b217-14e2c421f1bf/Isabella+Heilbronn.JPEG?format=2500w",
+    "positions": [
+      {
+        "title": "Communication Manager",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a080a5394771de7e2656"
+    },
+    "name": "Campus Services Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Campus Affairs",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a08ea5394771de7e2658"
+    },
+    "name": "Sustainability Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Campus Affairs",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a110a5394771de7e2668"
+    },
+    "name": "Campus Planning Advisory Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "The Campus Planning Advisory Board (CPAB) officially represents student interests related to Northeastern University campus planning and development. We act as the liaison between the Northeastern Student Body, its campus space concerns and interests, and Northeastern’s Planning, Real Estate, and Facilities (PREF), making campus planning and development decisions. CPAB assists PREF with student outreach initiatives (such as tabling and focus groups), present and discusses student viewpoints and positions with PREF, and helps educate students on campus planning and development.",
+        "divisionName": "Campus Affairs",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      },
+      {
+        "title": "",
+        "divisionName": "Academic Affairs",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a725a5394771de7e26ab"
+    },
+    "name": "Co-op Working Group",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Academic Affairs",
+        "role": "workingGroup",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a765a5394771de7e26b2"
+    },
+    "name": "Dining Advisory Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Campus Affairs",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9a774a5394771de7e26b4"
+    },
+    "name": "Green Initiatives Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Campus Affairs",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b8fea5394771de7e2735"
+    },
+    "name": "Mia Netland",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/93dd6c2c-db81-4e3b-ae34-1f23d7e81130/Mia+Netland.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Wellness",
+        "divisionName": "Student Success",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b912a5394771de7e2737"
+    },
+    "name": "Charlene Chow",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/9566da0a-7b77-4ecf-b452-703b52b79e18/Charlene+Chow.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Global Experience",
+        "divisionName": "Student Success",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b91ea5394771de7e2739"
+    },
+    "name": "Lindsay Hong",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/6117e163-531b-407e-8341-2400f5e3021e/Lindsay+Hong.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Student Engagement",
+        "divisionName": "Student Success",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b92ea5394771de7e273b"
+    },
+    "name": "Global Experience Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Success",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b955a5394771de7e273f"
+    },
+    "name": "Wellness Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Success",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b96ba5394771de7e2744"
+    },
+    "name": "Student Engagement Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Success",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b98da5394771de7e2748"
+    },
+    "name": "Global Experience Office Working Group",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Success",
+        "role": "workingGroup",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9b997a5394771de7e274a"
+    },
+    "name": "Holistic Wellness Working Group",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Success",
+        "role": "workingGroup",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bd86a5394771de7e2758"
+    },
+    "name": "Christly Bright-Agindotan",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/4155f9b0-2b80-4217-a59e-66bcfbe1d57f/Christly+Bright-Agindotan.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for Diversity, Equity, & Inclusion",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bd95a5394771de7e275a"
+    },
+    "name": "Sanah Tokhi",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/4fdb9202-a5a7-4a95-a4cb-a2b31e5bc597/Sanah+Tokhi.png?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant Vice President",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bda6a5394771de7e275c"
+    },
+    "name": "Jialin Yu",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/318e2974-3091-42ae-9c77-bb5725e7b5c0/Jialin+Yu.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Administrative Coordinator",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bdbda5394771de7e275e"
+    },
+    "name": "Diversity, Equity, and Inclusion Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bdcca5394771de7e2760"
+    },
+    "name": "Internal Advancement Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bec5a5394771de7e27cf"
+    },
+    "name": "Olivia Oestreicher",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/63900fbc-ca41-4242-902a-92d3d889c7c8/Olivia+Oestreicher.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for External Affairs",
+        "divisionName": "External Affairs",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bed6a5394771de7e27d1"
+    },
+    "name": "Monica Xiao",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/8b62450b-b97e-4567-ab56-17cd4e33a0f8/Monica+Xiao.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Communications",
+        "divisionName": "External Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bee9a5394771de7e27d3"
+    },
+    "name": "Cecilia Watson",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/9d9af973-f85a-4072-8995-509f1f2e9b09/Ceci+Watson.JPG?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Events",
+        "divisionName": "External Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bf1ba5394771de7e27d9"
+    },
+    "name": "Communications & Events Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "External Affairs",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9bfc4a5394771de7e27f1"
+    },
+    "name": "Boston Intercollegiate Government",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "External Affairs",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9c04da5394771de7e2800"
+    },
+    "name": "Benedikt Winkler",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/b493baf2-5c79-41bb-b771-0706c5fbdb1e/Benedikt+Winkler.png?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Information Management",
+        "divisionName": "Operational Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      },
+      {
+        "title": "Director of Student Organization Governance",
+        "divisionName": "Student Involvement",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9c05ca5394771de7e2802"
+    },
+    "name": "Renee Cai",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "Director of Digital Innovation",
+        "divisionName": "Operational Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9c06da5394771de7e2804"
+    },
+    "name": "Neha Paruchuri",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/f42b5580-18da-40fd-83c9-3b4165ef189b/Neha+Paruchuri.png?format=2500w",
+    "positions": [
+      {
+        "title": "Assistants to the VP for Operational Affairs",
+        "divisionName": "Operational Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9c07ba5394771de7e2806"
+    },
+    "name": "Arianah Moore",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "Assistants to the VP for Operational Affairs",
+        "divisionName": "Operational Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9fb17bf5d5cabb92f2d2f"
+    },
+    "name": "Jamira Collins",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/31046244-70a3-41af-89af-147f4a1b4865/Jamira+Collins.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Speaker of the Senate",
+        "divisionName": "Senate",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9fb36bf5d5cabb92f2d31"
+    },
+    "name": "Arseima Negash",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/c77fb3ca-8fbc-4ef1-88a9-9302e53ff333/Arseima+Negash.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant Senate Speaker",
+        "divisionName": "Senate",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9fb50bf5d5cabb92f2d33"
+    },
+    "name": "Matias Gonzalez",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/e6f74e5a-c70c-4e67-8aaf-03440ab37027/Mathias+Gonzalez.jpg?format=2500w",
+    "positions": [
+      {
+        "title": "Assistant Senate Speaker",
+        "divisionName": "Senate",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67d9fce6b844f082523ec11c"
+    },
+    "name": "Admin User",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Senate",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67da0f357b539ebb49708add"
+    },
+    "name": "Mason Simms",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/f40b7922-4dae-4de7-86b7-915440d1f6a0/Mason+Simms.jpg?format=1500w",
+    "positions": [
+      {
+        "title": "Chair of Campus Planning Advisory Board",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67da104b7b539ebb49708ae1"
+    },
+    "name": "Misha Ankudovych",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/ed9937c7-3ffc-4776-aa0a-ce0f6d1b5886/Mikhail+Ankudovych.jpeg?format=1500w",
+    "positions": [
+      {
+        "title": "Vice President for Student Success",
+        "divisionName": "Student Success",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67da125e7b539ebb49708afd"
+    },
+    "name": "TBD",
+    "pictureUrl": "TBD",
+    "positions": [
+      {
+        "title": "Director of Diversity, Inclusion, and Equity Committee",
+        "divisionName": "Diversity, Equity, and Inclusion",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67da1e7a7b539ebb49708b35"
+    },
+    "name": "Valentina Haro",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/3cda753e-74b2-40c1-9c4b-b5e92ff8f1d0/Valentina+Haro.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for Operational Affairs",
+        "divisionName": "Operational Affairs",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222513fb3fb95dd799143"
+    },
+    "name": "Dylan Lee",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/4c22ec52-c8d1-47f3-95df-fdf3c2e5fb1f/Dylan+Lee.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Vice President for Student Involvement",
+        "divisionName": "Student Involvement",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222803fb3fb95dd799151"
+    },
+    "name": "Aishani Gupta",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/392c2e86-3432-470b-84cc-7cebc69a1729/Aishani+Gupta.JPG?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Student Organization Operations",
+        "divisionName": "Student Involvement",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222af3fb3fb95dd799155"
+    },
+    "name": "Grace Ward",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/7bf9f3a2-870f-4ab9-ab31-287764cb4e84/Grace+Ward.png?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Student Organization Compliance",
+        "divisionName": "Student Involvement",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222be3fb3fb95dd799157"
+    },
+    "name": "Anna Norris",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/49ca9d88-98b8-40d9-8564-66f180e9e830/Anna+Norris.png?format=2500w",
+    "positions": [
+      {
+        "title": "Director of Student Organization Approvals",
+        "divisionName": "Student Involvement",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222d33fb3fb95dd799159"
+    },
+    "name": "Student Organization Operations Committee",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Involvement",
+        "role": "committee",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e222e43fb3fb95dd79915b"
+    },
+    "name": "Student Organization Governance Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Involvement",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e226453fb3fb95dd799181"
+    },
+    "name": "Student Organization Compliance Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Involvement",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e226503fb3fb95dd799183"
+    },
+    "name": "Student Organization Approvals Board",
+    "pictureUrl": "",
+    "positions": [
+      {
+        "title": "",
+        "divisionName": "Student Involvement",
+        "role": "board",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e2e3e9347e2c02f74155a0"
+    },
+    "name": "Matthew Coughlin",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/8c13d768-d94f-4d05-b34b-aa38299b07c5/Matthew+Coughlin.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Student Body President",
+        "divisionName": "Office of the President",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e360f6aca2f2ed3dde7ded"
+    },
+    "name": "Gabrielle Starling",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/38e0e8e4-1f4d-46c6-ad92-f31d2f44fdab/Gabrielle+Starling.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Parliamentarian",
+        "divisionName": "Operational Appeals Board",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e36130aca2f2ed3dde7df3"
+    },
+    "name": "Kate Mittelhauser ",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/06460e9a-f8b5-4b54-8fe9-fb65d108f5c8/Kathryn+Mittelhauser.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Executive Director of Elections ",
+        "divisionName": "Elections Board",
+        "role": "leader",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e36149aca2f2ed3dde7df7"
+    },
+    "name": "Evan Murray",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/a84aa53b-6455-444f-967f-45b2e378f958/Evan+Murray.png?format=2500w",
+    "positions": [
+      {
+        "title": "Vice-Chair",
+        "divisionName": "Elections Board",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e3639069c58836d150ef89"
+    },
+    "name": "Luis Sarmiento",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/0b49e414-9cbb-4b1a-bec5-79ba269ce6fa/Luis+Sarmiento.jpeg?format=2500w",
+    "positions": [
+      {
+        "title": "Chair of Dining Advisory Board",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "67e3639e69c58836d150ef8b"
+    },
+    "name": "Alex Mora",
+    "pictureUrl": "https://images.squarespace-cdn.com/content/v1/5939fcd1db29d6ec60929205/76694c69-59eb-4e66-99e3-842a3422304a/Alex+Mora.JPG?format=2500w",
+    "positions": [
+      {
+        "title": "Chair of Green Initiatives Board",
+        "divisionName": "Campus Affairs",
+        "role": "member",
+        "blurb": "",
+        "links": ""
+      }
+    ]
+  }
+]

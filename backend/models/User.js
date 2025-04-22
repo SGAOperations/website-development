@@ -22,17 +22,21 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
   pictureUrl: { type: String, required: false },
-  position: { type: String, required: false },
-  divisionName: {
-    type: String,
-    enum: Object.values(DivisionNames),
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: ["leader", "member", "committee", "board"],
-    required: true,
-  },
+  positions: [{
+    title: { type: String, required: false },
+    divisionName: { 
+      type: String, 
+      enum: Object.values(DivisionNames),
+      required: true 
+    },
+    role: { 
+      type: String,
+      enum: ['leader', 'member', 'committee', 'board', 'workingGroup'],
+      required: true
+    },
+    blurb: { type: String, required: false },
+    links: { type: String, required: false },
+  }],
   displayOrder: { type: Number, default: 0 },
   blurb: { type: String, required: false },
   links: { type: String, required: false },
@@ -50,5 +54,12 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Compound index to ensure unique position entries per member
+userSchema.index({ name: 1, "positions.divisionName": 1 }, { unique: true });
+
+const User = mongoose.model('User', userSchema);
+
+User.syncIndexes().catch(err => console.error("Index sync error:", err));
 
 module.exports = mongoose.model("User", userSchema);
