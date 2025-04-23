@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const SignIn = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   });
 
@@ -21,11 +21,11 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Signed in with:', credentials);
+    console.log('Signing in with:', credentials);
     try {
-      await login(credentials.username, credentials.password);
+      await login(credentials.email, credentials.password);
       navigate('/edit-mode');
-      console.log('Signed in with:', credentials);
+      console.log('Successfully signed in');
     } catch (error) {
       console.error('Error signing in:', error);
     }
@@ -40,12 +40,12 @@ const SignIn = () => {
           
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-lg text-black mb-2" htmlFor="username">Username</label>
+              <label className="block text-lg text-black mb-2" htmlFor="email">Email</label>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={credentials.username}
+                type="email"
+                id="email"
+                name="email"
+                value={credentials.email}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-sga-red"
                 required

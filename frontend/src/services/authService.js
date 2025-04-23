@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/sign-in/';
+const BASE_URL = 'http://localhost:5002/auth/login';
 
 // authenticate users when they log in
 export const login = async (email, password) => {

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-// import { createUser, updateUser, deleteUser, getUsers, getDivisions } from '../services/userService';
 import { createUser, updateUser, deleteUser, getUsers } from '../services/userService';
+import { logout } from '../services/authService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -557,7 +557,8 @@ const EditMode = () => {
   const navigate = useNavigate(); 
 
   const exitEditMode = () => {
-     navigate('/');
+    //logout();
+    navigate('/');
   };
 
   return (

@@ -1,10 +1,21 @@
 import '../App.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../hooks/AuthContext";
 import instaLogo from '../assets/instaLogo.png';
 import tiktokLogo from '../assets/tiktokLogo.png';
-import { useNavigate } from 'react-router-dom';
 
 function Footer() {
   const navigate = useNavigate(); 
+  //const { user } = useAuth(); 
+
+  const handleEditModeClick = () => {
+    if (user) {
+      navigate("/edit-mode");
+    } else {
+      navigate("/sign-in");
+    }
+  };
   const goToEditMode = () => {
     navigate('/edit-mode');
   };

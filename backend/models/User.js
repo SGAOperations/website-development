@@ -18,8 +18,8 @@ const DivisionNames = Object.freeze({
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: { type: String, required: false, unique: true, sparse: true},
+  password: { type: String, required: false },
   isAdmin: { type: Boolean, default: false },
   pictureUrl: { type: String, required: false },
   positions: [{
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     divisionName: { 
       type: String, 
       enum: Object.values(DivisionNames),
-      required: true 
+      required: true
     },
     role: { 
       type: String,
@@ -62,4 +62,4 @@ const User = mongoose.model('User', userSchema);
 
 User.syncIndexes().catch(err => console.error("Index sync error:", err));
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = User;
