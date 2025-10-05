@@ -20,6 +20,6 @@
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "eslint-config-custom": "*",
-    "typescript": "^5.5.4"
+    "typescript": "5.9.3"
   }
 }
