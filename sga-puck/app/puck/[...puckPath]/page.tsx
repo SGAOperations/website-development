@@ -36,7 +36,16 @@ export default async function Page({
 }) {
   const { puckPath = [] } = await params;
   const path = `/${puckPath.join("/")}`;
-  const data = getPage(path);
+  let data = getPage(path);
+
+  if (!data && (path === "/" || path === "")) {
+    data = {
+      content: [
+        { type: "Header", props: { nav: [] } },
+      ],
+      root: {},
+    } as any;
+  }
 
   return <Client path={path} data={data || {}} />;
 }
