@@ -1,4 +1,4 @@
-@tailwind utilities;
+@import "tailwindcss";
 
 @theme {
   --color-sga-red: #C8102E;
