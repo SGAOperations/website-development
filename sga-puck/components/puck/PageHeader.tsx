@@ -14,7 +14,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     additionalText = "To join a committee just show up! Find more information about each committee at the links below."
 }) => {
     return (
-        <div className="p-5 w-full max-w-screen font-sans bg-white box-border overflow-hidden">
+        <div className="pb-5 pt-15 w-full max-w-screen font-sans bg-white box-border overflow-hidden">
             <div className="max-w-6xl mx-auto w-full box-border">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-black mb-6 leading-tight break-words">
                     {title}
