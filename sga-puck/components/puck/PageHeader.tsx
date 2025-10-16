@@ -14,58 +14,20 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     additionalText = "To join a committee just show up! Find more information about each committee at the links below."
 }) => {
     return (
-        <div style={{
-            padding: '20px 20px',
-            width: '100%',
-            maxWidth: '100vw',
-            fontFamily: 'sans-serif',
-            backgroundColor: '#FFFFFF',
-            boxSizing: 'border-box',
-            overflow: 'hidden'
-        }}>
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                width: '100%',
-                boxSizing: 'border-box'
-            }}>
-                <h1 style={{
-                    fontSize: 'clamp(2rem, 4vw, 3rem)',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    color: '#000000',
-                    margin: '0 0 24px 0',
-                    lineHeight: '1.2',
-                    wordWrap: 'break-word',
-                    overflowWrap: 'break-word'
-                }}>
+        <div className="p-5 w-full max-w-screen font-sans bg-white box-border overflow-hidden">
+            <div className="max-w-6xl mx-auto w-full box-border">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-black mb-6 leading-tight break-words">
                     {title}
                 </h1>
 
                 {subtitle && (
-                    <h2 style={{
-                        fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
-                        fontWeight: '600',
-                        color: '#000000',
-                        margin: '0 0 16px 0',
-                        lineHeight: '1.3',
-                        wordWrap: 'break-word',
-                        overflowWrap: 'break-word'
-                    }}>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-black mb-4 leading-snug break-words">
                         {subtitle}
                     </h2>
                 )}
 
                 {description && (
-                    <p style={{
-                        fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)',
-                        color: '#000000',
-                        margin: '0 0 16px 0',
-                        lineHeight: '1.6',
-                        maxWidth: '100%',
-                        wordWrap: 'break-word',
-                        overflowWrap: 'break-word'
-                    }}>
+                    <p className="text-sm sm:text-base lg:text-lg text-black mb-4 leading-relaxed max-w-full break-words">
                         {description.split('**').map((part, index) =>
                             index % 2 === 1 ? (
                                 <strong key={index}>{part}</strong>
@@ -77,15 +39,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 )}
 
                 {additionalText && (
-                    <p style={{
-                        fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)',
-                        color: '#000000',
-                        margin: '0',
-                        lineHeight: '1.6',
-                        maxWidth: '100%',
-                        wordWrap: 'break-word',
-                        overflowWrap: 'break-word'
-                    }}>
+                    <p className="text-sm sm:text-base lg:text-lg text-black m-0 leading-relaxed max-w-full break-words">
                         {additionalText}
                     </p>
                 )}

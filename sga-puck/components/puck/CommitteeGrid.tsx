@@ -1,23 +1,22 @@
 import React from 'react';
-import './CommitteeGrid.css';
 
 interface CommitteeGridProps {
     title?: string;
-    committees?: string[];
+    committees?: Array<{ value: string }>;
 }
 
 export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
     title = "COMMITTEE MEETINGS",
     committees = [
-        "ACADEMIC AFFAIRS",
-        "CAMPUS SERVICES",
-        "SUSTAINABILITY",
-        "GLOBAL EXPERIENCE",
-        "WELLNESS",
-        "STUDENT ENGAGEMENT",
-        "DIVERSITY, EQUITY, AND INCLUSION",
-        "COMMUNICATIONS AND EVENTS",
-        "STUDENT ORGANIZATION OPERATIONS"
+        { value: "ACADEMIC AFFAIRS" },
+        { value: "CAMPUS SERVICES" },
+        { value: "SUSTAINABILITY" },
+        { value: "GLOBAL EXPERIENCE" },
+        { value: "WELLNESS" },
+        { value: "STUDENT ENGAGEMENT" },
+        { value: "DIVERSITY, EQUITY, AND INCLUSION" },
+        { value: "COMMUNICATIONS AND EVENTS" },
+        { value: "STUDENT ORGANIZATION OPERATIONS" }
     ]
 }) => {
     const handleCommitteeClick = (committee: string) => {
@@ -26,72 +25,20 @@ export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
     };
 
     return (
-        <div style={{
-            padding: '40px 20px',
-            width: '100%',
-            maxWidth: '100vw',
-            fontFamily: 'sans-serif',
-            backgroundColor: '#FFFFFF',
-            boxSizing: 'border-box',
-            overflow: 'hidden'
-        }}>
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                width: '100%',
-                boxSizing: 'border-box'
-            }}>
-                <h2 style={{
-                    fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    color: '#DC2626', // Red color
-                    margin: '0 0 32px 0',
-                    lineHeight: '1.2',
-                    wordWrap: 'break-word',
-                    overflowWrap: 'break-word'
-                }}>
+        <div className="py-10 px-5 w-full max-w-screen font-sans bg-white box-border overflow-hidden">
+            <div className="max-w-6xl mx-auto w-full box-border">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold uppercase text-red-600 mb-8 leading-tight break-words">
                     {title}
                 </h2>
 
-                <div className="committee-grid">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 w-full box-border overflow-hidden">
                     {committees.map((committee, index) => (
                         <button
                             key={index}
-                            onClick={() => handleCommitteeClick(committee)}
-                            style={{
-                                backgroundColor: '#DC2626', // Red background
-                                color: '#FFFFFF',
-                                border: 'none',
-                                borderRadius: '8px',
-                                padding: 'clamp(12px, 2vw, 20px)',
-                                fontSize: 'clamp(0.75rem, 1.2vw, 0.9rem)',
-                                fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                textAlign: 'center',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s ease, transform 0.1s ease',
-                                minHeight: 'clamp(50px, 8vw, 70px)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                lineHeight: '1.2',
-                                width: '100%',
-                                boxSizing: 'border-box',
-                                wordWrap: 'break-word',
-                                overflowWrap: 'break-word',
-                                overflow: 'hidden'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = '#B91C1C'; // Darker red on hover
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = '#DC2626'; // Original red
-                                e.currentTarget.style.transform = 'translateY(0)';
-                            }}
+                            onClick={() => handleCommitteeClick(committee.value)}
+                            className="bg-red-600 hover:bg-red-700 text-white border-none rounded-lg px-3 py-3 sm:px-4 sm:py-4 lg:px-5 lg:py-5 text-xs sm:text-sm lg:text-sm font-bold uppercase text-center cursor-pointer transition-all duration-200 ease-in-out min-h-[50px] sm:min-h-[60px] lg:min-h-[70px] flex items-center justify-center leading-tight w-full box-border break-words overflow-hidden hover:-translate-y-0.5"
                         >
-                            {committee}
+                            {committee.value}
                         </button>
                     ))}
                 </div>

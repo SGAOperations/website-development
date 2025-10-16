@@ -1,6 +1,10 @@
 import type { Config } from "@measured/puck";
 import { PageHeader } from "./components/puck/PageHeader";
 import { CommitteeGrid } from "./components/puck/CommitteeGrid";
+import { HeaderContent } from "./components/puck/HeaderContent";
+import { Navigation } from "./components/puck/Navigation";
+import { Content } from "./components/puck/Content";
+import { Footer } from "./components/puck/Footer";
 
 type NavItem = {
   label: string;
@@ -61,6 +65,16 @@ type Props = {
     webmasterLabel?: string;
     mediaInquiriesEmail?: string;
     mediaInquiriesLabel?: string;
+  };
+  CommitteeGrid: {
+    title?: string;
+    committees?: Array<{ value: string }>;
+  };
+  PageHeader: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    additionalText?: string;
   };
 };
 
@@ -183,40 +197,7 @@ export const config: Config<Props> = {
         dividerHeight: "h-[180px]",
         dividerMargin: "mx-8",
       },
-      render: ({
-        backgroundColor = "rgba(0, 0, 0, 0.5)",
-        padding = "p-5",
-        titleText = "SGA",
-        titleSize = "text-9xl",
-        titleColor = "text-sga-red",
-        logoSrc,
-        logoAltText = "SGA Logo",
-        logoWidth = "w-52",
-        logoHeight = "h-auto",
-        dividerColor = "bg-black",
-        dividerWidth = "w-1",
-        dividerHeight = "h-[180px]",
-        dividerMargin = "mx-8"
-      }) => (
-        <div className="relative w-screen">
-          <header
-            className={`flex flex-col justify-center items-center h-auto w-screen relative top-0 ${padding}`}
-            style={{ backgroundColor }}
-          >
-            <div className="flex items-center">
-              <h1 className={`${titleSize} font-bold ${titleColor} text-center`}>
-                {titleText}
-              </h1>
-              <div className={`inline-block ${dividerHeight} min-h-[1em] ${dividerWidth} self-stretch ${dividerColor} ${dividerMargin}`}></div>
-              {logoSrc ? (
-                <img src={logoSrc} alt={logoAltText} className={`${logoWidth} ${logoHeight}`} />
-              ) : (
-                <div className="text-white font-semibold">Header</div>
-              )}
-            </div>
-          </header>
-        </div>
-      ),
+      render: (props) => <HeaderContent {...props} />,
     },
     Navigation: {
       fields: {
@@ -338,39 +319,7 @@ export const config: Config<Props> = {
           },
         ],
       },
-      render: ({ backgroundColor = "rgba(0, 0, 0, 0.5)", padding = "p-5", nav = [] }) => (
-        <div className="relative w-screen">
-          <header
-            className={`flex flex-col justify-center items-center h-auto w-screen relative top-0 ${padding}`}
-            style={{ backgroundColor }}
-          >
-            <div className="mt-4 w-full flex flex-row justify-around">
-              {nav.map((group, index) => (
-                <div key={index} className="relative group">
-                  <div className="whitespace-nowrap inline-flex justify-center cursor-pointer mx-7 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
-                    {group.label}
-                  </div>
-                  {Array.isArray(group.items) && group.items.length > 0 && (
-                    <div className="absolute left-3 z-10 w-56 origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5 opacity-0 group-hover:opacity-100 transition">
-                      <div className="py-1">
-                        {group.items.map((item, itemIdx) => (
-                          <a
-                            key={itemIdx}
-                            href={item.href || "#"}
-                            className="block px-4 py-2 text-m text-white hover:bg-gray-800 hover:rounded-md focus:outline-none focus:bg-gray-700 transition duration-200"
-                          >
-                            {item.label || "Item"}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </header>
-        </div>
-      ),
+      render: (props) => <Navigation {...props} />,
     },
     Content: {
       fields: {
@@ -412,22 +361,7 @@ export const config: Config<Props> = {
         minHeight: "min-h-64",
         text: "Content Block - Add your content here",
       },
-      render: ({
-        backgroundColor = "#ffffff",
-        padding = "p-8",
-        minHeight = "min-h-64",
-        text = "Content Block - Add your content here"
-      }) => (
-        <div
-          className={`w-full ${padding} ${minHeight} flex items-center justify-center`}
-          style={{ backgroundColor }}
-        >
-          <div className="text-center text-gray-600">
-            <p className="text-lg">{text}</p>
-            <p className="text-sm mt-2">This is an empty content block. You can add other components here.</p>
-          </div>
-        </div>
-      ),
+      render: (props) => <Content {...props} />,
     },
     Footer: {
       fields: {
@@ -492,91 +426,48 @@ export const config: Config<Props> = {
         mediaInquiriesEmail: "sgaExternalAffairs@northeastern.edu",
         mediaInquiriesLabel: "Media Inquiries:",
       },
-      render: ({
-        showActionButtons = true,
-        actionButton1Text = "GIVE FEEDBACK",
-        actionButton1Href = "#",
-        actionButton2Text = "MAILING LIST",
-        actionButton2Href = "#",
-        actionButton3Text = "GET INVOLVED",
-        actionButton3Href = "#",
-        showSocialMedia = true,
-        socialMedia1Label = "SGA",
-        socialMedia1LogoSrc = "",
-        socialMedia1LogoAlt = "SGA Instagram",
-        socialMedia2Label = "Campus Affairs",
-        socialMedia2LogoSrc = "",
-        socialMedia2LogoAlt = "Campus Affairs Instagram",
-        socialMedia3Label = "SGA",
-        socialMedia3LogoSrc = "",
-        socialMedia3LogoAlt = "SGA TikTok",
-        organizationName = "Northeastern University Student Government Association",
-        organizationAddress = "332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115",
-        webmasterEmail = "sgaOperations@northeastern.edu",
-        webmasterLabel = "Webmaster:",
-        mediaInquiriesEmail = "sgaExternalAffairs@northeastern.edu",
-        mediaInquiriesLabel = "Media Inquiries:",
-      }) => (
-        <footer className="bg-black relative bottom-0 left-0 w-screen text-center overflow-hidden mx-0 px-0">
-          {showActionButtons && (
-            <div className="button-container flex justify-center items-center pt-10">
-              <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton1Text}</button>
-              <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton2Text}</button>
-              <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton3Text}</button>
-            </div>
-          )}
-
-          {showSocialMedia && (
-            <div className="flex justify-center items-center gap-5 py-6">
-              <div className="flex flex-col items-center px-5">
-                <p className="text-white font-light pb-3">{socialMedia1Label}</p>
-                {socialMedia1LogoSrc ? (
-                  <img src={socialMedia1LogoSrc} alt={socialMedia1LogoAlt} className="w-16 h-auto" />
-                ) : (
-                  <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                )}
-              </div>
-              <div className="flex flex-col items-center px-5">
-                <p className="text-white font-light pb-3">{socialMedia2Label}</p>
-                {socialMedia2LogoSrc ? (
-                  <img src={socialMedia2LogoSrc} alt={socialMedia2LogoAlt} className="w-16 h-auto" />
-                ) : (
-                  <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                )}
-              </div>
-              <div className="flex flex-col items-center px-5">
-                <p className="text-white font-light pb-3">{socialMedia3Label}</p>
-                {socialMedia3LogoSrc ? (
-                  <img src={socialMedia3LogoSrc} alt={socialMedia3LogoAlt} className="w-16 h-auto" />
-                ) : (
-                  <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="pb-10">
-            <p className="text-white font-light pb-4">{organizationName}</p>
-            <p className="text-white font-light pb-4">{organizationAddress}</p>
-            <p className="text-white font-light pb-4">{webmasterLabel}&nbsp;
-              <a
-                href={`mailto:${webmasterEmail}`}
-                className="underline text-white font-light hover:text-gray-300"
-              >
-                {webmasterEmail}
-              </a>
-            </p>
-            <p className="text-white font-light pb-4">{mediaInquiriesLabel}&nbsp;
-              <a
-                href={`mailto:${mediaInquiriesEmail}`}
-                className="underline text-white font-light hover:text-gray-300 transition duration-300"
-              >
-                {mediaInquiriesEmail}
-              </a>
-            </p>
-          </div>
-        </footer>
-      ),
+      render: (props) => <Footer {...props} />,
+    },
+    CommitteeGrid: {
+      fields: {
+        title: { type: "text" },
+        committees: {
+          type: "array",
+          arrayFields: {
+            value: { type: "text" },
+          },
+        },
+      },
+      defaultProps: {
+        title: "COMMITTEE MEETINGS",
+        committees: [
+          { value: "ACADEMIC AFFAIRS" },
+          { value: "CAMPUS SERVICES" },
+          { value: "SUSTAINABILITY" },
+          { value: "GLOBAL EXPERIENCE" },
+          { value: "WELLNESS" },
+          { value: "STUDENT ENGAGEMENT" },
+          { value: "DIVERSITY, EQUITY, AND INCLUSION" },
+          { value: "COMMUNICATIONS AND EVENTS" },
+          { value: "STUDENT ORGANIZATION OPERATIONS" }
+        ],
+      },
+      render: (props) => <CommitteeGrid {...props} />,
+    },
+    PageHeader: {
+      fields: {
+        title: { type: "text" },
+        subtitle: { type: "text" },
+        description: { type: "textarea" },
+        additionalText: { type: "textarea" },
+      },
+      defaultProps: {
+        title: "JOIN A COMMITTEE",
+        subtitle: "",
+        description: "SGA Committees meet once a week to focus on a specific aspect of the student experience and work on projects related to improving an aspect of the university. They are open to all undergraduate Northeastern students on the Boston Campus, and no experience or commitment is necessary!",
+        additionalText: "To join a committee just show up! Find more information about each committee at the links below.",
+      },
+      render: (props) => <PageHeader {...props} />,
     },
   },
 };

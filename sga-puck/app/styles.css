@@ -2,6 +2,10 @@
 
 @theme {
   --color-sga-red: #C8102E;
+  --color-semi-transparent-black: rgba(0, 0, 0, 0.5);
+  --color-solid-black: #000000;
+  --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
+  --color-sga-red-alt: #dc2626;
 }
 
 :root {
@@ -12,8 +16,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.text-sga-red { color: #C8102E !important; }
-.bg-sga-red { background-color: #C8102E !important; }
+.text-sga-red {
+  color: #C8102E !important;
+}
+
+.bg-sga-red {
+  background-color: #C8102E !important;
+}
 
 body {
   margin: 0;
