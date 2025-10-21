@@ -1,4 +1,4 @@
-import type { Config } from "@measured/puck";
+import { DropZone, type Config } from "@measured/puck";
 
 type NavItem = {
   label: string;
@@ -59,6 +59,36 @@ type Props = {
     webmasterLabel?: string;
     mediaInquiriesEmail?: string;
     mediaInquiriesLabel?: string;
+  };
+  HeadingBlock: { 
+    title?: string;
+    fontSize?: number;
+    padding?: number;
+    alignment?: string;
+  };
+  ParagraphBlock: {
+    text?: string;
+    fontSize?: number;
+    padding?: number;
+    alignment?: string;
+  };
+  ListItem: {
+    text?: string;
+    fontSize?: number;
+    padding?: number;
+    paddingLeft?: number;
+    alignment?: string;
+  };
+  Button: {
+    buttonText?: string;
+    width?: number;
+    fontSize?: number;
+    padding?: number;
+    alignment?: string;
+    url?: string;
+  };
+  GridBlock: {
+    // columns: number
   };
 };
 
@@ -575,6 +605,147 @@ export const config: Config<Props> = {
           </div>
         </footer>
       ),
+    },
+    HeadingBlock: {
+      fields: {
+        title: { type: "text" },
+        fontSize: { type: "number", label: "Font Size (px)" },
+        padding: { type: "number", label: "Padding (px)" },
+        alignment: { 
+          type: "select",
+          options: [
+            { label: "Center", value: "center" },
+            { label: "Left", value: "left" },
+            { label: "Right", value: "right" },
+          ],
+          label: "Alignment"
+        }
+      },
+      defaultProps: {
+        title: "Heading",
+        fontSize: 32,
+        padding: 10,
+        alignment: "center"
+      },
+      render: ({title, fontSize, padding, alignment}) => (
+        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+          <h1 style={{ fontSize: `${fontSize}px`}}>{title}</h1>
+        </div>
+      )
+    },
+    ParagraphBlock: {
+      fields: {
+        text: { type: "textarea" },
+        fontSize: { type: "number", label: "Font Size (px)" },
+        padding: { type: "number", label: "Padding (px)"},
+        alignment: { 
+          type: "select",
+          options: [
+            { label: "Center", value: "center" },
+            { label: "Left", value: "left" },
+            { label: "Right", value: "right" },
+          ],
+          label: "Alignment"
+        }
+      },
+      defaultProps: {
+        text: "Paragraph",
+        fontSize: 18,
+        padding: 10,
+        alignment: "center"
+      },
+      render: ({text, fontSize, padding, alignment}) => (
+        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+          <p style={{ fontSize: `${fontSize}px` }}>{text}</p>
+        </div>
+      )
+    },
+    ListItem: {
+      fields: {
+        text: { type: "textarea"},
+        fontSize: { type: "number", label: "Font Size (px)" },
+        padding: { type: "number", label: "Padding (px)"},
+        paddingLeft: { type: "number", label: "List Item Padding Left (px)" },
+        alignment: { 
+          type: "select",
+          options: [
+            { label: "Center", value: "center" },
+            { label: "Left", value: "left" },
+            { label: "Right", value: "right" },
+          ],
+          label: "Alignment"
+        }
+      },
+      defaultProps: {
+        text: "List Item",
+        fontSize: 18,
+        padding: 10,
+        paddingLeft: 10,
+        alignment: "center"
+      },
+      render: ({text, fontSize, padding, paddingLeft, alignment}) => (
+        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+          <ul style={{ listStyleType: 'disc', paddingLeft: `${paddingLeft}px` }}>
+            <li style={{ fontSize: `${fontSize}px` }}>{text}</li>
+          </ul>
+        </div>
+      )
+    },
+    Button: {
+      fields: {
+        buttonText: { type: "text" },
+        fontSize: { type: "number", label: "Font Size (px)"},
+        width: { type: "number", label: "Width (px)" },
+        padding: { type: "number", label: "Padding (px)"},
+        alignment: { 
+          type: "select",
+          options: [
+            { label: "Center", value: "center" },
+            { label: "Left", value: "left" },
+            { label: "Right", value: "right" },
+          ],
+          label: "Alignment"
+        }, 
+        url: { type: "text" }
+      },
+      defaultProps: {
+        buttonText: "Text",
+        fontSize: 18,
+        width: 150,
+        padding: 10,
+        alignment: "center",
+        url: "https://www.northeasternsga.com/"
+      },
+      render: ({ buttonText, fontSize, width, padding, alignment, url}) => (
+        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+          <a href={url}>
+            <button
+              style={{
+              fontSize: `${fontSize}px`,
+              padding: '20px',
+              width: `${width}px`,
+              backgroundColor: '#C8102E',
+              borderRadius: '12px'   
+          }}>
+          {buttonText} </button>
+          </a>
+        </div>
+      )
+    },
+    GridBlock: {
+      // fields: {
+      //   columns: {type: "number"}
+      // },
+      // defaultProps: {
+      //   columns: 3
+      // },
+      render: () => {
+        return (
+          <DropZone
+            zone="my-grid" 
+            style={{ display: "grid", gridTemplateColumns: `repeat(3, 1fr)` }} />
+        )
+      }
     },
   },
 };
