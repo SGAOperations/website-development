@@ -6,7 +6,7 @@ export default function RootPage() {
 
 	if (!all) {
 		return (
-			<div style={{ padding: 24 }}>
+			<div className="p-6">
 				<h1>No pages found</h1>
 				<p>The local database.json does not exist or contains no pages.</p>
 			</div>
@@ -16,7 +16,7 @@ export default function RootPage() {
 	const entries = Object.keys(all).sort();
 
 	return (
-		<div style={{ padding: 24 }}>
+		<div className="p-6">
 			<h1>Pages</h1>
 			<ul>
 				{entries.map((path) => {
