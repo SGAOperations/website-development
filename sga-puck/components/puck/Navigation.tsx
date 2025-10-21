@@ -15,9 +15,9 @@ type NavigationProps = {
 };
 
 export const Navigation: React.FC<NavigationProps> = ({
-    backgroundColor = "rgba(0, 0, 0, 0.5)",
-    padding = "p-5",
-    nav = []
+    backgroundColor,
+    padding,
+    nav,
 }) => (
     <div className="relative w-screen">
         <header

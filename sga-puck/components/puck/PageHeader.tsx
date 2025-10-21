@@ -8,10 +8,10 @@ interface PageHeaderProps {
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
-    title = "JOIN A COMMITTEE",
+    title,
     subtitle,
-    description = "SGA Committees meet once a week to focus on a specific aspect of the student experience and work on projects related to improving an aspect of the university. They are open to all undergraduate Northeastern students on the Boston Campus, and no experience or commitment is necessary!",
-    additionalText = "To join a committee just show up! Find more information about each committee at the links below."
+    description,
+    additionalText,
 }) => {
     return (
         <div className="pb-5 pt-15 w-full max-w-screen font-sans bg-white box-border overflow-hidden">

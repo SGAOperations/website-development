@@ -17,19 +17,19 @@ type HeaderContentProps = {
 };
 
 export const HeaderContent: React.FC<HeaderContentProps> = ({
-    backgroundColor = "rgba(0, 0, 0, 0.5)",
-    padding = "p-5",
-    titleText = "SGA",
-    titleSize = "text-9xl",
-    titleColor = "text-sga-red",
+    backgroundColor,
+    padding,
+    titleText,
+    titleSize,
+    titleColor,
     logoSrc,
-    logoAltText = "SGA Logo",
-    logoWidth = "w-52",
-    logoHeight = "h-auto",
-    dividerColor = "bg-black",
-    dividerWidth = "w-1",
-    dividerHeight = "h-[180px]",
-    dividerMargin = "mx-8"
+    logoAltText,
+    logoWidth,
+    logoHeight,
+    dividerColor,
+    dividerWidth,
+    dividerHeight,
+    dividerMargin
 }) => (
     <div className="relative w-screen">
         <header

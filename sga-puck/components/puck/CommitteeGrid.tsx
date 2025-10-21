@@ -6,18 +6,8 @@ interface CommitteeGridProps {
 }
 
 export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
-    title = "COMMITTEE MEETINGS",
-    committees = [
-        { value: "ACADEMIC AFFAIRS" },
-        { value: "CAMPUS SERVICES" },
-        { value: "SUSTAINABILITY" },
-        { value: "GLOBAL EXPERIENCE" },
-        { value: "WELLNESS" },
-        { value: "STUDENT ENGAGEMENT" },
-        { value: "DIVERSITY, EQUITY, AND INCLUSION" },
-        { value: "COMMUNICATIONS AND EVENTS" },
-        { value: "STUDENT ORGANIZATION OPERATIONS" }
-    ]
+    title,
+    committees
 }) => {
     const handleCommitteeClick = (committee: string) => {
         console.log(`Clicked on ${committee}`);
@@ -25,7 +15,7 @@ export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
     };
 
     return (
-        <div className="py-10 px-5 w-full max-w-screen font-sans bg-white box-border overflow-hidden">
+        <div className="py-10 px-5 w-f  ull max-w-screen font-sans bg-white box-border overflow-hidden">
             <div className="max-w-6xl mx-auto w-full box-border">
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-bold uppercase text-red-600 mb-8 leading-tight break-words">
                     {title}
