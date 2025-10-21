@@ -8,10 +8,10 @@ type ContentProps = {
 };
 
 export const Content: React.FC<ContentProps> = ({
-    backgroundColor = "#ffffff",
-    padding = "p-8",
-    minHeight = "min-h-64",
-    text = "Content Block - Add your content here"
+    backgroundColor,
+    padding,
+    minHeight,
+    text,
 }) => (
     <div
         className={`w-full ${padding} ${minHeight} flex items-center justify-center`}
