@@ -27,11 +27,16 @@ export const Navigation: React.FC<NavigationProps> = ({
             <div className="mt-4 w-full flex flex-row justify-around">
                 {nav.map((group, index) => (
                     <div key={index} className="relative group">
-                        <div className="whitespace-nowrap inline-flex justify-center cursor-pointer mx-7 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
+                        <div className="peer whitespace-nowrap inline-flex justify-center cursor-pointer mx-7 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
                             {group.label}
                         </div>
                         {Array.isArray(group.items) && group.items.length > 0 && (
-                            <div className="absolute left-3 z-10 w-56 origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5 opacity-0 group-hover:opacity-100 transition">
+                            <div className="opacity-0 pointer-events-none 
+                                            peer-hover:opacity-100 group-hover:opacity-100
+                                            peer-hover:pointer-events-auto group-hover:pointer-events-auto 
+                                            transition-opacity duration-300 
+                                            absolute left-3 z-10 w-56 origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5
+                            ">
                                 <div className="py-1">
                                     {group.items.map((item, itemIdx) => (
                                         <a
