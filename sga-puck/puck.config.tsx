@@ -111,6 +111,8 @@ const paddingSettingsField = {
     { label: "Extra Large (p-8)", value: "p-8" },
     { label: "2XL (p-10)", value: "p-10" },
     { label: "3XL (p-12)", value: "p-12" },
+    // { label: "Page content (dynamic)", value: "p-6 md:p-8 lg:p-14" },
+    { label: "Page content (dynamic)", value: "p-[clamp(1rem,4vw,4rem)]" }, // This very closely matches the old site's page padding
   ]
 } as const;
 
