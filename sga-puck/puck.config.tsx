@@ -5,6 +5,11 @@ import { HeaderContent } from "./components/puck/HeaderContent";
 import { Navigation } from "./components/puck/Navigation";
 import { Content } from "./components/puck/Content";
 import { Footer } from "./components/puck/Footer";
+import { Title, TitleProps } from "./components/puck/Title";
+import { Container, ContainerProps } from "./components/puck/Container";
+import { Paragraph, ParagraphProps } from "./components/puck/Paragraph";
+import { LinkGrid, LinkGridProps } from "./components/puck/LinkGrid";
+import { PosterboardContainer, PosterboardContainerProps } from "./components/puck/PosterboardContainer";
 
 type NavItem = {
   label: string;
@@ -76,7 +81,48 @@ type Props = {
     description?: string;
     additionalText?: string;
   };
+
+  Title: TitleProps;
+  Container: ContainerProps;
+  Paragraph: ParagraphProps;
+  LinkGrid: LinkGridProps;
+  PosterboardContainer: PosterboardContainerProps;
 };
+
+const gapSettingsField = {
+  type: "select",
+  options: [
+    { label: "None", value: "gap-0" },
+    { label: "Small (gap-2)", value: "gap-2" },
+    { label: "Medium (gap-4)", value: "gap-4" },
+    { label: "Large (gap-6)", value: "gap-6" },
+    { label: "Extra Large (gap-8)", value: "gap-8" },
+    // { label: "Page container (gap-1"}
+  ],
+} as const;
+
+const paddingSettingsField = {
+  type: "select",
+  options: [
+    { label: "None", value: "p-0" },
+    { label: "Small (p-2)", value: "p-2" },
+    { label: "Medium (p-4)", value: "p-4" },
+    { label: "Large (p-6)", value: "p-6" },
+    { label: "Extra Large (p-8)", value: "p-8" },
+    { label: "2XL (p-10)", value: "p-10" },
+    { label: "3XL (p-12)", value: "p-12" },
+  ]
+} as const;
+
+const outlineSettingsField = {
+  type: "select",
+  options: [
+    { label: "None", value: "" },
+    { label: "Thin", value: "border border-1" },
+    { label: "Normal", value: "border border-2" },
+    { label: "Thick", value: "border border-4" },
+  ]
+} as const;
 
 export const config: Config<Props> = {
   components: {
@@ -468,6 +514,83 @@ export const config: Config<Props> = {
         additionalText: "To join a committee just show up! Find more information about each committee at the links below.",
       },
       render: (props) => <PageHeader {...props} />,
+    },
+
+
+    Title: {
+      fields: {
+        text: { type: "text" },
+        size: {
+          type: "select",
+          options: [
+            { label: "Main (h1)", value: "main" },
+            { label: "Section (h2)", value: "section" },
+            { label: "Subsection (h3)", value: "subsection" },
+          ]
+        },
+      },
+      defaultProps: {
+        text: "Title Text",
+        size: "main",
+      },
+      render: (props) => <Title {...props} />,
+    },
+    
+    Container: {
+      fields: {
+        content: { type: "slot" },
+        // TODO: Factor out these common options, like padding
+        padding: paddingSettingsField,
+        gap: gapSettingsField,
+        outline: outlineSettingsField
+      },
+      defaultProps: {
+        content: null,
+        padding: "p-10",
+        gap: "gap-6",
+      },
+      render: (props) => <Container {...props} />,
+    },
+
+    Paragraph: {
+      fields: {
+        text: { type: "textarea" },
+      },
+      defaultProps: {
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      },
+      render: (props) => <Paragraph {...props} />,
+    },
+
+    LinkGrid: {
+      fields: {
+        links: {
+          type: "array",
+          arrayFields: {
+            label: { type: "text" },
+            url: { type: "text" },
+          },
+        },
+      },
+      defaultProps: {
+        links: [
+          { label: "Link 1", url: "#" },
+          { label: "Link 2", url: "#" },
+          { label: "Link 3", url: "#" },
+        ],
+      },
+      render: (props) => <LinkGrid {...props} />,
+    },
+
+    PosterboardContainer: {
+      fields: {
+        content: { type: "slot" },
+        gap: gapSettingsField
+      },
+      defaultProps: {
+        content: null,
+      },
+      render: (props) => <PosterboardContainer {...props} />,
     },
   },
 };
