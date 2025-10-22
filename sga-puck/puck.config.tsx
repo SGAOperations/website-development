@@ -538,14 +538,17 @@ export const config: Config<Props> = {
             { label: "Main (h1)", value: "main" },
             { label: "Section (h2)", value: "section" },
             { label: "Subsection (h3)", value: "subsection" },
-          ]
+            { label: "Tertiary (h4)", value: "tertiary" },
+          ],
         },
         center: booleanSettingsField,
+        uppercase: booleanSettingsField,
       },
       defaultProps: {
         text: "Title Text",
         size: "main",
         center: false,
+        uppercase: true,
       },
       render: (props) => <Title {...props} />,
     },
