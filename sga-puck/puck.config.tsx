@@ -10,6 +10,7 @@ import { Container, ContainerProps } from "./components/puck/Container";
 import { Paragraph, ParagraphProps } from "./components/puck/Paragraph";
 import { LinkGrid, LinkGridProps } from "./components/puck/LinkGrid";
 import { PosterboardContainer, PosterboardContainerProps } from "./components/puck/PosterboardContainer";
+import { BulletList, BulletListProps } from "./components/puck/BulletList";
 
 type NavItem = {
   label: string;
@@ -87,6 +88,7 @@ type Props = {
   Paragraph: ParagraphProps;
   LinkGrid: LinkGridProps;
   PosterboardContainer: PosterboardContainerProps;
+  BulletList: BulletListProps;
 };
 
 const booleanSettingsField = {
@@ -609,6 +611,34 @@ export const config: Config<Props> = {
       },
       render: (props) => <PosterboardContainer {...props} />,
     },
+
+    BulletList: {
+      fields: {
+        bullet: {
+          type: "select",
+          options: [
+            { label: "Disc", value: "disc" },
+            { label: "Decimal", value: "decimal" },
+            { label: "None", value: "none" },
+          ]
+        },
+        items: {
+          type: "array",
+          arrayFields: {
+            item: { type: "text" },
+          },
+        },
+      },
+      defaultProps: {
+        bullet: "disc",
+        items: [
+          "First item",
+          "Second item",
+          "Third item",
+        ],
+      },
+      render: (props) => <BulletList {...props} />,
+    }
   },
 };
 
