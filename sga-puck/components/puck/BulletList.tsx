@@ -14,8 +14,8 @@ export const BulletList: React.FC<BulletListProps> = ({
     const ListComponent = bullet === "decimal" ? "ol" : "ul" as keyof JSX.IntrinsicElements;
     
     const listStyleMap = {
-        disc: "list-disc list-inside",
-        decimal: "list-decimal list-inside",
+        disc: "list-disc list-outside",
+        decimal: "list-decimal list-outside",
         none: "list-none"
     }
     const listStyles = listStyleMap[bullet]
