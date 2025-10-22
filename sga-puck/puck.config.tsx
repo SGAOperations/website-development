@@ -607,10 +607,20 @@ export const config: Config<Props> = {
     PosterboardContainer: {
       fields: {
         content: { type: "slot" },
-        gap: gapSettingsField
+        gap: gapSettingsField,
+        childrenBottomMargin: {
+          type: "select",
+          options: [ // TODO: factor out common options, figure out more ubiquitous way to do this
+            { label: "None", value: "mb-0" },
+            { label: "Small (mb-2)", value: "mb-2" },
+            { label: "Medium (mb-4)", value: "mb-4" },
+          ]
+        }
       },
       defaultProps: {
         content: null,
+        gap: "gap-4",
+        childrenBottomMargin: "mb-4",
       },
       render: (props) => <PosterboardContainer {...props} />,
     },
