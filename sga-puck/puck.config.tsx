@@ -571,6 +571,10 @@ export const config: Config<Props> = {
             url: { type: "text" },
           },
         },
+        minimumColumnWidth: {
+          type: "number",
+          label: "Minimum Column Width (in pixels)",
+        }
       },
       defaultProps: {
         links: [
@@ -578,6 +582,7 @@ export const config: Config<Props> = {
           { label: "Link 2", url: "#" },
           { label: "Link 3", url: "#" },
         ],
+        minimumColumnWidth: 250,
       },
       render: (props) => <LinkGrid {...props} />,
     },
