@@ -625,16 +625,16 @@ export const config: Config<Props> = {
         items: {
           type: "array",
           arrayFields: {
-            item: { type: "text" },
+            text: { type: "text" },
           },
         },
       },
       defaultProps: {
         bullet: "disc",
         items: [
-          "First item",
-          "Second item",
-          "Third item",
+          { text: "First item" },
+          { text: "Second item" },
+          { text: "Third item" },
         ],
       },
       render: (props) => <BulletList {...props} />,

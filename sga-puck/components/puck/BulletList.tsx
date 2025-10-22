@@ -3,9 +3,8 @@ import { JSX } from "react";
 export type BulletType = "disc" | "decimal" | "none" 
 
 export interface BulletListProps {
-    items: string[];
+    items: { text: string }[];
     bullet: BulletType;
-    
 }
 
 export const BulletList: React.FC<BulletListProps> = ({
@@ -23,9 +22,9 @@ export const BulletList: React.FC<BulletListProps> = ({
 
     return (
         <ListComponent className={listStyles}>
-            {items.map((item, index) => (
+            {items.map(({ text }, index) => (
                 <li key={index} className="mb-2 last:mb-0">
-                    {item}
+                    {text}
                 </li>
             ))}
         </ListComponent>
