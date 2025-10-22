@@ -89,6 +89,14 @@ type Props = {
   PosterboardContainer: PosterboardContainerProps;
 };
 
+const booleanSettingsField = {
+  type: "radio",
+  options: [
+    { label: "True", value: true },
+    { label: "False", value: false },
+  ]
+} as const
+
 const gapSettingsField = {
   type: "select",
   options: [
@@ -530,10 +538,12 @@ export const config: Config<Props> = {
             { label: "Subsection (h3)", value: "subsection" },
           ]
         },
+        center: booleanSettingsField,
       },
       defaultProps: {
         text: "Title Text",
         size: "main",
+        center: false,
       },
       render: (props) => <Title {...props} />,
     },
