@@ -9,9 +9,9 @@ export interface ContainerProps {
 
 export const Container: React.FC<ContainerProps> = ({
     content: Content,
-    padding,
-    gap,
-    outline,
+    padding = "",
+    gap = "",
+    outline = "",
 }) => (
     <Content className={`flex flex-col w-full ${padding} ${gap} ${outline}`} />
 )
