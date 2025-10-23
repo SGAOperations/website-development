@@ -12,6 +12,7 @@ import { MasonryGrid, MasonryGridProps } from "./components/puck/MasonryGrid";
 import { BulletList, BulletListProps } from "./components/puck/BulletList";
 import { LinkButton, LinkButtonProps } from "./components/puck/Button";
 import { MinimumColumnWidthGrid, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
+import { RootContainer, RootContainerProps } from "./components/puck/RootContainer";
 
 type NavItem = {
   label: string;
@@ -91,6 +92,7 @@ type Props = {
   BulletList: BulletListProps;
   LinkButton: LinkButtonProps;
   MinimumColumnWidthGrid: MinimumColumnWidthGridProps;
+  RootContainer: RootContainerProps;
 };
 
 const booleanSettingsField = {
@@ -109,7 +111,6 @@ const gapSettingsField = {
     { label: "Medium (gap-4)", value: "gap-4" },
     { label: "Large (gap-6)", value: "gap-6" },
     { label: "Extra Large (gap-8)", value: "gap-8" },
-    // { label: "Page container (gap-1"}
   ],
 } as const;
 
@@ -139,8 +140,6 @@ const paddingSettingsField = {
     { label: "Extra Large (p-8)", value: "p-8" },
     { label: "2XL (p-10)", value: "p-10" },
     { label: "3XL (p-12)", value: "p-12" },
-    // { label: "Page content (dynamic)", value: "p-6 md:p-8 lg:p-14" },
-    { label: "Page content (dynamic)", value: "p-[clamp(1rem,4vw,4rem)]" }, // This very closely matches the old site's page padding
   ]
 } as const;
 
@@ -689,7 +688,21 @@ export const config: Config<Props> = {
       render: (props) => <MinimumColumnWidthGrid {...props} />,
     },
 
-
+    RootContainer: {
+      fields: {
+        content: { type: "slot" },
+        padTop: booleanSettingsField,
+        padBottom: booleanSettingsField,
+      },
+      defaultProps: {
+        content: null,
+        padTop: false,
+        padBottom: false,
+      },
+      render: (props) => {
+        return <RootContainer {...props} />;
+      }
+    }
   },
 };
 
