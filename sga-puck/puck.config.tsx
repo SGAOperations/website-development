@@ -8,9 +8,10 @@ import { Footer } from "./components/puck/Footer";
 import { Title, TitleProps } from "./components/puck/Title";
 import { Container, ContainerProps } from "./components/puck/Container";
 import { Paragraph, ParagraphProps } from "./components/puck/Paragraph";
-import { LinkGrid, LinkGridProps } from "./components/puck/LinkGrid";
 import { PosterboardContainer, PosterboardContainerProps } from "./components/puck/PosterboardContainer";
 import { BulletList, BulletListProps } from "./components/puck/BulletList";
+import { LinkButton, LinkButtonProps } from "./components/puck/Button";
+import { MinimumColumnWidthGrid, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
 
 type NavItem = {
   label: string;
@@ -86,9 +87,10 @@ type Props = {
   Title: TitleProps;
   Container: ContainerProps;
   Paragraph: ParagraphProps;
-  LinkGrid: LinkGridProps;
   PosterboardContainer: PosterboardContainerProps;
   BulletList: BulletListProps;
+  LinkButton: LinkButtonProps;
+  MinimumColumnWidthGrid: MinimumColumnWidthGridProps;
 };
 
 const booleanSettingsField = {
@@ -108,6 +110,22 @@ const gapSettingsField = {
     { label: "Large (gap-6)", value: "gap-6" },
     { label: "Extra Large (gap-8)", value: "gap-8" },
     // { label: "Page container (gap-1"}
+  ],
+} as const;
+
+const heightSettingsField = {
+  type: "select",
+  options: [
+    { label: "Auto", value: "h-auto" },
+    { label: "Full", value: "h-full" },
+  ],
+} as const;
+
+const widthSettingsField = {
+  type: "select",
+  options: [
+    { label: "Auto", value: "w-auto" },
+    { label: "Full", value: "w-full" },
   ],
 } as const;
 
@@ -579,31 +597,6 @@ export const config: Config<Props> = {
       render: (props) => <Paragraph {...props} />,
     },
 
-    LinkGrid: {
-      fields: {
-        links: {
-          type: "array",
-          arrayFields: {
-            label: { type: "text" },
-            url: { type: "text" },
-          },
-        },
-        minimumColumnWidth: {
-          type: "number",
-          label: "Minimum Column Width (in pixels)",
-        }
-      },
-      defaultProps: {
-        links: [
-          { label: "Link 1", url: "#" },
-          { label: "Link 2", url: "#" },
-          { label: "Link 3", url: "#" },
-        ],
-        minimumColumnWidth: 250,
-      },
-      render: (props) => <LinkGrid {...props} />,
-    },
-
     PosterboardContainer: {
       fields: {
         content: { type: "slot" },
@@ -651,7 +644,52 @@ export const config: Config<Props> = {
         ],
       },
       render: (props) => <BulletList {...props} />,
-    }
+    },
+
+    LinkButton: {
+      fields: {
+        label: { type: "text" },
+        style: {
+          type: "select",
+          options: [
+            { label: "Primary", value: "primary" },
+            { label: "Secondary", value: "secondary" },
+          ]
+        },
+        href: { type: "text" },
+        padding: paddingSettingsField,
+        height: heightSettingsField,
+        width: widthSettingsField,
+      },
+      defaultProps: {
+        label: "Button",
+        style: "primary",
+        href: "#",
+        padding: "p-4",
+        height: "h-full",
+        width: "w-full",
+      },
+      render: (props) => <LinkButton {...props} />,
+    },
+
+    MinimumColumnWidthGrid: {
+      fields: {
+        content: { type: "slot" },
+        minimumColumnWidthPixels: {
+          type: "number",
+          label: "Minimum Column Width (in pixels)",
+        },
+        gap: gapSettingsField,
+      },
+      defaultProps: {
+        content: null,
+        minimumColumnWidthPixels: 250,
+        gap: "gap-4",
+      },
+      render: (props) => <MinimumColumnWidthGrid {...props} />,
+    },
+
+
   },
 };
 
