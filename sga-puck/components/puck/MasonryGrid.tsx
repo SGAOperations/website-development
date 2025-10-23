@@ -1,12 +1,12 @@
 import { SlotComponent } from "@measured/puck"
 
-export interface PosterboardContainerProps {
+export interface MasonryGridProps {
     content: SlotComponent;
     gap?: string;
     childrenBottomMargin?: string;
 }
 
-export const PosterboardContainer: React.FC<PosterboardContainerProps> = ({
+export const MasonryGrid: React.FC<MasonryGridProps> = ({
     content: Content,
     gap = "gap-4",
     childrenBottomMargin = "mb-4",

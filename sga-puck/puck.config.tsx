@@ -8,7 +8,7 @@ import { Footer } from "./components/puck/Footer";
 import { Title, TitleProps } from "./components/puck/Title";
 import { Container, ContainerProps } from "./components/puck/Container";
 import { Paragraph, ParagraphProps } from "./components/puck/Paragraph";
-import { PosterboardContainer, PosterboardContainerProps } from "./components/puck/PosterboardContainer";
+import { MasonryGrid, MasonryGridProps } from "./components/puck/MasonryGrid";
 import { BulletList, BulletListProps } from "./components/puck/BulletList";
 import { LinkButton, LinkButtonProps } from "./components/puck/Button";
 import { MinimumColumnWidthGrid, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
@@ -87,7 +87,7 @@ type Props = {
   Title: TitleProps;
   Container: ContainerProps;
   Paragraph: ParagraphProps;
-  PosterboardContainer: PosterboardContainerProps;
+  MasonryGrid: MasonryGridProps;
   BulletList: BulletListProps;
   LinkButton: LinkButtonProps;
   MinimumColumnWidthGrid: MinimumColumnWidthGridProps;
@@ -597,7 +597,7 @@ export const config: Config<Props> = {
       render: (props) => <Paragraph {...props} />,
     },
 
-    PosterboardContainer: {
+    MasonryGrid: {
       fields: {
         content: { type: "slot" },
         gap: gapSettingsField,
@@ -615,7 +615,7 @@ export const config: Config<Props> = {
         gap: "gap-4",
         childrenBottomMargin: "mb-4",
       },
-      render: (props) => <PosterboardContainer {...props} />,
+      render: (props) => <MasonryGrid {...props} />,
     },
 
     BulletList: {
