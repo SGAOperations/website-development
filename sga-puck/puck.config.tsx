@@ -603,10 +603,10 @@ export const config: Config<Props> = {
         gap: gapSettingsField,
         childrenBottomMargin: {
           type: "select",
-          options: [ // TODO: factor out common options, figure out more ubiquitous way to do this
-            { label: "None", value: "mb-0" },
-            { label: "Small (mb-2)", value: "mb-2" },
-            { label: "Medium (mb-4)", value: "mb-4" },
+          options: [ // TODO: make numerical or style based (i.e. small, medium, large)
+            { label: "None", value: "[&>*]:mb-0" },
+            { label: "Small (mb-2)", value: "[&>*]:mb-2" },
+            { label: "Medium (mb-4)", value: "[&>*]:mb-4" },
           ]
         }
       },
