@@ -9,7 +9,7 @@ export interface MasonryGridProps {
 export const MasonryGrid: React.FC<MasonryGridProps> = ({
     content: Content,
     gap = "gap-4",
-    childrenBottomMargin = "mb-4",
+    childrenBottomMargin = "[&>*]:mb-4",
 }) => {
     // TODO: robust handling of gap to margin conversion
     // make the prop and setting numerical
