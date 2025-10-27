@@ -62,18 +62,21 @@ type Props = {
   };
   HeadingBlock: { 
     title?: string;
+    fontFamily?: string;
     fontSize?: number;
     padding?: number;
     alignment?: string;
   };
   ParagraphBlock: {
     text?: string;
+    fontFamily?: string;
     fontSize?: number;
     padding?: number;
     alignment?: string;
   };
   ListItem: {
     text?: string;
+    fontFamily?: string;
     fontSize?: number;
     padding?: number;
     paddingLeft?: number;
@@ -82,6 +85,8 @@ type Props = {
   Button: {
     buttonText?: string;
     width?: number;
+    height?: number;
+    fontFamily?: string;
     fontSize?: number;
     padding?: number;
     alignment?: string;
@@ -609,8 +614,17 @@ export const config: Config<Props> = {
     HeadingBlock: {
       fields: {
         title: { type: "text" },
-        fontSize: { type: "number", label: "Font Size (px)" },
-        padding: { type: "number", label: "Padding (px)" },
+        fontFamily: { 
+          type: "select",
+          label: "Font Family",
+          options: [
+            { label: "Inter (System UI Stack)", value: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" },
+            { label: "Arial", value: "Arial, sans-serif" },
+            { label: "Times New Roman", value: "'Times New Roman', serif" },
+          ]
+        },
+        fontSize: { type: "number", label: "Font Size" },
+        padding: { type: "number", label: "Padding" },
         alignment: { 
           type: "select",
           options: [
@@ -619,25 +633,34 @@ export const config: Config<Props> = {
             { label: "Right", value: "right" },
           ],
           label: "Alignment"
-        }
+        },
       },
       defaultProps: {
         title: "Heading",
         fontSize: 32,
         padding: 10,
-        alignment: "center"
+        alignment: "left"
       },
-      render: ({title, fontSize, padding, alignment}) => (
-        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
-          <h1 style={{ fontSize: `${fontSize}px`}}>{title}</h1>
+      render: ({title, fontFamily, fontSize, padding, alignment}) => (
+        <div style={{width: "100%", padding: `${padding}px` }} className={`flex justify-${alignment}`}>
+          <h1 style={{ fontSize: `${fontSize}px`, fontFamily: fontFamily}}>{title}</h1>
         </div>
       )
     },
     ParagraphBlock: {
       fields: {
         text: { type: "textarea" },
-        fontSize: { type: "number", label: "Font Size (px)" },
-        padding: { type: "number", label: "Padding (px)"},
+        fontFamily: { 
+          type: "select",
+          label: "Font Family",
+          options: [
+            { label: "Inter (System UI Stack)", value: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" },
+            { label: "Arial", value: "Arial, sans-serif" },
+            { label: "Times New Roman", value: "'Times New Roman', serif" },
+          ]
+        },
+        fontSize: { type: "number", label: "Font Size" },
+        padding: { type: "number", label: "Padding"},
         alignment: { 
           type: "select",
           options: [
@@ -646,25 +669,34 @@ export const config: Config<Props> = {
             { label: "Right", value: "right" },
           ],
           label: "Alignment"
-        }
+        },
       },
       defaultProps: {
         text: "Paragraph",
         fontSize: 18,
         padding: 10,
-        alignment: "center"
+        alignment: "left"
       },
-      render: ({text, fontSize, padding, alignment}) => (
-        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
-          <p style={{ fontSize: `${fontSize}px` }}>{text}</p>
+      render: ({text, fontFamily, fontSize, padding, alignment}) => (
+        <div style={{width: "100%", padding: `${padding}px` }} className={`flex justify-${alignment}`}>
+          <p style={{ fontSize: `${fontSize}px`, fontFamily: fontFamily }}>{text}</p>
         </div>
       )
     },
     ListItem: {
       fields: {
         text: { type: "textarea"},
-        fontSize: { type: "number", label: "Font Size (px)" },
-        padding: { type: "number", label: "Padding (px)"},
+        fontFamily: { 
+          type: "select",
+          label: "Font Family",
+          options: [
+            { label: "Inter (System UI Stack)", value: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" },
+            { label: "Arial", value: "Arial, sans-serif" },
+            { label: "Times New Roman", value: "'Times New Roman', serif" },
+          ]
+        },
+        fontSize: { type: "number", label: "Font Size" },
+        padding: { type: "number", label: "Padding"},
         paddingLeft: { type: "number", label: "List Item Padding Left (px)" },
         alignment: { 
           type: "select",
@@ -674,19 +706,19 @@ export const config: Config<Props> = {
             { label: "Right", value: "right" },
           ],
           label: "Alignment"
-        }
+        },
       },
       defaultProps: {
         text: "List Item",
         fontSize: 18,
         padding: 10,
         paddingLeft: 10,
-        alignment: "center"
+        alignment: "left"
       },
-      render: ({text, fontSize, padding, paddingLeft, alignment}) => (
-        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+      render: ({text, fontFamily, fontSize, padding, paddingLeft, alignment}) => (
+        <div style={{width: "100%", padding: `${padding}px` }} className={`flex justify-${alignment}`}>
           <ul style={{ listStyleType: 'disc', paddingLeft: `${paddingLeft}px` }}>
-            <li style={{ fontSize: `${fontSize}px` }}>{text}</li>
+            <li style={{ fontSize: `${fontSize}px`, fontFamily: fontFamily }}>{text}</li>
           </ul>
         </div>
       )
@@ -694,15 +726,25 @@ export const config: Config<Props> = {
     Button: {
       fields: {
         buttonText: { type: "text" },
-        fontSize: { type: "number", label: "Font Size (px)"},
-        width: { type: "number", label: "Width (px)" },
-        padding: { type: "number", label: "Padding (px)"},
+        fontFamily: { 
+          type: "select",
+          label: "Font Family",
+          options: [
+            { label: "Inter (System UI Stack)", value: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" },
+            { label: "Arial", value: "Arial, sans-serif" },
+            { label: "Times New Roman", value: "'Times New Roman', serif" },
+          ]
+        },
+        fontSize: { type: "number", label: "Font Size"},
+        width: { type: "number", label: "Width" },
+        height: { type: "number", label: "Height" },
+        padding: { type: "number", label: "Padding"},
         alignment: { 
           type: "select",
           options: [
             { label: "Center", value: "center" },
-            { label: "Left", value: "left" },
-            { label: "Right", value: "right" },
+            { label: "Left", value: "start" },
+            { label: "Right", value: "end" },
           ],
           label: "Alignment"
         }, 
@@ -712,18 +754,21 @@ export const config: Config<Props> = {
         buttonText: "Text",
         fontSize: 18,
         width: 150,
+        height: 75,
         padding: 10,
-        alignment: "center",
+        alignment: "start",
         url: "https://www.northeasternsga.com/"
       },
-      render: ({ buttonText, fontSize, width, padding, alignment, url}) => (
-        <div style={{ display: "flex", justifyContent: alignment, width: "100%", padding: `${padding}px` }}>
+      render: ({ buttonText, fontFamily, fontSize, width, height, padding, alignment, url}) => (
+        <div style={{width: "100%", padding: `${padding}px` }} className={`flex justify-${alignment}`}>
           <a href={url}>
             <button
               style={{
               fontSize: `${fontSize}px`,
+              fontFamily: fontFamily,
               padding: '20px',
               width: `${width}px`,
+              height: `${height}px`,
               backgroundColor: '#C8102E',
               borderRadius: '12px'   
           }}>
@@ -742,8 +787,8 @@ export const config: Config<Props> = {
       render: () => {
         return (
           <DropZone
-            zone="my-grid" 
-            style={{ display: "grid", gridTemplateColumns: `repeat(3, 1fr)` }} />
+            zone="my-grid"
+            className="grid grid-cols-3 gap-4 p-4" />
         )
       }
     },
