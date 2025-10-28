@@ -93,7 +93,25 @@ type Props = {
     url?: string;
   };
   GridBlock: {
-    // columns: number
+    columns?: number;
+    rows?: number;
+    gap?: number;
+    padding?: number;
+  };
+  ProfileBlock: {
+    imageSrc?: string;
+    imageAlt?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+    imageHeader?: string;
+    headerURL?: string;
+    captionText?: string;
+    emailLabel?: string;
+    emailAddress?: string;
+    fontFamily?: string;
+    fontSize?: number;
+    padding?: number;
+    alignment?: string;
   };
 };
 
@@ -697,7 +715,7 @@ export const config: Config<Props> = {
         },
         fontSize: { type: "number", label: "Font Size" },
         padding: { type: "number", label: "Padding"},
-        paddingLeft: { type: "number", label: "List Item Padding Left (px)" },
+        paddingLeft: { type: "number", label: "List Item Padding Left" },
         alignment: { 
           type: "select",
           options: [
@@ -778,20 +796,174 @@ export const config: Config<Props> = {
       )
     },
     GridBlock: {
-      // fields: {
-      //   columns: {type: "number"}
-      // },
-      // defaultProps: {
-      //   columns: 3
-      // },
-      render: () => {
+      fields: {
+        columns: { type: "number"},
+        rows: { type: "number"},
+        gap: { type: "number"},
+        padding: { type: "number"}
+      },
+      defaultProps: {
+        columns: 3,
+        rows: 3,
+        gap: 0,
+        padding: 10
+      },
+      render: ({ columns, rows, gap, padding }) => {
+        const cells = Array.from({ length: rows * columns });
         return (
-          <DropZone
-            zone="my-grid"
-            className="grid grid-cols-3 gap-4 p-4" />
-        )
+          <div
+            className="grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${columns}, 1fr)`,
+              gridTemplateRows: `repeat(${rows}, auto)`,
+              gap: `${gap}px`,
+              padding: `${padding}px`,
+            }}
+          >
+            {cells.map((_, i) => (
+              <DropZone key={i} zone={`cell-${i}`} className="border border-gray-200 p-2" />
+            ))}
+          </div>
+        );
       }
     },
+    ProfileBlock: {
+      fields: {
+        imageSrc: { type: "text", label: "Image URL" },
+        imageAlt: { type: "text", label: "Alt Text" },
+        imageWidth: { type: "number", label: "Image Width"},
+        imageHeight: { type: "number", label: "Image Height"},
+        captionText: { type: "text", label: "Caption" },
+        fontFamily: { 
+          type: "select",
+          label: "Font Family",
+          options: [
+            { label: "Inter (System UI Stack)", value: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" },
+            { label: "Arial", value: "Arial, sans-serif" },
+            { label: "Times New Roman", value: "'Times New Roman', serif" },
+          ],
+        },
+        fontSize: { type: "number", label: "Font Size" },
+        emailLabel: { type: "text", label: "Email Label (optional)" },
+        emailAddress: { type: "text", label: "Email Address (optional)" },
+        padding: { type: "number", label: "Padding" },
+        alignment: { 
+          type: "select",
+          label: "Alignment",
+          options: [
+            { label: "Center", value: "center" },
+            { label: "Left", value: "flex-start" },
+            { label: "Right", value: "flex-end" },
+          ],
+        },
+      },
+      defaultProps: {
+        imageSrc: "",
+        imageAlt: "",
+        imageWidth: 100,
+        imageHeight: 100,
+        imageHeader: "Title",
+        headerURL: "https://www.northeasternsga.com/",
+        captionText: "Caption",
+        fontSize: 16,
+        emailLabel: "Contact:",
+        emailAddress: "example.addy@northeastern.edu",
+        padding: 10,
+        alignment: "left"
+      },
+      render: ({
+        imageSrc, imageAlt, imageWidth, imageHeight, imageHeader, headerURL,
+        captionText, fontFamily, fontSize, alignment,
+        emailLabel, emailAddress,
+        padding,
+      }) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: alignment,
+            padding: `${padding}px`,
+          }}
+        >
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageWidth}
+            height={imageHeight}
+            style={{
+              objectFit: "cover",
+              width: `${imageWidth}px`,
+              height: `${imageHeight}px`,
+            }}
+          />
+          {imageHeader && (
+            <strong>
+                <p
+                style={{
+                  color: '#C8102E'
+                }}>
+                <a
+                  href={`${headerURL}`}
+                  style={{
+                    fontFamily: fontFamily,
+                    textDecoration: "underline",
+                    fontSize: `${fontSize}px`,
+                  }}
+                >
+                  {imageHeader}
+                </a>
+              </p>
+            </strong>
+          )}
+          {captionText && (
+            <p
+              style={{
+                fontFamily: fontFamily,
+                fontSize: `${fontSize}px`,
+                marginTop: "10px",
+              }}
+            >
+              {captionText}
+            </p>
+          )}
+          {emailAddress && (
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "4px",
+                flexWrap: "wrap",
+              }}
+            >
+              {emailLabel && (
+                <span
+                  style={{
+                    fontFamily: fontFamily,
+                    fontSize: `${fontSize}px`,
+                  }}
+                >
+                  {emailLabel}
+                </span>
+              )}
+              <a
+                href={`mailto:${emailAddress}`}
+                style={{
+                  color: "#C8102E",
+                  fontFamily: fontFamily,
+                  textDecoration: "underline",
+                  fontSize: `${fontSize}px`,
+                }}
+              >
+                {emailAddress}
+              </a>
+            </div>
+          )}
+        </div>
+      ),
+    }
   },
 };
 
