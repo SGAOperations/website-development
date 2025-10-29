@@ -1,4 +1,4 @@
-import { ComponentConfig } from "@measured/puck";
+import { ComponentConfig, Field } from "@measured/puck";
 import { JSX } from "react";
 
 export type BulletType = "disc" | "decimal" | "none"
@@ -8,40 +8,48 @@ export interface BulletListProps {
     bullet: BulletType;
 }
 
+const BULLET_TO_STYLES: Record<BulletType, string> = {
+    disc: "list-disc list-outside",
+    decimal: "list-decimal list-outside",
+    none: "list-none"
+}
+
+
 export const BulletList: React.FC<BulletListProps> = ({
     items,
     bullet = "disc"
 }) => {
-    const ListComponent = bullet === "decimal" ? "ol" : "ul" as keyof JSX.IntrinsicElements;
-
-    const listStyleMap = {
-        disc: "list-disc list-outside",
-        decimal: "list-decimal list-outside",
-        none: "list-none"
-    }
-    const listStyles = listStyleMap[bullet]
+    const ListTag = (
+        bullet === "decimal" 
+        ? "ol" 
+        : "ul"
+    ) as keyof JSX.IntrinsicElements;
 
     return (
-        <ListComponent className={listStyles}>
+        <ListTag className={BULLET_TO_STYLES[bullet]}>
             {items.map(({ text }, index) => (
                 <li key={index} className="mb-2 last:mb-0">
                     {text}
                 </li>
             ))}
-        </ListComponent>
+        </ListTag>
     )
 }
 
+
+const bulletTypeField: Field<BulletType> = {
+    type: "select",
+    options: [
+        { label: "Disc", value: "disc" },
+        { label: "Decimal", value: "decimal" },
+        { label: "None", value: "none" },
+    ]
+} as const;
+
+
 export const BulletListConfig: ComponentConfig<BulletListProps> = {
     fields: {
-        bullet: {
-            type: "select",
-            options: [
-                { label: "Disc", value: "disc" },
-                { label: "Decimal", value: "decimal" },
-                { label: "None", value: "none" },
-            ]
-        },
+        bullet: bulletTypeField,
         items: {
             type: "array",
             arrayFields: {
