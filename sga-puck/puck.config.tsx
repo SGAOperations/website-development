@@ -5,15 +5,14 @@ import { HeaderContent } from "./components/puck/HeaderContent";
 import { Navigation } from "./components/puck/Navigation";
 import { Content } from "./components/puck/Content";
 import { Footer } from "./components/puck/Footer";
-import { Title, TitleConfig, TitleProps } from "./components/puck/Title";
-import { Container, ContainerConfig, ContainerProps } from "./components/puck/Container";
-import { Paragraph, ParagraphConfig, ParagraphProps } from "./components/puck/Paragraph";
-import { MasonryGrid, MasonryGridConfig, MasonryGridProps } from "./components/puck/MasonryGrid";
-import { BulletList, BulletListConfig, BulletListProps } from "./components/puck/BulletList";
-import { LinkButton, LinkButtonConfig, LinkButtonProps } from "./components/puck/Button";
-import { MinimumColumnWidthGrid, MinimumColumnWidthGridConfig, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
-import { RootContainer, RootContainerConfig, RootContainerProps } from "./components/puck/RootContainer";
-import { paddingSettingsField, gapSettingsField, outlineSettingsField, heightSettingsField, widthSettingsField, booleanSettingsField } from "./lib/settings-fields";
+import { TitleConfig, TitleProps } from "./components/puck/Title";
+import { ContainerConfig, ContainerProps } from "./components/puck/Container";
+import { ParagraphConfig, ParagraphProps } from "./components/puck/Paragraph";
+import { MasonryGridConfig, MasonryGridProps } from "./components/puck/MasonryGrid";
+import { BulletListConfig, BulletListProps } from "./components/puck/BulletList";
+import { LinkButtonConfig, LinkButtonProps } from "./components/puck/Button";
+import { MinimumColumnWidthGridConfig, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
+import { RootContainerConfig, RootContainerProps } from "./components/puck/RootContainer";
 
 type NavItem = {
   label: string;
