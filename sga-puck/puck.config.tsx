@@ -1,38 +1,20 @@
 import type { Config } from "@measured/puck";
-import { PageHeaderConfig, PageHeaderProps } from "./components/puck/PageHeader";
-import { CommitteeGridConfig, CommitteeGridProps } from "./components/puck/CommitteeGrid";
-import { HeaderContentConfig, HeaderContentProps } from "./components/puck/HeaderContent";
-import { NavigationConfig, NavigationProps } from "./components/puck/Navigation";
-import { ContentConfig, ContentProps } from "./components/puck/Content";
-import { FooterConfig, FooterProps } from "./components/puck/Footer";
-import { TitleConfig, TitleProps } from "./components/puck/Title";
-import { ContainerConfig, ContainerProps } from "./components/puck/Container";
-import { ParagraphConfig, ParagraphProps } from "./components/puck/Paragraph";
-import { MasonryGridConfig, MasonryGridProps } from "./components/puck/MasonryGrid";
-import { BulletListConfig, BulletListProps } from "./components/puck/BulletList";
-import { LinkButtonConfig, LinkButtonProps } from "./components/puck/Button";
-import { MinimumColumnWidthGridConfig, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
-import { RootContainerConfig, RootContainerProps } from "./components/puck/RootContainer";
+import { PageHeaderConfig } from "./components/puck/PageHeader";
+import { CommitteeGridConfig } from "./components/puck/CommitteeGrid";
+import { HeaderContentConfig } from "./components/puck/HeaderContent";
+import { NavigationConfig } from "./components/puck/Navigation";
+import { ContentConfig } from "./components/puck/Content";
+import { FooterConfig } from "./components/puck/Footer";
+import { TitleConfig } from "./components/puck/Title";
+import { ContainerConfig } from "./components/puck/Container";
+import { ParagraphConfig } from "./components/puck/Paragraph";
+import { MasonryGridConfig } from "./components/puck/MasonryGrid";
+import { BulletListConfig } from "./components/puck/BulletList";
+import { LinkButtonConfig } from "./components/puck/Button";
+import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWidthGrid";
+import { RootContainerConfig } from "./components/puck/RootContainer";
 
-
-type Props = {
-  HeaderContent: HeaderContentProps;
-  Navigation: NavigationProps;
-  Content: ContentProps;
-  Footer: FooterProps;
-  CommitteeGrid: CommitteeGridProps;
-  PageHeader: PageHeaderProps;
-  Title: TitleProps;
-  Container: ContainerProps;
-  Paragraph: ParagraphProps;
-  MasonryGrid: MasonryGridProps;
-  BulletList: BulletListProps;
-  LinkButton: LinkButtonProps;
-  MinimumColumnWidthGrid: MinimumColumnWidthGridProps;
-  RootContainer: RootContainerProps;
-};
-
-export const config: Config<Props> = {
+export const config = {
   components: {
     HeaderContent: HeaderContentConfig,
     Navigation: NavigationConfig,
@@ -49,6 +31,6 @@ export const config: Config<Props> = {
     MinimumColumnWidthGrid: MinimumColumnWidthGridConfig,
     RootContainer: RootContainerConfig,
   },
-};
+} satisfies Config;
 
 export default config;
