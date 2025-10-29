@@ -1,6 +1,7 @@
 import { Field, ComponentConfig } from "@measured/puck";
 import React, { JSX } from "react";
 import { booleanSettingsField } from "../../lib/settings-fields";
+import clsx from "clsx";
 
 
 type TitleSize = 'main' | 'section' | 'subsection' | 'tertiary';
@@ -15,11 +16,20 @@ const titleSizeField: Field<TitleSize> = {
     ],
 } as const;
 
+
 export interface TitleProps {
     text: string;
     size: TitleSize;
     center?: boolean;
     uppercase?: boolean;
+}
+
+
+const TitleSizeTagStyles = {
+    main:       { tag: 'h1', styles: "text-3xl text-black" },
+    section:    { tag: 'h2', styles: "text-2xl text-sga-red" },
+    subsection: { tag: 'h3', styles: "text-xl text-black" },
+    tertiary:   { tag: 'h4', styles: "text-lg text-black" },
 }
 
 
@@ -29,28 +39,20 @@ export const Title: React.FC<TitleProps> = ({
     center = false,
     uppercase = true,
 }) => {
-    const sizeComponentMap = {
-        main: 'h1',
-        section: 'h2',
-        subsection: 'h3',
-        tertiary: 'h4',
-    }
-    const baseStyles = "font-bold leading-tight break-words"
-    const sizeStylesMap = {
-        main: "text-3xl text-black",
-        section: "text-2xl text-sga-red",
-        subsection: "text-xl text-black",
-        tertiary: "text-lg text-black",
-    }
-    const alignmentStyles = center ? "text-center" : "";
-    
-    const headingStyles = `${baseStyles} ${sizeStylesMap[size]} ${alignmentStyles} ${uppercase ? 'uppercase' : ''}`;
-    const HeadingComponent = sizeComponentMap[size] as keyof JSX.IntrinsicElements;
+    const { tag, styles } = TitleSizeTagStyles[size];
+
+    const headingStyles = clsx(
+        "font-bold leading-tight break-words",
+        styles,
+        center && "text-center",
+        uppercase && "uppercase"
+    )
+    const HeadingTag = tag as keyof JSX.IntrinsicElements;
 
     return (
-        <HeadingComponent className={headingStyles}>
+        <HeadingTag className={headingStyles}>
             {text}
-        </HeadingComponent>
+        </HeadingTag>
     )
 }
 
