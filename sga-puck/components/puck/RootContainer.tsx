@@ -1,4 +1,5 @@
-import { SlotComponent } from "@measured/puck"
+import { ComponentConfig, SlotComponent } from "@measured/puck"
+import { booleanSettingsField } from "../../lib/settings-fields";
 
 export interface RootContainerProps {
     content: SlotComponent;
@@ -20,5 +21,21 @@ export const RootContainer: React.FC<RootContainerProps> = ({
             <Content className="max-w-7xl mx-auto" />
         </div>
     )
-        
+
+}
+
+export const RootContainerConfig: ComponentConfig<RootContainerProps> = {
+    fields: {
+        content: { type: "slot" },
+        padTop: booleanSettingsField,
+        padBottom: booleanSettingsField,
+    },
+    defaultProps: {
+        content: null,
+        padTop: false,
+        padBottom: false,
+    },
+    render: (props) => {
+        return <RootContainer {...props} />;
+    }
 }

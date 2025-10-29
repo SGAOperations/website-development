@@ -1,3 +1,6 @@
+import { ComponentConfig } from "@measured/puck";
+import { paddingSettingsField, heightSettingsField, widthSettingsField } from "../../lib/settings-fields";
+
 const buttonStylesMap = {
     primary: "bg-sga-red hover:bg-sga-red-alt text-white rounded-lg p-4 flex items-center justify-center text-center",
     secondary: "bg-black text-white rounded-lg p-4 flex items-center justify-center text-center"
@@ -51,3 +54,29 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
         {label}
     </a>
 )
+
+export const LinkButtonConfig: ComponentConfig<LinkButtonProps> = {
+    fields: {
+        label: { type: "text" },
+        style: {
+            type: "select",
+            options: [
+                { label: "Primary", value: "primary" },
+                { label: "Secondary", value: "secondary" },
+            ]
+        },
+        href: { type: "text" },
+        padding: paddingSettingsField,
+        height: heightSettingsField,
+        width: widthSettingsField,
+    },
+    defaultProps: {
+        label: "Button",
+        style: "primary",
+        href: "#",
+        padding: "p-4",
+        height: "h-full",
+        width: "w-full",
+    },
+    render: (props) => <LinkButton {...props} />,
+}

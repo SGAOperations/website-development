@@ -6,13 +6,13 @@ import { Navigation } from "./components/puck/Navigation";
 import { Content } from "./components/puck/Content";
 import { Footer } from "./components/puck/Footer";
 import { Title, TitleConfig, TitleProps } from "./components/puck/Title";
-import { Container, ContainerProps } from "./components/puck/Container";
-import { Paragraph, ParagraphProps } from "./components/puck/Paragraph";
-import { MasonryGrid, MasonryGridProps } from "./components/puck/MasonryGrid";
-import { BulletList, BulletListProps } from "./components/puck/BulletList";
-import { LinkButton, LinkButtonProps } from "./components/puck/Button";
-import { MinimumColumnWidthGrid, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
-import { RootContainer, RootContainerProps } from "./components/puck/RootContainer";
+import { Container, ContainerConfig, ContainerProps } from "./components/puck/Container";
+import { Paragraph, ParagraphConfig, ParagraphProps } from "./components/puck/Paragraph";
+import { MasonryGrid, MasonryGridConfig, MasonryGridProps } from "./components/puck/MasonryGrid";
+import { BulletList, BulletListConfig, BulletListProps } from "./components/puck/BulletList";
+import { LinkButton, LinkButtonConfig, LinkButtonProps } from "./components/puck/Button";
+import { MinimumColumnWidthGrid, MinimumColumnWidthGridConfig, MinimumColumnWidthGridProps } from "./components/puck/MinimumColumnWidthGrid";
+import { RootContainer, RootContainerConfig, RootContainerProps } from "./components/puck/RootContainer";
 import { paddingSettingsField, gapSettingsField, outlineSettingsField, heightSettingsField, widthSettingsField, booleanSettingsField } from "./lib/settings-fields";
 
 type NavItem = {
@@ -490,140 +490,13 @@ export const config: Config<Props> = {
 
 
     Title: TitleConfig,
-    
-    Container: {
-      fields: {
-        content: { type: "slot" },
-        // TODO: Factor out these common options, like padding
-        padding: paddingSettingsField,
-        gap: gapSettingsField,
-        outline: outlineSettingsField
-      },
-      defaultProps: {
-        content: null,
-        padding: "p-10",
-        gap: "gap-6",
-      },
-      render: (props) => <Container {...props} />,
-    },
-
-    Paragraph: {
-      fields: {
-        text: { type: "textarea" },
-      },
-      defaultProps: {
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      render: (props) => <Paragraph {...props} />,
-    },
-
-    MasonryGrid: {
-      fields: {
-        content: { type: "slot" },
-        gap: gapSettingsField,
-        childrenBottomMargin: {
-          type: "select",
-          options: [ // TODO: make numerical or style based (i.e. small, medium, large)
-            { label: "None", value: "[&>*]:mb-0" },
-            { label: "Small (mb-2)", value: "[&>*]:mb-2" },
-            { label: "Medium (mb-4)", value: "[&>*]:mb-4" },
-          ]
-        }
-      },
-      defaultProps: {
-        content: null,
-        gap: "gap-4",
-        childrenBottomMargin: "mb-4",
-      },
-      render: (props) => <MasonryGrid {...props} />,
-    },
-
-    BulletList: {
-      fields: {
-        bullet: {
-          type: "select",
-          options: [
-            { label: "Disc", value: "disc" },
-            { label: "Decimal", value: "decimal" },
-            { label: "None", value: "none" },
-          ]
-        },
-        items: {
-          type: "array",
-          arrayFields: {
-            text: { type: "text" },
-          },
-        },
-      },
-      defaultProps: {
-        bullet: "disc",
-        items: [
-          { text: "First item" },
-          { text: "Second item" },
-          { text: "Third item" },
-        ],
-      },
-      render: (props) => <BulletList {...props} />,
-    },
-
-    LinkButton: {
-      fields: {
-        label: { type: "text" },
-        style: {
-          type: "select",
-          options: [
-            { label: "Primary", value: "primary" },
-            { label: "Secondary", value: "secondary" },
-          ]
-        },
-        href: { type: "text" },
-        padding: paddingSettingsField,
-        height: heightSettingsField,
-        width: widthSettingsField,
-      },
-      defaultProps: {
-        label: "Button",
-        style: "primary",
-        href: "#",
-        padding: "p-4",
-        height: "h-full",
-        width: "w-full",
-      },
-      render: (props) => <LinkButton {...props} />,
-    },
-
-    MinimumColumnWidthGrid: {
-      fields: {
-        content: { type: "slot" },
-        minimumColumnWidthPixels: {
-          type: "number",
-          label: "Minimum Column Width (in pixels)",
-        },
-        gap: gapSettingsField,
-      },
-      defaultProps: {
-        content: null,
-        minimumColumnWidthPixels: 250,
-        gap: "gap-4",
-      },
-      render: (props) => <MinimumColumnWidthGrid {...props} />,
-    },
-
-    RootContainer: {
-      fields: {
-        content: { type: "slot" },
-        padTop: booleanSettingsField,
-        padBottom: booleanSettingsField,
-      },
-      defaultProps: {
-        content: null,
-        padTop: false,
-        padBottom: false,
-      },
-      render: (props) => {
-        return <RootContainer {...props} />;
-      }
-    }
+    Container: ContainerConfig,
+    Paragraph: ParagraphConfig,
+    MasonryGrid: MasonryGridConfig,
+    BulletList: BulletListConfig,
+    LinkButton: LinkButtonConfig,
+    MinimumColumnWidthGrid: MinimumColumnWidthGridConfig,
+    RootContainer: RootContainerConfig,
   },
 };
 
