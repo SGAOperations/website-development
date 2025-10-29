@@ -1,6 +1,7 @@
+import { ComponentConfig } from '@measured/puck';
 import React from 'react';
 
-type FooterProps = {
+export type FooterProps = {
     showActionButtons?: boolean;
     actionButton1Text?: string;
     actionButton1Href?: string;
@@ -111,3 +112,70 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
     </footer>
 );
+
+
+export const FooterConfig: ComponentConfig<FooterProps> = {
+    fields: {
+        showActionButtons: {
+            type: "radio",
+            options: [
+                { label: "Show", value: true },
+                { label: "Hide", value: false },
+            ]
+        },
+        actionButton1Text: { type: "text" },
+        actionButton1Href: { type: "text" },
+        actionButton2Text: { type: "text" },
+        actionButton2Href: { type: "text" },
+        actionButton3Text: { type: "text" },
+        actionButton3Href: { type: "text" },
+        showSocialMedia: {
+            type: "radio",
+            options: [
+                { label: "Show", value: true },
+                { label: "Hide", value: false },
+            ]
+        },
+        socialMedia1Label: { type: "text" },
+        socialMedia1LogoSrc: { type: "text" },
+        socialMedia1LogoAlt: { type: "text" },
+        socialMedia2Label: { type: "text" },
+        socialMedia2LogoSrc: { type: "text" },
+        socialMedia2LogoAlt: { type: "text" },
+        socialMedia3Label: { type: "text" },
+        socialMedia3LogoSrc: { type: "text" },
+        socialMedia3LogoAlt: { type: "text" },
+        organizationName: { type: "text" },
+        organizationAddress: { type: "text" },
+        webmasterEmail: { type: "text" },
+        webmasterLabel: { type: "text" },
+        mediaInquiriesEmail: { type: "text" },
+        mediaInquiriesLabel: { type: "text" },
+    },
+    defaultProps: {
+        showActionButtons: true,
+        actionButton1Text: "GIVE FEEDBACK",
+        actionButton1Href: "#",
+        actionButton2Text: "MAILING LIST",
+        actionButton2Href: "#",
+        actionButton3Text: "GET INVOLVED",
+        actionButton3Href: "#",
+        showSocialMedia: true,
+        socialMedia1Label: "SGA",
+        socialMedia1LogoSrc: "",
+        socialMedia1LogoAlt: "SGA Instagram",
+        socialMedia2Label: "Campus Affairs",
+        socialMedia2LogoSrc: "",
+        socialMedia2LogoAlt: "Campus Affairs Instagram",
+        socialMedia3Label: "SGA",
+        socialMedia3LogoSrc: "",
+        socialMedia3LogoAlt: "SGA TikTok",
+        organizationName: "Northeastern University Student Government Association",
+        organizationAddress: "332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115",
+        webmasterEmail: "sgaOperations@northeastern.edu",
+        webmasterLabel: "Webmaster:",
+        mediaInquiriesEmail: "sgaExternalAffairs@northeastern.edu",
+        mediaInquiriesLabel: "Media Inquiries:",
+    },
+    render: (props) => <Footer {...props} />,
+}
