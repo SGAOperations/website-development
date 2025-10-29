@@ -6,17 +6,6 @@ import clsx from "clsx";
 
 type TitleSize = 'main' | 'section' | 'subsection' | 'tertiary';
 
-const titleSizeField: Field<TitleSize> = {
-    type: "select",
-    options: [
-        { label: "Main (h1)", value: "main" },
-        { label: "Section (h2)", value: "section" },
-        { label: "Subsection (h3)", value: "subsection" },
-        { label: "Tertiary (h4)", value: "tertiary" },
-    ],
-} as const;
-
-
 export interface TitleProps {
     text: string;
     size: TitleSize;
@@ -25,7 +14,10 @@ export interface TitleProps {
 }
 
 
-const TitleSizeTagStyles = {
+const SIZE_TO_TAG_STYLES: Record<TitleSize, {
+     tag: keyof JSX.IntrinsicElements; 
+     styles: string 
+}> = {
     main:       { tag: 'h1', styles: "text-3xl text-black" },
     section:    { tag: 'h2', styles: "text-2xl text-sga-red" },
     subsection: { tag: 'h3', styles: "text-xl text-black" },
@@ -39,7 +31,7 @@ export const Title: React.FC<TitleProps> = ({
     center = false,
     uppercase = true,
 }) => {
-    const { tag, styles } = TitleSizeTagStyles[size];
+    const { tag: HeadingTag, styles } = SIZE_TO_TAG_STYLES[size];
 
     const headingStyles = clsx(
         "font-bold leading-tight break-words",
@@ -47,7 +39,6 @@ export const Title: React.FC<TitleProps> = ({
         center && "text-center",
         uppercase && "uppercase"
     )
-    const HeadingTag = tag as keyof JSX.IntrinsicElements;
 
     return (
         <HeadingTag className={headingStyles}>
@@ -55,6 +46,17 @@ export const Title: React.FC<TitleProps> = ({
         </HeadingTag>
     )
 }
+
+
+const titleSizeField: Field<TitleSize> = {
+    type: "select",
+    options: [
+        { label: "Main (h1)", value: "main" },
+        { label: "Section (h2)", value: "section" },
+        { label: "Subsection (h3)", value: "subsection" },
+        { label: "Tertiary (h4)", value: "tertiary" },
+    ],
+} as const;
 
 
 export const TitleConfig: ComponentConfig<TitleProps> = {
