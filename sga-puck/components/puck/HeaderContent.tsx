@@ -1,5 +1,6 @@
 import { ComponentConfig } from '@measured/puck';
 import React from 'react';
+import { paddingSettingsField } from '../../lib/settings-fields';
 
 export type HeaderContentProps = {
     backgroundColor?: string;
@@ -64,16 +65,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
                 { label: "Transparent", value: "transparent" },
             ]
         },
-        padding: {
-            type: "select",
-            options: [
-                { label: "Small (p-2)", value: "p-2" },
-                { label: "Medium (p-3)", value: "p-3" },
-                { label: "Large (p-4)", value: "p-4" },
-                { label: "Extra Large (p-5)", value: "p-5" },
-                { label: "Extra Large (p-6)", value: "p-6" },
-            ]
-        },
+        padding: paddingSettingsField,
         titleText: { type: "text" },
         titleSize: {
             type: "select",
