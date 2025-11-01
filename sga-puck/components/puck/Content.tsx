@@ -1,6 +1,8 @@
+import { ComponentConfig } from '@measured/puck';
 import React from 'react';
+import { paddingSettingsField } from '../../lib/settings-fields';
 
-type ContentProps = {
+export type ContentProps = {
     backgroundColor?: string;
     padding?: string;
     minHeight?: string;
@@ -23,3 +25,38 @@ export const Content: React.FC<ContentProps> = ({
         </div>
     </div>
 );
+
+
+export const ContentConfig: ComponentConfig<ContentProps> = {
+    fields: {
+        backgroundColor: {
+            type: "select",
+            options: [
+                { label: "White", value: "#ffffff" },
+                { label: "Light Gray", value: "#f5f5f5" },
+                { label: "SGA Red", value: "#dc2626" },
+                { label: "Black", value: "#000000" },
+                { label: "Transparent", value: "transparent" },
+            ]
+        },
+        padding: paddingSettingsField,
+        minHeight: {
+            type: "select",
+            options: [
+                { label: "Auto", value: "min-h-0" },
+                { label: "Small (h-32)", value: "min-h-32" },
+                { label: "Medium (h-48)", value: "min-h-48" },
+                { label: "Large (h-64)", value: "min-h-64" },
+                { label: "Extra Large (h-96)", value: "min-h-96" },
+            ]
+        },
+        text: { type: "text" },
+    },
+    defaultProps: {
+        backgroundColor: "#ffffff",
+        padding: "p-8",
+        minHeight: "min-h-64",
+        text: "Content Block - Add your content here",
+    },
+    render: (props) => <Content {...props} />,
+}

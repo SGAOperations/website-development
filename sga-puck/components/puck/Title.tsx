@@ -1,11 +1,27 @@
+import { Field, ComponentConfig } from "@measured/puck";
 import React, { JSX } from "react";
+import { booleanSettingsField } from "../../lib/settings-fields";
+
+
+type TitleSize = 'main' | 'section' | 'subsection' | 'tertiary';
+
+const titleSizeField: Field<TitleSize> = {
+    type: "select",
+    options: [
+        { label: "Main (h1)", value: "main" },
+        { label: "Section (h2)", value: "section" },
+        { label: "Subsection (h3)", value: "subsection" },
+        { label: "Tertiary (h4)", value: "tertiary" },
+    ],
+} as const;
 
 export interface TitleProps {
     text: string;
-    size: 'main' | 'section' | 'subsection' | 'tertiary';
+    size: TitleSize;
     center?: boolean;
     uppercase?: boolean;
 }
+
 
 export const Title: React.FC<TitleProps> = ({
     text,
@@ -36,4 +52,21 @@ export const Title: React.FC<TitleProps> = ({
             {text}
         </HeadingComponent>
     )
+}
+
+
+export const TitleConfig: ComponentConfig<TitleProps> = {
+    fields: {
+        text: { type: "text" },
+        size: titleSizeField,
+        center: booleanSettingsField,
+        uppercase: booleanSettingsField,
+    },
+    defaultProps: {
+        text: "Title Text",
+        size: "main",
+        center: false,
+        uppercase: true,
+    },
+    render: (props) => <Title {...props} />,
 }
