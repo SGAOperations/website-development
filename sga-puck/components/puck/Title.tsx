@@ -1,7 +1,7 @@
 import { Field, ComponentConfig } from "@measured/puck";
 import React, { JSX } from "react";
 import { booleanSettingsField } from "../../lib/settings-fields";
-import clsx from "clsx";
+import { cn } from "../../lib/util";
 
 
 type TitleSize = 'main' | 'section' | 'subsection' | 'tertiary';
@@ -33,7 +33,7 @@ export const Title: React.FC<TitleProps> = ({
 }) => {
     const { tag: HeadingTag, styles } = SIZE_TO_TAG_STYLES[size];
 
-    const headingStyles = clsx(
+    const headingStyles = cn(
         "font-bold leading-tight break-words",
         styles,
         center && "text-center",

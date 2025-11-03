@@ -1,6 +1,6 @@
 import { ComponentConfig, SlotComponent } from "@measured/puck"
 import { booleanSettingsField } from "../../lib/settings-fields";
-import { clsx } from "clsx";
+import { cn } from "../../lib/util";
 
 export interface RootContainerProps {
     content: SlotComponent;
@@ -14,7 +14,7 @@ export const RootContainer: React.FC<RootContainerProps> = ({
     padBottom = false,
 }) => {
 
-    const styles = clsx(
+    const styles = cn(
         "w-full",
         "px-[clamp(1rem,4vw,4rem)]", // pad sides
         padTop && "pt-[clamp(1rem,4vw,4rem)]",

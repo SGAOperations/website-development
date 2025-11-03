@@ -1,6 +1,6 @@
 import { ComponentConfig, Field } from "@measured/puck";
 import { paddingSettingsField, heightSettingsField, widthSettingsField } from "../../lib/settings-fields";
-import clsx from "clsx";
+import { cn } from "../../lib/util";
 
 
 // TODO: Rename this "variant", ensure consistency across components
@@ -33,7 +33,7 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
 }) => (
     <a
         href={href}
-        className={clsx(
+        className={cn(
             VARIANT_TO_STYLES[style],
             padding,
             height,
