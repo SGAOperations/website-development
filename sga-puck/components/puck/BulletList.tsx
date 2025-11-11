@@ -1,6 +1,7 @@
+import { ComponentConfig } from "@measured/puck";
 import { JSX } from "react";
 
-export type BulletType = "disc" | "decimal" | "none" 
+export type BulletType = "disc" | "decimal" | "none"
 
 export interface BulletListProps {
     items: { text: string }[];
@@ -12,7 +13,7 @@ export const BulletList: React.FC<BulletListProps> = ({
     bullet = "disc"
 }) => {
     const ListComponent = bullet === "decimal" ? "ol" : "ul" as keyof JSX.IntrinsicElements;
-    
+
     const listStyleMap = {
         disc: "list-disc list-outside",
         decimal: "list-decimal list-outside",
@@ -28,5 +29,33 @@ export const BulletList: React.FC<BulletListProps> = ({
                 </li>
             ))}
         </ListComponent>
-    )   
+    )
+}
+
+export const BulletListConfig: ComponentConfig<BulletListProps> = {
+    fields: {
+        bullet: {
+            type: "select",
+            options: [
+                { label: "Disc", value: "disc" },
+                { label: "Decimal", value: "decimal" },
+                { label: "None", value: "none" },
+            ]
+        },
+        items: {
+            type: "array",
+            arrayFields: {
+                text: { type: "text" },
+            },
+        },
+    },
+    defaultProps: {
+        bullet: "disc",
+        items: [
+            { text: "First item" },
+            { text: "Second item" },
+            { text: "Third item" },
+        ],
+    },
+    render: (props) => <BulletList {...props} />,
 }

@@ -1,6 +1,7 @@
+import { ComponentConfig } from '@measured/puck';
 import React from 'react';
 
-interface CommitteeGridProps {
+export interface CommitteeGridProps {
     title?: string;
     committees?: Array<{ value: string }>;
 }
@@ -38,3 +39,31 @@ export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
 };
 
 export default CommitteeGrid;
+
+
+export const CommitteeGridConfig: ComponentConfig<CommitteeGridProps> = {
+    fields: {
+        title: { type: "text" },
+        committees: {
+            type: "array",
+            arrayFields: {
+                value: { type: "text" },
+            },
+        },
+    },
+    defaultProps: {
+        title: "COMMITTEE MEETINGS",
+        committees: [
+            { value: "ACADEMIC AFFAIRS" },
+            { value: "CAMPUS SERVICES" },
+            { value: "SUSTAINABILITY" },
+            { value: "GLOBAL EXPERIENCE" },
+            { value: "WELLNESS" },
+            { value: "STUDENT ENGAGEMENT" },
+            { value: "DIVERSITY, EQUITY, AND INCLUSION" },
+            { value: "COMMUNICATIONS AND EVENTS" },
+            { value: "STUDENT ORGANIZATION OPERATIONS" }
+        ],
+    },
+    render: (props) => <CommitteeGrid {...props} />,
+}

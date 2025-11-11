@@ -1,11 +1,13 @@
+import { ComponentConfig } from '@measured/puck';
 import React from 'react';
+import { paddingSettingsField } from '../../lib/settings-fields';
 
 type NavItem = {
     label: string;
     href: string;
 };
 
-type NavigationProps = {
+export type NavigationProps = {
     backgroundColor?: string;
     padding?: string;
     nav: Array<{
@@ -56,3 +58,118 @@ export const Navigation: React.FC<NavigationProps> = ({
         </header>
     </div>
 );
+
+
+export const NavigationConfig: ComponentConfig<NavigationProps> = {
+    fields: {
+        backgroundColor: {
+            type: "select",
+            options: [
+                { label: "Semi-transparent Black", value: "rgba(0, 0, 0, 0.5)" },
+                { label: "Solid Black", value: "#000000" },
+                { label: "Semi-transparent White", value: "rgba(255, 255, 255, 0.9)" },
+                { label: "SGA Red", value: "#dc2626" },
+                { label: "Transparent", value: "transparent" },
+            ]
+        },
+        padding: paddingSettingsField,
+        nav: {
+            type: "array",
+            arrayFields: {
+                label: { type: "text" },
+                items: {
+                    type: "array",
+                    arrayFields: {
+                        label: { type: "text" },
+                        href: { type: "text" },
+                    },
+                },
+            },
+        },
+    },
+    defaultProps: {
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        padding: "p-5",
+        nav: [
+            { label: "Home", items: [] },
+            {
+                label: "About",
+                items: [
+                    { label: "What is SGA?", href: "/about" },
+                    { label: "Structure", href: "/structure" },
+                    { label: "Divisions", href: "/divisions" },
+                    { label: "Leadership", href: "/leadership" },
+                    { label: "Our Projects", href: "/projects" },
+                    { label: "Meeting Minutes", href: "/meetings" },
+                    { label: "Governing Documents", href: "/documents" },
+                    { label: "In The Press", href: "/press" },
+                    { label: "Alumni", href: "/alumni" },
+                ],
+            },
+            {
+                label: "Get Involved",
+                items: [
+                    { label: "Overview", href: "/overview" },
+                    { label: "Join a Committee", href: "/committees" },
+                    { label: "Join a Board", href: "/boards" },
+                    { label: "Join a Working Group", href: "/working-groups" },
+                    { label: "Become a Senator", href: "/senators" },
+                    { label: "Leadership and Board Applications", href: "/leadership-and-board" },
+                    { label: "Mailing List", href: "/mailing-list" },
+                ],
+            },
+            {
+                label: "Senate",
+                items: [
+                    { label: "About", href: "/about" },
+                    { label: "Legislation", href: "/legislation" },
+                    { label: "Points of Information", href: "/points-of-information" },
+                    { label: "Resources", href: "/resources" },
+                ],
+            },
+            {
+                label: "Executive Branch",
+                items: [
+                    { label: "Office of the President", href: "/office-of-the-president" },
+                    { label: "Academic Affairs", href: "/academic-affairs" },
+                    { label: "Campus Affairs", href: "/campus-affairs" },
+                    { label: "Diversity, Equity, and Inclusion", href: "/diversity-equity-inclusion" },
+                    { label: "External Affairs", href: "/external-affairs" },
+                    { label: "Student Involvement", href: "/student-involvement" },
+                    { label: "Student Success", href: "/student-success" },
+                    { label: "Operational Affairs", href: "/operational-affairs" },
+                ],
+            },
+            {
+                label: "Judicial Branch",
+                items: [
+                    { label: "Operational Appeals Board", href: "/operational-appeals-board" },
+                    { label: "Appeal Process", href: "/appeal-process" },
+                ],
+            },
+            {
+                label: "Elections",
+                items: [
+                    { label: "Elections Board", href: "/elections-board" },
+                    { label: "Election", href: "/election" },
+                    { label: "Referenda", href: "/referenda" },
+                    { label: "Past Elections", href: "/past-elections" },
+                    { label: "How to Run", href: "/how-to-run" },
+                ],
+            },
+            {
+                label: "Student Organizations",
+                items: [
+                    { label: "Overview", href: "/overview" },
+                    { label: "Student Involvement", href: "/student-involvement" },
+                    { label: "Finance Board", href: "/finance-board" },
+                    { label: "Starting an Organization", href: "/starting-an-organization" },
+                    { label: "Funding", href: "/funding" },
+                    { label: "Policies", href: "/policies" },
+                    { label: "Resources", href: "/resources" },
+                ],
+            },
+        ],
+    },
+    render: (props) => <Navigation {...props} />,
+}

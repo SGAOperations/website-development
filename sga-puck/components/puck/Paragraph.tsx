@@ -1,3 +1,5 @@
+import { ComponentConfig } from "@measured/puck";
+
 export interface ParagraphProps {
     text: string;
 }
@@ -13,4 +15,14 @@ export const Paragraph: React.FC<ParagraphProps> = ({
     ))
 
     return <>{paragraphs}</>
+}
+
+export const ParagraphConfig: ComponentConfig<ParagraphProps> = {
+    fields: {
+        text: { type: "textarea" },
+    },
+    defaultProps: {
+        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    render: (props) => <Paragraph {...props} />,
 }
