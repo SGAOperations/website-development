@@ -7,7 +7,7 @@ interface CommitteeGridProps {
 
 export const CommitteeGrid: React.FC<CommitteeGridProps> = ({
     title,
-    committees
+    committees = [],
 }) => {
     const handleCommitteeClick = (committee: string) => {
         console.log(`Clicked on ${committee}`);

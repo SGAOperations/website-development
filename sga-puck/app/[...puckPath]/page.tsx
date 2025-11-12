@@ -24,7 +24,7 @@ export async function generateMetadata({
   const path = `/${puckPath.join("/")}`;
 
   return {
-    title: getPage(path)?.root.props?.title,
+    title: (await getPage(path))?.root.props?.title,
   };
 }
 
@@ -35,7 +35,7 @@ export default async function Page({
 }) {
   const { puckPath = [] } = await params;
   const path = `/${puckPath.join("/")}`;
-  const data = getPage(path);
+  const data = await getPage(path);
 
   if (!data) {
     return notFound();
