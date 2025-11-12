@@ -75,7 +75,6 @@ export function Client({
         fetchPageInfo();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
   // Close drafts panel when clicking outside
@@ -208,7 +207,7 @@ export function Client({
       // If we're editing an existing draft, include draftId to update it
       // For "save-draft": only update if it's not the published draft (to avoid accidentally modifying published content)
       // For "publish": always update if we have a draftId (including the published draft)
-      if (currentDraftId !== undefined && currentDraftId !== null && !isNaN(currentDraftId)) {
+      if (currentDraftId !== undefined) {
         const finalDraftIdNum = finalDraftId !== null ? finalDraftId : undefined;
         if (isPublish || (action === "save-draft" && currentDraftId !== finalDraftIdNum)) {
           payload.draftId = currentDraftId;

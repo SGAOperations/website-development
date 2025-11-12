@@ -22,6 +22,22 @@ export async function POST(request: Request) {
   //   hasData: !!payload.data,
   // });
 
+  // Validate pageName if provided
+  if (payload.pageName !== undefined) {
+    if (typeof payload.pageName !== "string") {
+      return NextResponse.json(
+        { error: "pageName must be a string" },
+        { status: 400 }
+      );
+    }
+    if (!payload.pageName.trim()) {
+      return NextResponse.json(
+        { error: "pageName cannot be empty or whitespace-only" },
+        { status: 400 }
+      );
+    }
+  }
+
   try {
     let pageId: number;
     let path: string;
@@ -78,7 +94,7 @@ export async function POST(request: Request) {
     // Handle draft operations
     if (action === "save-draft") {
       // If draftId is provided, update existing draft; otherwise create new one
-      if (payload.draftId !== undefined && payload.draftId !== null && typeof payload.draftId === "number") {
+      if (typeof payload.draftId === "number") {
         // Verify the draft belongs to the page
         const existingDraft = await getDraftById(payload.draftId);
 
@@ -110,8 +126,7 @@ export async function POST(request: Request) {
         });
       }
     } else if (action === "publish") {
-      // If draftId is provided, update and publish existing draft; otherwise create new one
-      if (payload.draftId !== undefined && payload.draftId !== null && typeof payload.draftId === "number") {
+      if (typeof payload.draftId === "number") {
         // Verify the draft belongs to the page
         const existingDraft = await getDraftById(payload.draftId);
 
