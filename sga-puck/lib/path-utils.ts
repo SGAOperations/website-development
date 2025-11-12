@@ -4,15 +4,15 @@
  * @returns The path (e.g., "/join-a-committee")
  */
 export function slugify(name: string): string {
-  return (
-    "/" +
+  const slug =
     name
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, "") // Remove special characters
       .replace(/[\s_]+/g, "-") // Replace spaces and underscores with hyphens
-      .replace(/^-+|-+$/g, "") // Remove leading/trailing hyphens
-  );
+      .replace(/-+/g, "-") // Collapse multiple hyphens
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  return "/" + (slug.length > 0 ? slug : "untitled");
 }
 
 /**
