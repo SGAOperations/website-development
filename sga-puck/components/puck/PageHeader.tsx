@@ -1,6 +1,7 @@
+import { ComponentConfig } from '@measured/puck';
 import React from 'react';
 
-interface PageHeaderProps {
+export interface PageHeaderProps {
     title?: string;
     subtitle?: string;
     description?: string;
@@ -49,3 +50,19 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 };
 
 export default PageHeader;
+
+export const PageHeaderConfig: ComponentConfig<PageHeaderProps> = {
+    fields: {
+        title: { type: "text" },
+        subtitle: { type: "text" },
+        description: { type: "textarea" },
+        additionalText: { type: "textarea" },
+    },
+    defaultProps: {
+        title: "JOIN A COMMITTEE",
+        subtitle: "",
+        description: "SGA Committees meet once a week to focus on a specific aspect of the student experience and work on projects related to improving an aspect of the university. They are open to all undergraduate Northeastern students on the Boston Campus, and no experience or commitment is necessary!",
+        additionalText: "To join a committee just show up! Find more information about each committee at the links below.",
+    },
+    render: (props) => <PageHeader {...props} />,
+}
