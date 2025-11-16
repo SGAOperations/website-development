@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { getAllPages } from "../lib/get-page";
 
-export default function RootPage() {
-	const all = getAllPages();
+export default async function RootPage() {
+	const all = await getAllPages();
 
 	if (!all) {
 		return (
 			<div className="p-6">
 				<h1>No pages found</h1>
-				<p>The local database.json does not exist or contains no pages.</p>
+				<p>No pages are currently stored in the database.</p>
 			</div>
 		);
 	}
