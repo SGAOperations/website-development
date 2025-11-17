@@ -1,4 +1,4 @@
-import { ComponentConfig, SlotComponent } from "@measured/puck"
+import { ComponentConfig, Field, SlotComponent } from "@measured/puck"
 import { gapSettingsField } from "../../lib/settings-fields";
 
 export interface MasonryGridProps {
@@ -19,18 +19,22 @@ export const MasonryGrid: React.FC<MasonryGridProps> = ({
     return <Content className={`columns-1 md:columns-2 lg:columns-3 ${gap} [&>*]:break-inside-avoid ${childrenBottomMargin}`} />
 }
 
+
+const childrenBottomMarginSettingsField: Field<string> = {
+    type: "select",
+    options: [ // TODO: make numerical or style based (i.e. small, medium, large)
+        { label: "None", value: "[&>*]:mb-0" },
+        { label: "Small (mb-2)", value: "[&>*]:mb-2" },
+        { label: "Medium (mb-4)", value: "[&>*]:mb-4" },
+    ]
+} as const;
+
+
 export const MasonryGridConfig: ComponentConfig<MasonryGridProps> = {
     fields: {
         content: { type: "slot" },
         gap: gapSettingsField,
-        childrenBottomMargin: {
-            type: "select",
-            options: [ // TODO: make numerical or style based (i.e. small, medium, large)
-                { label: "None", value: "[&>*]:mb-0" },
-                { label: "Small (mb-2)", value: "[&>*]:mb-2" },
-                { label: "Medium (mb-4)", value: "[&>*]:mb-4" },
-            ]
-        }
+        childrenBottomMargin: childrenBottomMarginSettingsField,
     },
     defaultProps: {
         content: null,
