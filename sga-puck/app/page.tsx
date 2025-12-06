@@ -17,6 +17,12 @@ export default async function RootPage() {
 
 	return (
 		<div className="p-6">
+			<div>
+				<Link href="/login" style={{ color: '#0070f3', textDecoration: 'underline' }}>
+					Login Page
+				</Link>
+			</div>
+
 			<h1>Pages</h1>
 			<ul>
 				{entries.map((path) => {

@@ -16,6 +16,8 @@ import { Client } from "./client";
 import { Metadata } from "next";
 import { getPage, getPageById, getDraftById } from "../../../lib/get-page";
 import { prisma } from "../../../lib/prisma";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -39,6 +41,13 @@ export default async function Page({
   params: Promise<{ puckPath: string[] }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get('auth-token');
+  
+  if (!authToken?.value) {
+    redirect('/login');
+  }
+
   const { puckPath = [] } = await params;
   const path = `/${puckPath.join("/")}`;
   const searchParamsResolved = await searchParams;

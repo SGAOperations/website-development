@@ -5,6 +5,7 @@ import { Puck } from "@measured/puck";
 import config from "../../../puck.config";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "../../../contexts/AuthContext";
 
 type Draft = {
   id: number;
@@ -27,6 +28,7 @@ export function Client({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { logout } = useAuth();
   const [isPublishing, setIsPublishing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastAction, setLastAction] = useState<"draft" | "publish" | null>(null);
@@ -324,6 +326,12 @@ export function Client({
     }
   };
 
+   const handleLogout = async () => {
+    if (confirm("Are you sure you want to log out?")) {
+      logout();
+    }
+  };
+
   return (
     <div>
       <div
@@ -547,6 +555,20 @@ export function Client({
             )}
           </div>
         )}
+        {/* LOGOUT BUTTON */}
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#ef4444",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
       </div>
       <div style={{ marginTop: "60px" }}>
         <Puck
