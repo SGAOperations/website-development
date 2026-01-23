@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createPageWithDraft } from "../../../../lib/draft-utils";
-import { Data } from "@measured/puck";
+import { Data } from "@puckeditor/core";
 
 /**
  * POST /puck/api/pages

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { createDraft, updateDraft, publishDraft, createPageWithDraft } from "../../../lib/draft-utils";
 import { slugify } from "../../../lib/path-utils";
-import { Data } from "@measured/puck";
+import { Data } from "@puckeditor/core";
 import { getDraftById, getPageById } from "../../../lib/get-page";
 
 export async function POST(request: Request) {

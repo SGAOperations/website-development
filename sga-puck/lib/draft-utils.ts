@@ -1,4 +1,4 @@
-import { Data } from "@measured/puck";
+import { Data } from "@puckeditor/core";
 import { prisma } from "./prisma";
 import { slugify } from "./path-utils";
 

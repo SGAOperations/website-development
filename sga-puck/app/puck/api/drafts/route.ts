@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDrafts, getDraftById } from "../../../../lib/get-page";
 import { createDraft } from "../../../../lib/draft-utils";
-import { Data } from "@measured/puck";
+import { Data } from "@puckeditor/core";
 import { prisma } from "../../../../lib/prisma";
 
 /**
