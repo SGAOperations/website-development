@@ -13,6 +13,8 @@ Each page can have multiple drafts, with one marked as the final (published) dra
 
 ## 1. Create a Database and User
 
+Install postgresql: https://www.postgresql.org/download/
+
 ```sh
 psql postgres
 CREATE DATABASE sga_db;
@@ -84,7 +86,13 @@ This will:
 - Migrate any existing page data from the old schema to the new draft system
 - Set up foreign key relationships
 
-If you see `ERROR: permission denied for schema public`, rerun the grants in step 1 with a superuser.
+If you see `ERROR: permission denied for schema public`, rerun the grants in step 1 with a superuser. (see below).
+
+```sh
+ALTER USER sga_puck_app WITH SUPERUSER;
+GRANT CONNECT ON DATABASE sga_db TO sga_puck_app;
+GRANT USAGE, CREATE ON SCHEMA public TO sga_puck_app;
+```
 
 **Note**: If you have existing pages in the database with the old schema (Page table with `data` column), the migration will automatically:
 - Create a `Draft` record for each existing page's data
