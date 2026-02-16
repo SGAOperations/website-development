@@ -15,6 +15,8 @@ Each page can have multiple drafts, with one marked as the final (published) dra
 
 Install postgresql: https://www.postgresql.org/download/
 
+(If using homebrew run `brew services start postgresql@15`)
+
 ```sh
 psql postgres
 CREATE DATABASE sga_db;
