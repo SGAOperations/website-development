@@ -21,12 +21,12 @@ export const Navigation: React.FC<NavigationProps> = ({
     padding,
     nav,
 }) => (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto relative top-0 ${padding}`}
             style={{ backgroundColor }}
         >
-            <div className="mt-4 w-full flex flex-wrap justify-center md:justify-around">
+            <div className="mt-4 w-full flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-10">
                 {nav.map((group, index) => (
                     <div key={index} className="relative group">
                         <div className="peer whitespace-nowrap inline-flex justify-center cursor-pointer px-3 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
