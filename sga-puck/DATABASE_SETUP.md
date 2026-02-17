@@ -15,7 +15,7 @@ Each page can have multiple drafts, with one marked as the final (published) dra
 
 Install postgresql: https://www.postgresql.org/download/
 
-(If using homebrew run `brew services start postgresql@15`)
+(Ensure postgres is running. On linux: `sudo systemctl start postgresql`, for Mac homebrew users: `brew services start postgresql@15`)
 
 ```sh
 psql postgres
