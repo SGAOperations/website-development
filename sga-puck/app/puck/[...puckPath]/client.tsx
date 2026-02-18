@@ -1,7 +1,7 @@
 "use client";
 
-import type { Data } from "@measured/puck";
-import { Puck } from "@measured/puck";
+import type { Data } from "@puckeditor/core";
+import { Puck } from "@puckeditor/core";
 import config from "../../../puck.config";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";

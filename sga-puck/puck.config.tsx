@@ -1,4 +1,4 @@
-import type { Config } from "@measured/puck";
+import type { Config } from "@puckeditor/core";
 import { PageHeaderConfig } from "./components/puck/PageHeader";
 import { CommitteeGridConfig } from "./components/puck/CommitteeGrid";
 import { HeaderContentConfig } from "./components/puck/HeaderContent";

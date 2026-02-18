@@ -1,4 +1,4 @@
-import { ComponentConfig } from "@measured/puck";
+import { ComponentConfig } from "@puckeditor/core";
 import { JSX } from "react";
 
 export type BulletType = "disc" | "decimal" | "none"

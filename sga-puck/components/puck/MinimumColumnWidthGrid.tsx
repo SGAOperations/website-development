@@ -1,4 +1,4 @@
-import { ComponentConfig, SlotComponent } from "@measured/puck";
+import { ComponentConfig, SlotComponent } from "@puckeditor/core";
 import { gapSettingsField } from "../../lib/settings-fields";
 
 export interface MinimumColumnWidthGridProps {

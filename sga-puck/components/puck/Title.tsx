@@ -1,4 +1,4 @@
-import { Field, ComponentConfig } from "@measured/puck";
+import { Field, ComponentConfig } from "@puckeditor/core";
 import React, { JSX } from "react";
 import { booleanSettingsField } from "../../lib/settings-fields";
 
