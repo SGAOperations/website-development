@@ -136,7 +136,6 @@ export function DraftPluginContainer() {
         isLoading={isLoading}
         currentDraftId={currentDraftId}
         publishedDraftId={finalDraftId}
-        hasUnsavedChanges={true}
         onLoadDraft={handleLoadDraft}
         onDeleteDraft={handleDeleteDraft}
       />
