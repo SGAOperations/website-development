@@ -29,13 +29,17 @@ export function DraftListPanel({
         Drafts ({drafts.length})
       </div>
 
-      {isLoading ? (
+      {isLoading ? 
+      (
         <div className="text-xs text-gray-500 text-center py-2">Loading...</div>
-      ) : drafts.length === 0 ? (
+      ) :
+       drafts.length === 0 ? 
+      (
         <div className="text-xs text-gray-500 text-center py-2">
           No drafts found
         </div>
-      ) : (
+      ) : 
+      (
         <div className="space-y-1 max-h-96 overflow-y-auto">
           {drafts.map((draft) => {
             const isPublished = draft.id === publishedDraftId;
@@ -68,12 +72,7 @@ export function DraftListPanel({
                           Current
                         </span>
                       )}
-
-                      {/* {hasUnsavedChanges && isCurrent && (
-                        <span className="px-2 py-0.5 bg-yellow-500 text-white rounded text-xs">
-                          Unsaved
-                        </span>
-                      )} */}
+                      
                     </div>
 
                     <div className="text-xs text-gray-500 mt-1">

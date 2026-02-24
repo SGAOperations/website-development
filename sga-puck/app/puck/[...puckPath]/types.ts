@@ -25,4 +25,4 @@ export type UseDraftStateReturn = {
   deleteDraft: (draftId: number) => Promise<void>;
   createNewDraft: () => Promise<void>;
   updateData: (newData: Data) => void;
-};
+}; 

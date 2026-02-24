@@ -19,13 +19,11 @@ export function useDraftContext() {
 }
 
 export function Client({
-  path,
   data,
   pageId,
   draftId,
   finalDraftId,
 }: {
-  path: string;
   data: Partial<Data>;
   pageId?: number;
   draftId?: number;

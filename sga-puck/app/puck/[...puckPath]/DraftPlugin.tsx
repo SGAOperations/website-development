@@ -8,4 +8,3 @@ export const DraftPlugin: Plugin = {
   icon: <PencilLine />,
   render: DraftPluginContainer,
 };
-

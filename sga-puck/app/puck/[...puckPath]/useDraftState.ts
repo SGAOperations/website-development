@@ -126,7 +126,6 @@ export function useDraftState({
         payload.pageId = pageId;
       }
 
-      // Always include draftId if we have a currentDraftId (whether it's the published draft or a working draft)
       if (currentDraftId !== undefined) {
         payload.draftId = currentDraftId;
       }

@@ -34,10 +34,10 @@ export function DraftToolbar({
       <div className="flex gap-2">
         <button
           onClick={onSaveDraft}
-          disabled={isLoading}
+          disabled={isLoading || !isDraft}
           className="flex-1 px-3 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
-          {isSaving ? "Saving..." : isDraft ? "Update Draft" : "Save Draft"}
+          {isSaving ? "Saving..." : "Update Draft"}
         </button>
 
         <button

@@ -4,7 +4,7 @@ export interface ConfirmDialogProps {
   message: string;
   isDangerous?: boolean;
   onConfirm?: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
 export function ConfirmDialog({
@@ -25,6 +25,7 @@ export function ConfirmDialog({
       // Auto-dismiss non-dangerous notifications after 4 seconds
       const timer = setTimeout(() => {
         setIsVisible(false);
+        handleCancel?.();
       }, 4000);
 
       return () => clearTimeout(timer);
@@ -41,7 +42,7 @@ export function ConfirmDialog({
   };
 
   const handleCancel = () => {
-    onCancel?.();
+    onCancel();
     setIsVisible(false);
   };
 

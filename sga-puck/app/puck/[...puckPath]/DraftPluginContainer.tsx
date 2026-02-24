@@ -1,6 +1,5 @@
 "use client";
 
-import type { Data } from "@puckeditor/core";
 import { createUsePuck } from "@puckeditor/core";
 import { useState } from "react";
 import { useDraftContext } from "./client";
@@ -18,7 +17,7 @@ export function DraftPluginContainer() {
   // Get pageId, draftId, and finalDraftId from context
   const { pageId, draftId: draftIdFromContext, finalDraftId: finalDraftIdFromContext } = useDraftContext();
 
-  // State for UI
+  // State for notifications and confirmations dialogs
   const [notification, setNotification] = useState<string | null>(null);
   const [pendingConfirmation, setPendingConfirmation] = useState<{
     type: "delete" | "createDraft";
@@ -26,7 +25,6 @@ export function DraftPluginContainer() {
   } | null>(null);
 
   const {
-    currentData,
     drafts,
     currentDraftId,
     finalDraftId,
@@ -47,10 +45,8 @@ export function DraftPluginContainer() {
 
   const handleSaveDraft = async () => {
     try {
-      // Dispatch to Puck first (optimistic update)
-      dispatch({ type: "setData", data });
-      // Then save to backend
       await saveDraftToBackend(data);
+      dispatch({ type: "setData", data });
       setNotification("Saved");
     } catch (error: any) {
       setNotification(`Error: ${error.message}`);
@@ -59,10 +55,8 @@ export function DraftPluginContainer() {
 
   const handlePublish = async () => {
     try {
-      // Dispatch to Puck first
-      dispatch({ type: "setData", data });
-      // Then publish to backend
       await publishDraftToBackend(data);
+      dispatch({ type: "setData", data });
       setNotification("Published");
     } catch (error: any) {
       setNotification(`Error: ${error.message}`);
@@ -114,9 +108,6 @@ export function DraftPluginContainer() {
   };
 
   const isDraft = currentDraftId !== undefined && currentDraftId !== finalDraftId;
-
-  // Check if current draft has unsaved changes by comparing current Puck data with last saved data
-  const hasUnsavedChanges = JSON.stringify(data) !== JSON.stringify(currentData);
 
   return (
     <div className="flex flex-col gap-4 p-4 text-sm">
