@@ -1,7 +1,6 @@
 import type { Draft } from "./types";
 
 export interface DraftListPanelProps {
-  isOpen: boolean;
   drafts: Draft[];
   isLoading: boolean;
   currentDraftId?: number;
@@ -11,7 +10,6 @@ export interface DraftListPanelProps {
 }
 
 export function DraftListPanel({
-  isOpen,
   drafts,
   isLoading,
   currentDraftId,
@@ -19,9 +17,6 @@ export function DraftListPanel({
   onLoadDraft,
   onDeleteDraft,
 }: DraftListPanelProps) {
-  if (!isOpen) {
-    return null;
-  }
 
   return (
     <div className="border-t border-gray-200 pt-3">
@@ -72,7 +67,7 @@ export function DraftListPanel({
                           Current
                         </span>
                       )}
-                      
+
                     </div>
 
                     <div className="text-xs text-gray-500 mt-1">

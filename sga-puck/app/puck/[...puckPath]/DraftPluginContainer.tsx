@@ -122,7 +122,6 @@ export function DraftPluginContainer() {
       />
 
       <DraftListPanel
-        isOpen={true}
         drafts={drafts}
         isLoading={isLoading}
         currentDraftId={currentDraftId}
