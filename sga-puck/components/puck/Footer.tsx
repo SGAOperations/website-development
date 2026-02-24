@@ -54,10 +54,10 @@ export const Footer: React.FC<FooterProps> = ({
 }) => (
     <footer className="bg-black relative bottom-0 left-0 w-screen text-center overflow-hidden mx-0 px-0">
         {showActionButtons && (
-            <div className="button-container flex justify-center items-center pt-10">
-                <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton1Text}</button>
-                <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton2Text}</button>
-                <button className="button bg-black text-white border-2 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton3Text}</button>
+            <div className="flex justify-center items-center pt-10 gap-5">
+                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton1Text}</button>
+                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton2Text}</button>
+                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton3Text}</button>
             </div>
         )}
 
