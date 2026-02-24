@@ -6,172 +6,99 @@ import { slugify } from "../../../lib/path-utils";
 import { Data } from "@puckeditor/core";
 import { getDraftById, getPageById } from "../../../lib/get-page";
 
-export async function POST(request: Request) {
-  const payload = await request.json();
+type Action = "save-draft" | "publish"
 
-  // Backward compatibility: if no action specified, treat as publish
-  const action = payload.action || "publish";
-
-  // console.log("API received payload:", {
-  //   action,
-  //   hasPageId: !!payload.pageId,
-  //   hasPath: !!payload.path,
-  //   hasPageName: !!payload.pageName,
-  //   hasDraftId: payload.draftId !== undefined,
-  //   draftId: payload.draftId,
-  //   hasData: !!payload.data,
-  // });
-
-  // Validate pageName if provided
-  if (payload.pageName !== undefined) {
-    if (typeof payload.pageName !== "string") {
-      return NextResponse.json(
-        { error: "pageName must be a string" },
-        { status: 400 }
-      );
-    }
-    if (!payload.pageName.trim()) {
-      return NextResponse.json(
-        { error: "pageName cannot be empty or whitespace-only" },
-        { status: 400 }
-      );
-    }
+type Payload = 
+  | {
+    action: Action;
+    pageId: number;
+    draftId?: number;
+    data: Data;
+  }
+  | {
+    action: Action;
+    pageName: string;
+    data: Data;
   }
 
+class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message)
+  }
+}
+
+async function resolvePage(pageId: number) {
+  const page = await getPageById(pageId)
+  if (!page) throw new ApiError("Page not found", 404);
+  return page;
+}
+
+async function createNewPage(payload: Extract<Payload, { pageName: string }>) {
+  const path = slugify(payload.pageName);
+  const page = await createPageWithDraft(
+    payload.pageName,
+    payload.data,
+    payload.action === "publish"
+  )
+
+  if (payload.action === "publish") {
+    revalidatePath(path)
+  }
+
+  return {
+    pageId: page.id,
+    draftId: page.finalDraftId,
+    path,
+  }
+}
+
+async function upsertDraft(pageId: number, draftId: number | undefined, data: Data) {
+  if (draftId) {
+    const existing = await getDraftById(draftId)
+    if (!existing) throw new ApiError("Draft not found", 404)
+    
+    const draft = await updateDraft(draftId, data);
+    return { draftId: draft.id, updated: true }
+  }
+
+  const draft = await createDraft(pageId, data)
+  return { draftId: draft.id, updated: false }
+}
+
+export async function POST(request: Request) {
   try {
-    let pageId: number;
-    let path: string;
+    const payload: Payload = await request.json()
 
-    // Determine page and path
-    if (payload.pageId) {
-      // Existing page
-      const page = await getPageById(payload.pageId);
-      if (!page) {
-        return NextResponse.json({ error: "Page not found" }, { status: 404 });
-      }
-      pageId = page.id;
-      path = page.path;
-    } else if (payload.pageName) {
-      // New page
-      path = slugify(payload.pageName);
-      const newPage = await createPageWithDraft(
-        payload.pageName,
-        payload.data,
-        action === "publish"
-      );
-      pageId = newPage.id;
-
-      if (action === "publish") {
-        revalidatePath(path);
-      }
-
+    if ("pageName" in payload) {
+      const reuslt = await createNewPage(payload);
       return NextResponse.json({
         status: "ok",
-        pageId: newPage.id,
-        draftId: newPage.finalDraftId,
-        path,
-      });
-    } else if (payload.path) {
-      // Backward compatibility: find page by path
-      const page = await prisma.page.findUnique({
-        where: { path: payload.path },
-      });
-      if (!page) {
-        return NextResponse.json(
-          { error: "Page not found. Use pageName to create a new page." },
-          { status: 404 }
-        );
-      }
-      pageId = page.id;
-      path = page.path;
-    } else {
-      return NextResponse.json(
-        { error: "Either pageId, pageName, or path is required" },
-        { status: 400 }
-      );
+        ...reuslt,
+      })
     }
 
-    // Handle draft operations
-    if (action === "save-draft") {
-      // If draftId is provided, update existing draft; otherwise create new one
-      if (typeof payload.draftId === "number") {
-        // Verify the draft belongs to the page
-        const existingDraft = await getDraftById(payload.draftId);
+    const page = await resolvePage(payload.pageId);
+    const { draftId, updated } = await upsertDraft(page.id, payload.draftId, payload.data)
 
-        if (!existingDraft) {
-          return NextResponse.json(
-            { error: "Draft not found or does not belong to this page" },
-            { status: 404 }
-          );
-        }
-
-        // Update existing draft
-        const draft = await updateDraft(payload.draftId, payload.data);
-        return NextResponse.json({
-          status: "ok",
-          draftId: draft.id,
-          pageId,
-          path,
-          updated: true,
-        });
-      } else {
-        // Create a new draft
-        const draft = await createDraft(pageId, payload.data);
-        return NextResponse.json({
-          status: "ok",
-          draftId: draft.id,
-          pageId,
-          path,
-          updated: false,
-        });
-      }
-    } else if (action === "publish") {
-      if (typeof payload.draftId === "number") {
-        // Verify the draft belongs to the page
-        const existingDraft = await getDraftById(payload.draftId);
-
-        if (!existingDraft) {
-          return NextResponse.json(
-            { error: "Draft not found or does not belong to this page" },
-            { status: 404 }
-          );
-        }
-
-        // Update existing draft and publish it
-        const draft = await updateDraft(payload.draftId, payload.data);
-        await publishDraft(pageId, draft.id);
-        revalidatePath(path);
-        return NextResponse.json({
-          status: "ok",
-          draftId: draft.id,
-          pageId,
-          path,
-          updated: true,
-        });
-      } else {
-        // Create draft and publish it
-        const draft = await createDraft(pageId, payload.data);
-        await publishDraft(pageId, draft.id);
-        revalidatePath(path);
-        return NextResponse.json({
-          status: "ok",
-          draftId: draft.id,
-          pageId,
-          path,
-          updated: false,
-        });
-      }
-    } else {
-      return NextResponse.json(
-        { error: "Invalid action. Use 'save-draft' or 'publish'" },
-        { status: 400 }
-      );
+    if (payload.action === "publish") {
+      await publishDraft(page.id, draftId);
+      revalidatePath(page.path);
     }
+
+    return NextResponse.json({
+      status: "ok",
+      pageId: page.id,
+      draftId,
+      path: page.path,
+      updated,
+    })
   } catch (error: any) {
     console.error("Failed to persist page", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to persist page" },
-      { status: 500 }
-    );
+    
+    if (error instanceof ApiError) {
+      return NextResponse.json({ error: error.message }, { status: error.status })
+    }
+
+    return NextResponse.json({ error: "Failed to persist page" }, { status: 500 });
   }
 }
