@@ -7,23 +7,26 @@ import { useState, createContext, useContext } from "react";
 import { DraftPlugin } from "./DraftPlugin";
 
 type DraftContextType = {
+  path: string;
   pageId?: number;
   draftId?: number;
   finalDraftId?: number;
 };
 
-const DraftContext = createContext<DraftContextType>({});
+const DraftContext = createContext<DraftContextType>({ path: "" });
 
 export function useDraftContext() {
   return useContext(DraftContext);
 }
 
 export function Client({
+  path,
   data,
   pageId,
   draftId,
   finalDraftId,
 }: {
+  path: string;
   data: Partial<Data>;
   pageId?: number;
   draftId?: number;
@@ -32,7 +35,7 @@ export function Client({
   const [currentData, setCurrentData] = useState<Data>(data as Data);
 
   return (
-    <DraftContext.Provider value={{ pageId, draftId, finalDraftId }}>
+    <DraftContext.Provider value={{ path, pageId, draftId, finalDraftId }}>
       <Puck
         config={config}
         data={currentData}
