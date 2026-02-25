@@ -14,8 +14,8 @@ export function DraftPluginContainer() {
   const data = usePuck((s) => s.appState.data);
   const dispatch = usePuck((s) => s.dispatch);
 
-  // Get pageId, draftId, and finalDraftId from context
-  const { pageId, draftId: draftIdFromContext, finalDraftId: finalDraftIdFromContext } = useDraftContext();
+  // Get path, pageId, draftId, and finalDraftId from context
+  const { path, pageId, draftId: draftIdFromContext, finalDraftId: finalDraftIdFromContext } = useDraftContext();
 
   // State for notifications and confirmations dialogs
   const [notification, setNotification] = useState<string | null>(null);
@@ -37,6 +37,7 @@ export function DraftPluginContainer() {
     createNewDraft,
     loadDraft,
   } = useDraftState({
+    path,
     pageId,
     initialDraftId: draftIdFromContext,
     initialFinalDraftId: finalDraftIdFromContext,

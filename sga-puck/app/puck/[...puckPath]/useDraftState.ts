@@ -2,13 +2,16 @@ import type { Data } from "@puckeditor/core";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Draft, UseDraftStateReturn } from "./types";
+import { unslugify } from "../../../lib/path-utils";
 
 export function useDraftState({
+  path,
   pageId,
   initialDraftId,
   initialFinalDraftId,
   initialData,
 }: {
+  path: string;
   pageId?: number;
   initialDraftId?: number;
   initialFinalDraftId?: number;
@@ -124,6 +127,8 @@ export function useDraftState({
 
       if (pageId) {
         payload.pageId = pageId;
+      } else if (path) {
+        payload.pageName = unslugify(path);
       }
 
       if (currentDraftId !== undefined) {
@@ -150,6 +155,10 @@ export function useDraftState({
         const currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set("draftId", result.draftId.toString());
         router.push(currentUrl.pathname + currentUrl.search);
+        // If a new page was created, refresh to get the new pageId
+        if (!pageId && result.pageId) {
+          router.refresh();
+        }
       }
 
       // Refresh drafts list
@@ -176,6 +185,8 @@ export function useDraftState({
 
       if (pageId) {
         payload.pageId = pageId;
+      } else if (path) {
+        payload.pageName = unslugify(path);
       }
 
       if (currentDraftId !== undefined) {
@@ -200,6 +211,11 @@ export function useDraftState({
       // If a draft was published, update the finalDraftId
       if (result.draftId) {
         setFinalDraftId(result.draftId);
+      }
+
+      // If a new page was created, refresh to get the new pageId
+      if (!pageId && result.pageId) {
+        router.refresh();
       }
 
       // Refresh drafts list and page info
