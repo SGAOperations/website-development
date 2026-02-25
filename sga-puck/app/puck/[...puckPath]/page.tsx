@@ -14,7 +14,7 @@
 import "@puckeditor/core/puck.css";
 import { Client } from "./client";
 import { Metadata } from "next";
-import { getPage, getPageById, getDraftById } from "../../../lib/get-page";
+import { getPageById, getDraftById } from "../../../lib/get-page";
 import { prisma } from "../../../lib/prisma";
 
 export async function generateMetadata({
@@ -127,7 +127,6 @@ export default async function Page({
   return (
     <Client
       key={`${path}-${draftId || 'no-draft'}`} // Force re-render when draftId changes
-      path={path}
       data={data || {}}
       pageId={pageId}
       draftId={draftId}
