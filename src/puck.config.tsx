@@ -13,6 +13,7 @@ import { BulletListConfig } from "./components/puck/BulletList";
 import { LinkButtonConfig } from "./components/puck/Button";
 import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWidthGrid";
 import { RootContainerConfig } from "./components/puck/RootContainer";
+import { SplitPaneConfig  } from "./components/puck/SplitPane";
 
 export const config = {
   categories: {
@@ -36,6 +37,7 @@ export const config = {
         "Content",
         "Footer",
         "HeaderContent",
+        "SplitPane",
       ],
     },
   },
@@ -55,6 +57,7 @@ export const config = {
     LinkButton: LinkButtonConfig,
     MinimumColumnWidthGrid: MinimumColumnWidthGridConfig,
     RootContainer: RootContainerConfig,
+    SplitPane: SplitPaneConfig
   },
 } satisfies Config;
 
