@@ -1,6 +1,6 @@
 import { ComponentConfig } from '@puckeditor/core';
 import React from 'react';
-import { paddingSettingsField } from '../../lib/settings-fields';
+import { paddingSettingsField, backgroundColorSettingField } from '../../lib/settings-fields';
 
 export type ContentProps = {
     backgroundColor?: string;
@@ -29,16 +29,7 @@ export const Content: React.FC<ContentProps> = ({
 
 export const ContentConfig: ComponentConfig<ContentProps> = {
     fields: {
-        backgroundColor: {
-            type: "select",
-            options: [
-                { label: "White", value: "#ffffff" },
-                { label: "Light Gray", value: "#f5f5f5" },
-                { label: "SGA Red", value: "#dc2626" },
-                { label: "Black", value: "#000000" },
-                { label: "Transparent", value: "transparent" },
-            ]
-        },
+        backgroundColor: backgroundColorSettingField,
         padding: paddingSettingsField,
         minHeight: {
             type: "select",

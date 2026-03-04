@@ -8,6 +8,17 @@ export const booleanSettingsField: Field<boolean> = {
   ]
 } as const
 
+export const backgroundColorSettingField: Field<string> = {
+  type: "select",
+  options: [
+    { label: "White", value: "#ffffff" },
+    { label: "Light Gray", value: "#f5f5f5" },
+    { label: "SGA Red", value: "#dc2626" },
+    { label: "Black", value: "#000000" }, 
+    { label: "Transparent", value: "transparent" },
+  ]
+}
+
 export const gapSettingsField: Field<string> = {
   type: "select",
   options: [

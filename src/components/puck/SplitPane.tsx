@@ -1,5 +1,5 @@
 import { ComponentConfig, PuckContext, SlotComponent} from "@puckeditor/core"
-import { gapSettingsField } from "../../lib/settings-fields";
+import { backgroundColorSettingField, gapSettingsField } from "../../lib/settings-fields";
 
 export interface SplitPaneProps {
     paneOneContent: SlotComponent,
@@ -7,7 +7,8 @@ export interface SplitPaneProps {
     direction?: string,
     paneOneRatio?: number,
     paneTwoRatio?: number,
-    gap?: string;
+    gap?: string
+    backgroundColor?: string;
 }
 
 export interface SplitPanePropsForRender extends SplitPaneProps {
@@ -17,31 +18,22 @@ export interface SplitPanePropsForRender extends SplitPaneProps {
 export const SplitPane: React.FC<SplitPanePropsForRender> = ({
     paneOneContent: ContentOne,
     paneTwoContent: ContentTwo,
-    direction = "horizontal",
+    direction = "md:flex-row",
     paneOneRatio = 1,
     paneTwoRatio = 4,
     gap = "gap-4",
+    backgroundColor = "#ffffff",
     puck
 }) => {
 
-    if (direction === "vertical") {
-        return <div ref={puck.dragRef} className={`grid grid-cols-1 ${gap}`}>
-            <ContentOne />
-            <ContentTwo  />
+    return <div ref={puck.dragRef} className={`${gap} flex flex-col ${direction}`} style={{backgroundColor}}>
+            <div style={{flex: paneOneRatio}}>
+                <ContentOne />
             </div>
-    }
-
-    // DO NOT DELETE. The below comments are required for the design to work properly.
-    // Tailwind doesn't support dynamic class names, so we need to predefine all possible classes for the split pane. 
-    // "md:grid-cols-1 md:grid-cols-2 md:grid-cols-3 md:grid-cols-4 md:grid-cols-5 md:grid-cols-6 md:grid-cols-7 md:grid-cols-8 md:grid-cols-9 md:grid-cols-10 md:grid-cols-11 md:grid-cols-12 " +
-    // "md:col-start-1 md:col-start-2 md:col-start-3 md:col-start-4 md:col-start-5 md:col-start-6 md:col-start-7 md:col-start-8 md:col-start-9 md:col-start-10 md:col-start-11 md:col-start-12 " +
-    // "md:col-end-1 md:col-end-2 md:col-end-3 md:col-end-4 md:col-end-5 md:col-end-6 md:col-end-7 md:col-end-8 md:col-end-9 md:col-end-10 md:col-end-11 md:col-end-12 " 
-    
-    const totalSize = paneOneRatio + paneTwoRatio
-    return <div ref={puck.dragRef} className={`grid ${gap} grid-cols-1 md:grid-cols-${totalSize}`}>
-            <ContentOne className={`md:col-start-1 md:col-end-${paneOneRatio + 1}`}/>
-            <ContentTwo className={`md:col-start-${paneOneRatio + 1} md:col-end-${totalSize + 1}`} />
+            <div style={{flex: paneTwoRatio}}>
+                <ContentTwo />
             </div>
+             </div>
 }
 export const SplitPaneConfig: ComponentConfig<SplitPaneProps> = {
     inline: true,
@@ -49,11 +41,12 @@ export const SplitPaneConfig: ComponentConfig<SplitPaneProps> = {
         paneOneContent: { type: "slot" },
         paneTwoContent: { type: "slot" },
         gap: gapSettingsField,
+        backgroundColor: backgroundColorSettingField,
         direction: {
             type: "radio",
             options: [ 
-                { label: "horizontal", value: "horizontal" },
-                { label: "vertical", value: "vertical" }
+                { label: "horizontal", value: "md:flex-row" },
+                { label: "vertical", value: "md:flex-col" }
             ]
         },
         paneOneRatio: {
@@ -69,7 +62,8 @@ export const SplitPaneConfig: ComponentConfig<SplitPaneProps> = {
         paneOneContent: null,
         paneTwoContent: null,
         gap: "gap-4",
-        direction: "horizontal",
+        backgroundColor: "#ffffff",
+        direction: "md:flex-row",
         paneOneRatio: 1,
         paneTwoRatio: 4
     },
