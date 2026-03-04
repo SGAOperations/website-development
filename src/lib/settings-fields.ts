@@ -28,6 +28,7 @@ export const gapSettingsField: Field<string> = {
     { label: "Large (gap-6)", value: "gap-6" },
     { label: "Extra Large (gap-8)", value: "gap-8" },
     { label: "Supersize (gap-16)", value: "gap-16" },
+    { label: "Godzilla (gap-32)", value: "gap-32" },
   ],
 } as const;
 
