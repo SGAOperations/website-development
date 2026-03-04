@@ -3,12 +3,13 @@ import { paddingSettingsField, heightSettingsField, widthSettingsField } from ".
 
 const buttonStylesMap = {
     primary: "bg-sga-red hover:bg-sga-red-alt text-white rounded-lg p-4 flex items-center justify-center text-center",
-    secondary: "bg-black text-white rounded-lg p-4 flex items-center justify-center text-center"
+    secondary: "bg-black text-white rounded-lg p-4 flex items-center justify-center text-center",
+    tertiary: "bg-white text-sga-red rounded-lg p-4 flex items-center justify-center text-center"
 };
 
 interface BaseButtonProps {
     label: string;
-    style: "primary" | "secondary";
+    style: "primary" | "secondary" | "tertiary";
     padding: string;
     height: string;
     width: string;
@@ -61,8 +62,9 @@ export const LinkButtonConfig: ComponentConfig<LinkButtonProps> = {
         style: {
             type: "select",
             options: [
-                { label: "Primary", value: "primary" },
-                { label: "Secondary", value: "secondary" },
+                { label: "Red", value: "primary" },
+                { label: "Black", value: "secondary" },
+                { label: "White", value: "tertiary"}
             ]
         },
         href: { type: "text" },

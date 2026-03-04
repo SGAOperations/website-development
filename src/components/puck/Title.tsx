@@ -1,6 +1,6 @@
 import { Field, ComponentConfig } from "@puckeditor/core";
 import React, { JSX } from "react";
-import { booleanSettingsField } from "../../lib/settings-fields";
+import { booleanSettingsField, textColorSettingField } from "../../lib/settings-fields";
 
 
 type TitleSize = 'main' | 'section' | 'subsection' | 'tertiary';
@@ -20,6 +20,7 @@ export interface TitleProps {
     size: TitleSize;
     center?: boolean;
     uppercase?: boolean;
+    textColor?: string;
 }
 
 
@@ -28,6 +29,7 @@ export const Title: React.FC<TitleProps> = ({
     size = 'main',
     center = false,
     uppercase = true,
+    textColor = "text-black"
 }) => {
     const sizeComponentMap = {
         main: 'h1',
@@ -44,7 +46,7 @@ export const Title: React.FC<TitleProps> = ({
     }
     const alignmentStyles = center ? "text-center" : "";
     
-    const headingStyles = `${baseStyles} ${sizeStylesMap[size]} ${alignmentStyles} ${uppercase ? 'uppercase' : ''}`;
+    const headingStyles = `${textColor} ${baseStyles} ${sizeStylesMap[size]} ${alignmentStyles} ${uppercase ? 'uppercase' : ''}`;
     const HeadingComponent = sizeComponentMap[size] as keyof JSX.IntrinsicElements;
 
     return (
@@ -61,12 +63,14 @@ export const TitleConfig: ComponentConfig<TitleProps> = {
         size: titleSizeField,
         center: booleanSettingsField,
         uppercase: booleanSettingsField,
+        textColor: textColorSettingField,
     },
     defaultProps: {
         text: "Title Text",
         size: "main",
         center: false,
         uppercase: true,
+        textColor: "text-black"
     },
     render: (props) => <Title {...props} />,
 }
