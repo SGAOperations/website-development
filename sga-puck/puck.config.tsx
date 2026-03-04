@@ -13,6 +13,7 @@ import { BulletListConfig } from "./components/puck/BulletList";
 import { LinkButtonConfig } from "./components/puck/Button";
 import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWidthGrid";
 import { RootContainerConfig } from "./components/puck/RootContainer";
+import { IconConfig } from "./components/puck/Icon";
 
 export const config = {
   categories: {
@@ -22,7 +23,7 @@ export const config = {
     },
     content: {
       title: "Content",
-      components: ["Title", "Paragraph", "BulletList", "PageHeader"],
+      components: ["Title", "Paragraph", "BulletList", "PageHeader", "Icon"],
     },
     grid: {
       title: "Grids",
@@ -55,6 +56,7 @@ export const config = {
     LinkButton: LinkButtonConfig,
     MinimumColumnWidthGrid: MinimumColumnWidthGridConfig,
     RootContainer: RootContainerConfig,
+    Icon: IconConfig
   },
 } satisfies Config;
 
