@@ -1,6 +1,5 @@
 import { ComponentConfig, SlotComponent } from "@puckeditor/core"
 import { gapSettingsField } from "../../lib/settings-fields";
-
 export interface MasonryGridProps {
     content: SlotComponent;
     gap?: string;

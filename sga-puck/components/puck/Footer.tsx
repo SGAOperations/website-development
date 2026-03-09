@@ -1,6 +1,6 @@
 import { ComponentConfig } from '@puckeditor/core';
 import React from 'react';
-
+// ability to modify components inside footer is needed.
 export type FooterProps = {
     showActionButtons?: boolean;
     actionButton1Text?: string;
