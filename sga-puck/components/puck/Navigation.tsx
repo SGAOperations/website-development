@@ -21,15 +21,15 @@ export const Navigation: React.FC<NavigationProps> = ({
     padding,
     nav,
 }) => (
-    <div className="relative w-screen">
+    <div className="relative w-full overflow-x-hidden">
         <header
-            className={`flex flex-col justify-center items-center h-auto w-screen relative top-0 ${padding}`}
+            className={`flex flex-col justify-center items-center h-auto relative top-0 ${padding}`}
             style={{ backgroundColor }}
         >
-            <div className="mt-4 w-full flex flex-row justify-around">
+            <div className="mt-4 w-full flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-10">
                 {nav.map((group, index) => (
                     <div key={index} className="relative group">
-                        <div className="peer whitespace-nowrap inline-flex justify-center cursor-pointer mx-7 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
+                        <div className="peer whitespace-nowrap inline-flex justify-center cursor-pointer px-3 pt-5 pb-2 text-lg font-semibold text-white group-hover:text-black transition duration-300">
                             {group.label}
                         </div>
                         {Array.isArray(group.items) && group.items.length > 0 && (
@@ -37,7 +37,10 @@ export const Navigation: React.FC<NavigationProps> = ({
                                             peer-hover:opacity-100 group-hover:opacity-100
                                             peer-hover:pointer-events-auto group-hover:pointer-events-auto 
                                             transition-opacity duration-300 
-                                            absolute left-3 z-10 w-56 origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5
+                                            absolute left-0 
+                                            md:left-auto
+                                            md:right-0
+                                            z-10 w-auto origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5
                             ">
                                 <div className="py-1">
                                     {group.items.map((item, itemIdx) => (
@@ -172,4 +175,4 @@ export const NavigationConfig: ComponentConfig<NavigationProps> = {
         ],
     },
     render: (props) => <Navigation {...props} />,
-}
+};
