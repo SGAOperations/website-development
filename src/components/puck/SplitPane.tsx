@@ -4,7 +4,6 @@ import { backgroundColorSettingField, gapSettingsField, paddingSettingsField } f
 export interface SplitPaneProps {
     paneOneContent: SlotComponent,
     paneTwoContent: SlotComponent,
-    direction?: string,
     paneOneRatio?: number,
     paneTwoRatio?: number,
     gap?: string,
@@ -19,7 +18,6 @@ export interface SplitPanePropsForRender extends SplitPaneProps {
 export const SplitPane: React.FC<SplitPanePropsForRender> = ({
     paneOneContent: ContentOne,
     paneTwoContent: ContentTwo,
-    direction = "md:flex-row",
     paneOneRatio = 1,
     paneTwoRatio = 4,
     gap = "gap-4",
@@ -28,7 +26,7 @@ export const SplitPane: React.FC<SplitPanePropsForRender> = ({
     puck
 }) => {
 
-    return <div ref={puck.dragRef} className={`${gap} ${padding} flex flex-col ${direction} items-center`} style={{backgroundColor}}>
+    return <div ref={puck.dragRef} className={`${gap} ${padding} flex flex-col md:flex-row items-center`} style={{backgroundColor}}>
             <div style={{flex: paneOneRatio}}>
                 <ContentOne />
             </div>
@@ -45,13 +43,6 @@ export const SplitPaneConfig: ComponentConfig<SplitPaneProps> = {
         gap: gapSettingsField,
         padding: paddingSettingsField,
         backgroundColor: backgroundColorSettingField,
-        direction: {
-            type: "radio",
-            options: [ 
-                { label: "horizontal", value: "md:flex-row" },
-                { label: "vertical", value: "md:flex-col" }
-            ]
-        },
         paneOneRatio: {
             type: "number",
             label: "Pane One Ratio Component (e.g. to have a 1:4 ratio, enter 1 in this field)",
@@ -67,7 +58,6 @@ export const SplitPaneConfig: ComponentConfig<SplitPaneProps> = {
         gap: "gap-4",
         backgroundColor: "#ffffff",
         padding: "p-8",
-        direction: "md:flex-row",
         paneOneRatio: 1,
         paneTwoRatio: 4
     },
