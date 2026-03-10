@@ -33,18 +33,18 @@ export const HeaderContent: React.FC<HeaderContentProps> = ({
     dividerHeight,
     dividerMargin
 }) => (
-    <div className="relative w-screen">
+    <div className="relative w-full overflow-x-hidden">
         <header
-            className={`flex flex-col justify-center items-center h-auto w-screen relative top-0 ${padding}`}
+            className={`flex flex-col justify-center items-center h-auto w-full relative ${padding}`}
             style={{ backgroundColor }}
         >
-            <div className="flex items-center">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-center max-w-full">
                 <h1 className={`${titleSize} font-bold ${titleColor} text-center`}>
                     {titleText}
                 </h1>
-                <div className={`inline-block ${dividerHeight} min-h-[1em] ${dividerWidth} self-stretch ${dividerColor} ${dividerMargin}`}></div>
+                <div className={` ${dividerHeight} ${dividerWidth} ${dividerColor} ${dividerMargin} shrink-0`}></div>
                 {logoSrc ? (
-                    <img src={logoSrc} alt={logoAltText} className={`${logoWidth} ${logoHeight}`} />
+                    <img src={logoSrc} alt={logoAltText} className={`${logoWidth} ${logoHeight} object-contain`} />
                 ) : (
                     <div className="text-white font-semibold">Header</div>
                 )}
@@ -91,6 +91,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
         logoWidth: {
             type: "select",
             options: [
+                { label: "Responsive (Mobile to Desktop)", value: "w-24 sm:w-32 md:w-40 lg:w-48 xl:w-52" },
                 { label: "Small (w-32)", value: "w-32" },
                 { label: "Medium (w-40)", value: "w-40" },
                 { label: "Large (w-48)", value: "w-48" },
@@ -102,6 +103,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
             type: "select",
             options: [
                 { label: "Auto", value: "h-auto" },
+                { label: "Responsive (Mobile to Desktop)", value: "sm:h-16 md:h-20 lg:h-24 xl:h-32" },
                 { label: "Small (h-16)", value: "h-16" },
                 { label: "Medium (h-20)", value: "h-20" },
                 { label: "Large (h-24)", value: "h-24" },
@@ -154,7 +156,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
         titleColor: "text-sga-red",
         logoSrc: "",
         logoAltText: "SGA Logo",
-        logoWidth: "w-52",
+        logoWidth: "w-24 sm:w-32 md:w-40 lg:w-48 xl:w-52",
         logoHeight: "h-auto",
         dividerColor: "bg-black",
         dividerWidth: "w-1",

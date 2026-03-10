@@ -40,7 +40,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                                             absolute left-0 
                                             md:left-auto
                                             md:right-0
-                                            z-10 w-auto origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5
+                                            z-50 w-auto origin-top-right rounded-md bg-black ring-1 shadow-lg ring-black/5
                             ">
                                 <div className="py-1">
                                     {group.items.map((item, itemIdx) => (

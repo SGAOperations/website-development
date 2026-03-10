@@ -52,7 +52,9 @@ export const Footer: React.FC<FooterProps> = ({
     mediaInquiriesEmail,
     mediaInquiriesLabel,
 }) => (
-    <footer className="bg-black relative bottom-0 left-0 w-screen text-center overflow-hidden mx-0 px-0">
+    <footer className="bg-black w-full text-center overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+
         {showActionButtons && (
             <div className="flex justify-center items-center pt-10 gap-5">
                 <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton1Text}</button>
@@ -62,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
         )}
 
         {showSocialMedia && (
-            <div className="flex justify-center items-center gap-5 py-6">
+            <div className="flex flex-wrap justify-center items-center gap-8 py-6 px-4">
                 <div className="flex flex-col items-center px-5">
                     <p className="text-white font-light pb-3">{socialMedia1Label}</p>
                     {socialMedia1LogoSrc ? (
@@ -93,22 +95,23 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pb-10">
             <p className="text-white font-light pb-4">{organizationName}</p>
             <p className="text-white font-light pb-4">{organizationAddress}</p>
-            <p className="text-white font-light pb-4">{webmasterLabel}&nbsp;
+            <p className="text-white font-light pb-4 break-words">{webmasterLabel}&nbsp;
                 <a
                     href={`mailto:${webmasterEmail}`}
-                    className="underline text-white font-light hover:text-gray-300"
+                    className="underline text-white font-light hover:text-gray-300 wrap-break-word"
                 >
                     {webmasterEmail}
                 </a>
             </p>
-            <p className="text-white font-light pb-4">{mediaInquiriesLabel}&nbsp;
+            <p className="text-white font-light pb-4 break-words">{mediaInquiriesLabel}&nbsp;
                 <a
                     href={`mailto:${mediaInquiriesEmail}`}
-                    className="underline text-white font-light hover:text-gray-300 transition duration-300"
+                    className="underline text-white font-light hover:text-gray-300 transition duration-300 wrap-break-word"
                 >
                     {mediaInquiriesEmail}
                 </a>
             </p>
+        </div>
         </div>
     </footer>
 );
