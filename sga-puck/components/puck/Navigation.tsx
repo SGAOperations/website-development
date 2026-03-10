@@ -21,7 +21,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     padding,
     nav,
 }) => (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto relative top-0 ${padding}`}
             style={{ backgroundColor }}

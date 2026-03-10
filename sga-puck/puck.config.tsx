@@ -15,6 +15,31 @@ import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWid
 import { RootContainerConfig } from "./components/puck/RootContainer";
 
 export const config = {
+  categories: {
+    navigation: {
+      title: "Navigation",
+      components: ["Navigation", "LinkButton"],
+    },
+    content: {
+      title: "Content",
+      components: ["Title", "Paragraph", "BulletList", "PageHeader"],
+    },
+    grid: {
+      title: "Grids",
+      components: ["CommitteeGrid", "MasonryGrid", "MinimumColumnWidthGrid",],
+    },
+    layout: {
+      title: "Layout",
+      components: [
+        "Container",
+        "RootContainer",
+        "Content",
+        "Footer",
+        "HeaderContent",
+      ],
+    },
+  },
+
   components: {
     HeaderContent: HeaderContentConfig,
     Navigation: NavigationConfig,

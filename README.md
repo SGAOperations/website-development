@@ -1,109 +1,61 @@
-# SGA Website Migration: Internal Custom CMS Application
+# SGA Website Internal CMS  Application
+This is SGA's internal application tool to allow for SGA's Webmaster Team to easily manage and update SGA's website. We are developing new features for administrators to modify the application without the need for changes in the core code structure, allowing for quick content management and visual edits throughout the website. 
 
-This project aims to develop an internal application that enables administrators to efficiently update and manage the Student Government Association's website. It ensures a smooth content management process while maintaining a consistent visual template across all division board pages.
+# Major Updates
+We are deprecating the directories for backend and frontend. They can be used for reference purposes but have been removed for cleanup on the recreation of the new website.
 
-## Technologies
-frontend：
-- React.js: Allows for the use of reusable components so that big chunks of code don't have to be written again in different files.
-- Tailwind CSS: Instead of writing an extensive list of styles in CSS files, Tailwind CSS allows styling through classes.
-  
-backend:
-- MongoDB: Good for storing data, uses a JSON like schema to keep track of objects and information, easy to setup and to add/delete/update objects in the databse
-- Node.js: Allows you to use JavaScript for both the frontend (in the browser) and the backend (on the server). Also scalability features + can run npm
-- Express.js: Minimal and lightweight. Express has a powerful and flexible routing system that lets us define RESTful Api's too with lots of ease and is very flexible
+# Technologies
+## Frontend:
+- React.js: The core UI framework for developing reusable components for faster development, reducing redundancy, and building the infrastructure of the website.
+- React Puck: The drag-and-drop editor logic for Webmasters to utilize for quick and visual content management and layout changes.
+- TailwindCSS: Utility-first CSS that allows direct styling within individual lines through classes, insuring for consistent design through the website.
+- Next.js: Allows for component rendering and server-side capabilities to improve performance and SEO while enabling seamless full-stack development
+
+## Backend:
+- Prisma: The ORM that simplifies database queries, migrations, and interaction through the database.
+- PostgreSQL: Primary relational database that allows for efficient data storage.
+- Next.js: Handles the API routing on the server side with robust backend endpoints directly in the framework.
+
 ## Deployment
+- Vercel: Host deployment for the website with optimized performance.
 
-## Setting up the development environment
+## Authentication
+- Supabase: Backend service that provides authentication services for different user permissions.
 
-### BACKEND
-
-1. Before running the project, ensure you have the following installed:
-
-Node.js (Download from nodejs.org)
-MongoDB 
-- setting up shared mongodb:
-    1. Make sure to have latest .env file pulled https://github.com/SGAOperationalAffairs/website-development/blob/main/backend/.env 
-    2. Download MongoDB Compass https://www.mongodb.com/products/tools/compass
-    3. Add a new connection using the database URI: mongodb+srv://SGA:Password1!@sgacluster.6dveb.mongodb.net/
-    4. npm run backend folder
-    5. npm run frontend folder
-    6. navigate to localhost:/5000/ edit-mode
-Express.js
-
-2. Install Dependencies: `npm install` This will install all required Node.js dependencies from package.json.
-
-3. Set Up Environment Variables:
-   
-Inside the backend folder, create a .env file: `touch .env`
-
-Open .env and add the following:
+# Setup
+## Cloning and Running the Project
+We *highly* recommend the use of VSCode for this project. Please download the VSCode and clone the GitHub repository either using the command below or cloning the repo with the web URL.
 ```
-MONGO_URI=mongodb://localhost:27017/usersdb
-PORT=3000
+git clone git@github.com:SGAOperations/website-development.git
 ```
 
-4. Start MongoDB
-
-`brew services start mongodb-community`
-
-5. Run the Server
-
-`npm start` or if using nodemon use `npm run dev`
-
-You should see:
+After opening the project, open the terminal and navigate to the sga-puck directory:
 ```
-Server running on http://localhost:3000
-MongoDB connected successfully
+cd website-development/sga-puck
 ```
 
-### Authentication:
-
-First, install all dependencies:
-
-```sh
-npm install express mongoose dotenv jsonwebtoken bcryptjs cors
+Once you are in the directory, install all package dependencies by running:
 ```
-Create a .env file in the root directory and add the following:
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-PORT=5001
-
-
-Generate a secure JWT secret key (if you don’t have one, generate it using Node.js):
-`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-
-
-Auth Endpoint Example: 
-Endpoint: POST /auth/register   (register a new user)
-Body Example:
-```
-{
-  "name": "Admin User",
-  "email": "admin@example.com",
-  "password": "securepassword",
-  "divisionName": "Senate",
-  "role": "leader",
-  "isAdmin": true
-}
+npm install
 ```
 
-Response being successful:
+Afterwards, you should be able to run the application using:
 ```
-{
-  "message": "User registered successfully"
-}
+npm run dev
 ```
 
+The applications expects a local database and will return an error without it. Look at DATABASE_SETUP.md in the sga-puck directory for Prisma/Postgres setup instructions.
 
-## Running the app
+# Features for implementation
+- Visual Drag-and-Drop Editor
+- Database and Versioning
+- Version Control or Pages
+- Authentication & Login Services
+- Navigation Within the Editor Interface
+- TBD - Future Features
 
-## To Do List:
-
-## Contributors
-
-Yurika
-Arshia
-Molly
-Kevin
-Audrey
-Aditya
+# Team Contributors
+### Digital Innovation Website Team Leads:
+Caitlin Lee, Willem Lenig 
+### Digital Innovation Website Software Engineers:
+Shlok Patel, Grace Silge, Matthew Shi
