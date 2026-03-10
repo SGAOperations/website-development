@@ -34,6 +34,4 @@ yarn-error.log*
 # vercel
 .vercel
 
-.vscode.settings.json
-prisma/migrations/migration_lock.toml
-prisma/migrations/20260211143722_create_draft_system/migration.sql
+.vscode/settings.json
