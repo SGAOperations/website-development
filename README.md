@@ -28,7 +28,7 @@ git clone git@github.com:SGAOperations/website-development.git
 
 After opening the project, open the terminal and navigate to the sga-puck directory:
 ```
-cd website-development/sga-puck
+cd website-development/src
 ```
 
 Once you are in the directory, install all package dependencies by running:
@@ -41,7 +41,7 @@ Afterwards, you should be able to run the application using:
 npm run dev
 ```
 
-The applications expects a local database and will return an error without it. Look at DATABASE_SETUP.md in the sga-puck directory for Prisma/Postgres setup instructions.
+The applications expects a local database and will return an error without it. Look at DATABASE_SETUP.md in the src directory for Prisma/Postgres setup instructions.
 
 # Features for implementation
 - Visual Drag-and-Drop Editor
