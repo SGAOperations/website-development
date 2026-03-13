@@ -40,7 +40,10 @@ export function Client({
         ui={{plugin: {current: "version-plugin"}}}
         plugins={[VersionPlugin]}
         permissions={{ duplicate: false }}
-        overrides={{ actionBar: ActionBarOverride }}
+        overrides={{ 
+          actionBar: ActionBarOverride,
+          headerActions: () => <div /> // Remove Publish button from header
+        }}
         onChange={(data) => {
           setCurrentData(data);
         }}

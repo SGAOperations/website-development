@@ -17,7 +17,6 @@ export type UseVersionStateReturn = {
   isPublishing: boolean;
 
   // Actions
-  fetchVersions: () => Promise<void>;
   loadVersion: (versionId: number) => Promise<void>;
   saveVersion: (data: Data) => Promise<any>;
   publishVersion: (data: Data) => Promise<any>;
