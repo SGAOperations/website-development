@@ -5,6 +5,7 @@ import { Puck } from "@puckeditor/core";
 import config from "../../../puck.config";
 import { useState, createContext, useContext } from "react";
 import { DraftPlugin } from "./DraftPlugin";
+import { ActionBarOverride } from "./ActionBarOverride";
 
 type DraftContextType = {
   path: string;
@@ -41,6 +42,8 @@ export function Client({
         data={currentData}
         ui={{plugin: {current: "draft-plugin"}}}
         plugins={[DraftPlugin]}
+        permissions={{ duplicate: false }}
+        overrides={{ actionBar: ActionBarOverride }}
         onChange={(data) => {
           setCurrentData(data);
         }}
