@@ -1,67 +1,62 @@
 "use client";
 
 import { createUsePuck } from "@puckeditor/core";
-import { useState } from "react";
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
-import { useVersionState } from "./useVersionState";
+import { saveVersionAction, publishVersionAction } from "../../../lib/actions";
 import { VersionToolbar } from "./VersionToolbar";
 import { VersionListPanel } from "./VersionListPanel";
-import { ConfirmDialog } from "./ConfirmDialog";
 
 const usePuck = createUsePuck();
 
 export function VersionPluginContainer() {
   const data = usePuck((s) => s.appState.data);
   const dispatch = usePuck((s) => s.dispatch);
+  const router = useRouter();
 
-  const { documentId, versionId: versionIdFromContext, publishedVersionId: publishedVersionIdFromContext } = useDocumentContext();
+  const { documentId, versionId, publishedVersionId, versions } = useDocumentContext();
 
-  // State for notifications
-  const [notification, setNotification] = useState<string | null>(null);
+  const [isSaving, startSaveTransition] = useTransition();
+  const [isPublishing, startPublishTransition] = useTransition();
 
-  const {
-    versions,
-    currentVersionId,
-    publishedVersionId,
-    isLoading,
-    isSaving,
-    isPublishing,
-    saveVersion,
-    publishVersion,
-    loadVersion,
-  } = useVersionState({
-    documentId,
-    initialVersionId: versionIdFromContext,
-    initialPublishedVersionId: publishedVersionIdFromContext,
-    initialData: data,
-  });
+  const handleSaveVersion = () => {
+    startSaveTransition(async () => {
+      const result = await saveVersionAction({ documentId, content: data });
 
-  const handleSaveVersion = async () => {
-    try {
-      await saveVersion(data);
+      if (result.success === false) {
+        alert(`Error: ${result.error}`);
+        return;
+      }
+
       dispatch({ type: "setData", data });
-      setNotification("Saved");
-    } catch (error: any) {
-      setNotification(`Error: ${error.message}`);
-    }
+      router.push(`/editor/${documentId}?versionId=${result.data.version.id}`);
+      alert("Saved successfully");
+    });
   };
 
-  const handlePublish = async () => {
-    try {
-      await publishVersion(data);
-      dispatch({ type: "setData", data });
-      setNotification("Published");
-    } catch (error: any) {
-      setNotification(`Error: ${error.message}`);
+  const handlePublish = () => {
+    if (!versionId) {
+      alert("No version selected");
+      return;
     }
+
+    startPublishTransition(async () => {
+      const result = await publishVersionAction({ documentId, versionId });
+
+      if (result.success === false) {
+        alert(`Error: ${result.error}`);
+        return;
+      }
+
+      dispatch({ type: "setData", data });
+      router.push(`/editor/${documentId}?versionId=${versionId}`);
+      alert("Published successfully");
+    });
   };
 
-  const handleLoadVersion = async (versionId: number) => {
-    try {
-      await loadVersion(versionId);
-    } catch (error: any) {
-      setNotification(`Error: ${error.message}`);
-    }
+  const handleLoadVersion = (versionIdToLoad: number) => {
+    router.push(`/editor/${documentId}?versionId=${versionIdToLoad}`);
   };
 
   return (
@@ -75,19 +70,11 @@ export function VersionPluginContainer() {
 
       <VersionListPanel
         versions={versions}
-        isLoading={isLoading}
-        currentVersionId={currentVersionId}
+        isLoading={false}
+        currentVersionId={versionId}
         publishedVersionId={publishedVersionId}
         onLoadVersion={handleLoadVersion}
       />
-
-      {notification && (
-        <ConfirmDialog
-          message={notification}
-          isDangerous={false}
-          onCancel={() => setNotification(null)}
-        />
-      )}
     </div>
   );
 }

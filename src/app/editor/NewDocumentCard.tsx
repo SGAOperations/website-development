@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useTransition } from "react";
+import { createDocumentAction } from "../../lib/actions";
 
 export function NewDocumentCard() {
   const router = useRouter();
-  const [isCreating, setIsCreating] = useState(false);
+  const [isCreating, startTransition] = useTransition();
 
   async function handleCreateDocument() {
     const name = window.prompt("Document name");
@@ -20,34 +21,19 @@ export function NewDocumentCard() {
       return;
     }
 
-    setIsCreating(true);
-
-    try {
-      const response = await fetch("/puck/api/documents", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-          content: { content: [], root: {} },
-          publish: false,
-        }),
+    startTransition(async () => {
+      const result = await createDocumentAction({
+        name: trimmedName,
+        content: { content: [], root: {} },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create document");
+      if (result.success === false) {
+        alert(result.error);
+        return;
       }
 
-      const payload = await response.json();
-      router.push(`/editor/${payload.document.id}`);
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      window.alert("Failed to create document");
-    } finally {
-      setIsCreating(false);
-    }
+      router.push(`/editor/${result.data.documentId}`);
+    });
   }
 
   return (

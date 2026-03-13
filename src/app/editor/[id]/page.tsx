@@ -76,6 +76,13 @@ export default async function Page({
     } as any;
   }
 
+  // Extract versions and map to the simplified Version type
+  const versions = document.versions.map((v) => ({
+    id: v.id,
+    documentId: v.documentId,
+    createdAt: v.createdAt,
+  }));
+
   return (
     <Client
       key={`${documentId}-${versionId || 'no-version'}`}
@@ -83,6 +90,7 @@ export default async function Page({
       data={data || {}}
       versionId={versionId}
       publishedVersionId={publishedVersionId}
+      versions={versions}
     />
   );
 }
