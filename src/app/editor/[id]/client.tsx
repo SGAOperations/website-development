@@ -4,50 +4,47 @@ import type { Data } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
 import config from "../../../puck.config";
 import { useState, createContext, useContext } from "react";
-import { DraftPlugin } from "./DraftPlugin";
+import { VersionPlugin } from "./VersionPlugin";
 import { ActionBarOverride } from "./ActionBarOverride";
 
-type DraftContextType = {
-  path: string;
-  pageId?: number;
-  draftId?: number;
-  finalDraftId?: number;
+type DocumentContextType = {
+  documentId: number;
+  versionId?: number;
+  publishedVersionId?: number;
 };
 
-const DraftContext = createContext<DraftContextType>({ path: "" });
+const DocumentContext = createContext<DocumentContextType>({ documentId: 0 });
 
-export function useDraftContext() {
-  return useContext(DraftContext);
+export function useDocumentContext() {
+  return useContext(DocumentContext);
 }
 
 export function Client({
-  path,
+  documentId,
   data,
-  pageId,
-  draftId,
-  finalDraftId,
+  versionId,
+  publishedVersionId,
 }: {
-  path: string;
+  documentId: number;
   data: Partial<Data>;
-  pageId?: number;
-  draftId?: number;
-  finalDraftId?: number;
+  versionId?: number;
+  publishedVersionId?: number;
 }) {
   const [currentData, setCurrentData] = useState<Data>(data as Data);
 
   return (
-    <DraftContext.Provider value={{ path, pageId, draftId, finalDraftId }}>
+    <DocumentContext.Provider value={{ documentId, versionId, publishedVersionId }}>
       <Puck
         config={config}
         data={currentData}
-        ui={{plugin: {current: "draft-plugin"}}}
-        plugins={[DraftPlugin]}
+        ui={{plugin: {current: "version-plugin"}}}
+        plugins={[VersionPlugin]}
         permissions={{ duplicate: false }}
         overrides={{ actionBar: ActionBarOverride }}
         onChange={(data) => {
           setCurrentData(data);
         }}
       />
-    </DraftContext.Provider>
+    </DocumentContext.Provider>
   );
 }
