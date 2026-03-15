@@ -1,13 +1,15 @@
 import "@puckeditor/core/puck.css";
+import type { Data } from "@puckeditor/core";
 import { Client } from "./client";
 import { Metadata } from "next";
 import { getDocumentById, getVersionById } from "../../../lib/get-document";
 
-export async function generateMetadata({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ id: string }>;
-}): Promise<Metadata> {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const document = await getDocumentById(parseInt(id, 10));
 
@@ -16,21 +18,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
   const documentId = parseInt(id, 10);
-  const searchParamsResolved = await searchParams;
-  const versionIdParam = searchParamsResolved.versionId;
-
-  let data: any = null;
-  let versionId: number | undefined;
-  let publishedVersionId: number | undefined;
 
   const document = await getDocumentById(documentId);
 
@@ -38,45 +28,12 @@ export default async function Page({
     return <div className="p-6">Document not found</div>;
   }
 
-  publishedVersionId = document.publishedVersionId || undefined;
+  const { versionId: versionIdParam } = await searchParams;
+  const versionIdValue = Array.isArray(versionIdParam) ? versionIdParam[0] : versionIdParam;
+  const versionIdNum = versionIdValue ? parseInt(versionIdValue, 10) : NaN;
 
-  // If versionId is provided, load that specific version
-  let versionIdValue: string | undefined;
-  if (Array.isArray(versionIdParam)) {
-    versionIdValue = versionIdParam[0];
-  } else if (typeof versionIdParam === "string") {
-    versionIdValue = versionIdParam;
-  }
+  const resolved = await resolveVersion(documentId, versionIdNum, document.versions);
 
-  if (versionIdValue) {
-    const versionIdNum = parseInt(versionIdValue, 10);
-    if (!isNaN(versionIdNum)) {
-      const version = await getVersionById(versionIdNum);
-      if (version && version.documentId === documentId) {
-        data = version.content;
-        versionId = version.id;
-      }
-    }
-  }
-
-  // If no specific version loaded, load the latest version (most recent, not necessarily published)
-  if (!data && document.versions.length > 0) {
-    const latestVersion = document.versions[0]; // Already ordered by createdAt desc
-    data = latestVersion.content;
-    versionId = latestVersion.id;
-  }
-
-  // If no versions exist at all, provide default content
-  if (!data) {
-    data = {
-      content: [
-        { type: "Header", props: { nav: [] } },
-      ],
-      root: {},
-    } as any;
-  }
-
-  // Extract versions and map to the simplified Version type
   const versions = document.versions.map((v) => ({
     id: v.id,
     documentId: v.documentId,
@@ -85,14 +42,33 @@ export default async function Page({
 
   return (
     <Client
-      key={`${documentId}-${versionId || 'no-version'}`}
+      key={`${documentId}-${resolved.versionId || "no-version"}`}
       documentId={documentId}
-      data={data || {}}
-      versionId={versionId}
-      publishedVersionId={publishedVersionId}
+      data={resolved.data}
+      versionId={resolved.versionId}
+      publishedVersionId={document.publishedVersionId || undefined}
       versions={versions}
     />
   );
+}
+
+async function resolveVersion(
+  documentId: number,
+  versionIdNum: number,
+  versions: { id: number; documentId: number; content: unknown }[],
+): Promise<{ data: Data; versionId?: number }> {
+  if (!isNaN(versionIdNum)) {
+    const version = await getVersionById(versionIdNum);
+    if (version && version.documentId === documentId) {
+      return { data: version.content as Data, versionId: version.id };
+    }
+  }
+
+  if (versions.length > 0) {
+    return { data: versions[0].content as Data, versionId: versions[0].id };
+  }
+
+  return { data: { content: [], root: {} } as Data };
 }
 
 export const dynamic = "force-dynamic";
