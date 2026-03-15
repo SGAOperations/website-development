@@ -1,0 +1,108 @@
+"use server";
+
+import {
+  createDocumentWithVersion,
+  createVersion,
+  publishVersion as publishVersionUtil,
+} from "./version-utils";
+import { prisma } from "./prisma";
+import type {
+  ActionResult,
+  CreateDocumentInput,
+  CreateRouteInput,
+  DeleteRouteInput,
+  SaveVersionInput,
+  PublishVersionInput,
+  UpdateRouteInput,
+  Version,
+} from "./types";
+
+async function wrapAction<T>(fn: () => Promise<T>): Promise<ActionResult<T>> {
+  try {
+    return { success: true, data: await fn() };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+function assertValidRoutePath(path: string): void {
+  if (!path.startsWith("/")) {
+    throw new Error("Path must start with /");
+  }
+}
+
+export async function createDocumentAction(
+  input: CreateDocumentInput
+): Promise<ActionResult<{ documentId: number }>> {
+  return wrapAction(async () => {
+    const content = input.content || { content: [], root: {} };
+    const document = await createDocumentWithVersion(input.name, content, false);
+    return { documentId: document.id };
+  });
+}
+
+export async function saveVersionAction(
+  input: SaveVersionInput
+): Promise<ActionResult<{ version: Version }>> {
+  return wrapAction(async () => {
+    const result = await createVersion(input.documentId, input.content);
+    return {
+      version: {
+        id: result.id,
+        documentId: result.documentId,
+        createdAt: result.createdAt,
+      },
+    };
+  });
+}
+
+export async function publishVersionAction(
+  input: PublishVersionInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await publishVersionUtil(input.documentId, input.versionId);
+  });
+}
+
+export async function createRouteAction(
+  input: CreateRouteInput
+): Promise<ActionResult<{ routeId: number }>> {
+  return wrapAction(async () => {
+    assertValidRoutePath(input.path);
+    const route = await prisma.route.create({
+      data: {
+        path: input.path,
+        documentId: input.documentId,
+      },
+    });
+    return { routeId: route.id };
+  });
+}
+
+export async function updateRouteAction(
+  input: UpdateRouteInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    assertValidRoutePath(input.path);
+    await prisma.route.update({
+      where: { id: input.id },
+      data: {
+        path: input.path,
+        documentId: input.documentId,
+      },
+    });
+  });
+}
+
+export async function deleteRouteAction(
+  input: DeleteRouteInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await prisma.route.delete({
+      where: { id: input.id },
+    });
+  });
+}

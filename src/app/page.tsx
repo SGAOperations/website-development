@@ -1,39 +1,17 @@
-import Link from "next/link";
-import { getAllPages } from "../lib/get-page";
+import { Client } from "./[...puckPath]/client";
+import { notFound } from "next/navigation";
+import { getDocumentByPath } from "../lib/get-document";
 
-export default async function RootPage() {
-	const all = await getAllPages();
 
-	if (!all) {
-		return (
-			<div className="p-6">
-				<h1>No pages found</h1>
-				<p>No pages are currently stored in the database.</p>
-			</div>
-		);
-	}
+export default async function Page() {
+  const path = "/";
+  const data = await getDocumentByPath(path);
 
-	const entries = Object.keys(all).sort();
+  if (!data) {
+    return notFound();
+  }
 
-	return (
-		<div className="p-6">
-			<h1>Pages</h1>
-			<ul>
-				{entries.map((path) => {
-					const data = all[path];
-					const title = data?.root?.props?.title || path;
-					// Ensure root path maps to '/'
-					const href = path === "/" ? "/" : path;
-
-					return (
-						<li key={path}>
-							<Link href={href}>{title || path}</Link> - <span>{path}</span>
-						</li>
-					);
-				})}
-			</ul>
-		</div>
-	);
+  return <Client data={data} />;
 }
 
-export const generateMetadata = async () => ({ title: "Index" });
+export const dynamic = "force-static";
