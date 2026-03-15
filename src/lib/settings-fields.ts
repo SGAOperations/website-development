@@ -18,6 +18,17 @@ export const textColorSettingField: Field<string> = {
   ]
 } as const;
 
+export const backgroundColorSettingField: Field<string> = {
+  type: "select",
+  options: [
+    { label: "White", value: "#ffffff" },
+    { label: "Light Gray", value: "#f5f5f5" },
+    { label: "SGA Red", value: "#dc2626" },
+    { label: "Black", value: "#000000" }, 
+    { label: "Transparent", value: "transparent" },
+  ]
+}
+
 export const gapSettingsField: Field<string> = {
   type: "select",
   options: [
@@ -26,6 +37,8 @@ export const gapSettingsField: Field<string> = {
     { label: "Medium (gap-4)", value: "gap-4" },
     { label: "Large (gap-6)", value: "gap-6" },
     { label: "Extra Large (gap-8)", value: "gap-8" },
+    { label: "Supersize (gap-16)", value: "gap-16" },
+    { label: "Godzilla (gap-32)", value: "gap-32" }, 
   ],
 } as const;
 
