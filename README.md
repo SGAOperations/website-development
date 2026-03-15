@@ -1,9 +1,6 @@
 # SGA Website Internal CMS  Application
 This is SGA's internal application tool to allow for SGA's Webmaster Team to easily manage and update SGA's website. We are developing new features for administrators to modify the application without the need for changes in the core code structure, allowing for quick content management and visual edits throughout the website. 
 
-# Major Updates
-We are deprecating the directories for backend and frontend. They can be used for reference purposes but have been removed for cleanup on the recreation of the new website.
-
 # Technologies
 ## Frontend:
 - React.js: The core UI framework for developing reusable components for faster development, reducing redundancy, and building the infrastructure of the website.
@@ -31,7 +28,7 @@ git clone git@github.com:SGAOperations/website-development.git
 
 After opening the project, open the terminal and navigate to the sga-puck directory:
 ```
-cd website-development/sga-puck
+cd website-development/src
 ```
 
 Once you are in the directory, install all package dependencies by running:
@@ -44,7 +41,7 @@ Afterwards, you should be able to run the application using:
 npm run dev
 ```
 
-The applications expects a local database and will return an error without it. Look at DATABASE_SETUP.md in the sga-puck directory for Prisma/Postgres setup instructions.
+The applications expects a local database and will return an error without it. Look at DATABASE_SETUP.md in the src directory for Prisma/Postgres setup instructions.
 
 # Features for implementation
 - Visual Drag-and-Drop Editor
