@@ -6,6 +6,7 @@ import config from "../../../puck.config";
 import { useState, createContext, useContext } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { ActionBarOverride } from "./ActionBarOverride";
+import { SaveButton } from "./SaveButton";
 import type { Version } from "../../../lib/types";
 
 type DocumentContextType = {
@@ -51,7 +52,7 @@ export function Client({
         permissions={{ duplicate: false }}
         overrides={{ 
           actionBar: ActionBarOverride,
-          headerActions: () => <div /> // Remove Publish button from header
+          headerActions: SaveButton
         }}
         onChange={(data) => {
           setCurrentData(data);
