@@ -22,6 +22,7 @@ export function VersionPluginContainer() {
     }
 
     router.push(`/editor/${documentId}?versionId=${targetVersionId}`);
+    setIsPublishing(false);
   };
 
   const handleLoadVersion = (versionIdToLoad: number) => {
