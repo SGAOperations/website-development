@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
@@ -43,7 +43,7 @@ async function main() {
       const version = await tx.version.create({
         data: {
           documentId: document.id,
-          content: data,
+          content: data as Prisma.InputJsonValue,
         },
       });
 
