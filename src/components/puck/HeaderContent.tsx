@@ -1,6 +1,6 @@
 import { ComponentConfig } from '@puckeditor/core';
 import React from 'react';
-import { paddingSettingsField } from '../../lib/settings-fields';
+import { paddingSettingsField, textColorSettingField } from '../../lib/settings-fields';
 
 export type HeaderContentProps = {
     backgroundColor?: string;
@@ -77,15 +77,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
                 { label: "Extra Large (5xl)", value: "text-5xl" },
             ]
         },
-        titleColor: {
-            type: "select",
-            options: [
-                { label: "SGA Red", value: "text-sga-red" },
-                { label: "White", value: "text-white" },
-                { label: "Black", value: "text-black" },
-                { label: "Blue", value: "text-blue-600" },
-            ]
-        },
+        titleColor: textColorSettingField,
         logoSrc: { type: "text" },
         logoAltText: { type: "text" },
         logoWidth: {

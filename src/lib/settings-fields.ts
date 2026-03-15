@@ -8,6 +8,16 @@ export const booleanSettingsField: Field<boolean> = {
   ]
 } as const
 
+export const textColorSettingField: Field<string> = {
+  type: "select",
+  options: [
+    { label: "SGA Red", value: "text-sga-red" },
+    { label: "White", value: "text-white" },
+    { label: "Black", value: "text-black" },
+    { label: "Blue", value: "text-blue-600" },
+  ]
+} as const;
+
 export const backgroundColorSettingField: Field<string> = {
   type: "select",
   options: [

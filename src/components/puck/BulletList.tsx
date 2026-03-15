@@ -1,16 +1,19 @@
 import { ComponentConfig } from "@puckeditor/core";
 import { JSX } from "react";
+import { textColorSettingField } from "../../lib/settings-fields";
 
 export type BulletType = "disc" | "decimal" | "none"
 
 export interface BulletListProps {
     items: { text: string }[];
     bullet: BulletType;
+    textColor: string;
 }
 
 export const BulletList: React.FC<BulletListProps> = ({
     items,
-    bullet = "disc"
+    bullet = "disc",
+    textColor = "text-black"
 }) => {
     const ListComponent = bullet === "decimal" ? "ol" : "ul" as keyof JSX.IntrinsicElements;
 
@@ -22,7 +25,7 @@ export const BulletList: React.FC<BulletListProps> = ({
     const listStyles = listStyleMap[bullet]
 
     return (
-        <ListComponent className={listStyles}>
+        <ListComponent className={`${listStyles} ${textColor}`}>
             {items.map(({ text }, index) => (
                 <li key={index} className="mb-2 last:mb-0">
                     {text}
@@ -48,6 +51,7 @@ export const BulletListConfig: ComponentConfig<BulletListProps> = {
                 text: { type: "text" },
             },
         },
+        textColor: textColorSettingField
     },
     defaultProps: {
         bullet: "disc",
@@ -56,6 +60,7 @@ export const BulletListConfig: ComponentConfig<BulletListProps> = {
             { text: "Second item" },
             { text: "Third item" },
         ],
+        textColor: "text-black"
     },
     render: (props) => <BulletList {...props} />,
 }
