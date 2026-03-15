@@ -2,7 +2,7 @@ import { ComponentConfig, SlotComponent } from "@puckeditor/core";
 import { gapSettingsField } from "../../lib/settings-fields";
 
 export interface MinimumColumnWidthGridProps {
-    content: SlotComponent;
+    content?: SlotComponent;
     minimumColumnWidthPixels?: number;
     gap?: string;
 }
@@ -12,7 +12,7 @@ export const MinimumColumnWidthGrid: React.FC<MinimumColumnWidthGridProps> = ({
     minimumColumnWidthPixels = 250,
     gap = "gap-4"
 }) => {
-    return (
+    return Content && (
         <Content className={`grid ${gap}`} style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${minimumColumnWidthPixels}px, 1fr))`, gridAutoRows: '1fr' }} />
     )
 }
@@ -27,7 +27,6 @@ export const MinimumColumnWidthGridConfig: ComponentConfig<MinimumColumnWidthGri
         gap: gapSettingsField,
     },
     defaultProps: {
-        content: null,
         minimumColumnWidthPixels: 250,
         gap: "gap-4",
     },

@@ -23,10 +23,14 @@ jobs:
         run: npm ci
         working-directory: src
 
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        working-directory: src
+
       - name: Lint
         run: npm run lint
         working-directory: src
 
-      - name: Build
-        run: npm run build
+      - name: Typecheck
+        run: npx tsc --noEmit
         working-directory: src

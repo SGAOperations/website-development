@@ -2,7 +2,7 @@ import { ComponentConfig, SlotComponent } from "@puckeditor/core"
 import { booleanSettingsField } from "../../lib/settings-fields";
 
 export interface RootContainerProps {
-    content: SlotComponent;
+    content?: SlotComponent;
     padTop?: boolean;
     padBottom?: boolean;
 }
@@ -18,7 +18,7 @@ export const RootContainer: React.FC<RootContainerProps> = ({
 
     return (
         <div className={`w-full ${paddingStyles}`}>
-            <Content className="max-w-7xl mx-auto" />
+            {Content && <Content className="max-w-7xl mx-auto" />}
         </div>
     )
 
@@ -31,7 +31,6 @@ export const RootContainerConfig: ComponentConfig<RootContainerProps> = {
         padBottom: booleanSettingsField,
     },
     defaultProps: {
-        content: null,
         padTop: false,
         padBottom: false,
     },
