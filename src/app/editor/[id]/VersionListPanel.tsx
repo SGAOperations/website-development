@@ -6,6 +6,15 @@ export interface VersionListPanelProps {
   currentVersionId?: number;
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
+  onPublishVersion: (versionId: number) => void;
+  isPublishing?: boolean;
+}
+
+function formatVersionLabel(version: Version) {
+  const date = new Date(version.createdAt);
+  const label = date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return { label, time };
 }
 
 export function VersionListPanel({
@@ -14,6 +23,8 @@ export function VersionListPanel({
   currentVersionId,
   publishedVersionId,
   onLoadVersion,
+  onPublishVersion,
+  isPublishing,
 }: VersionListPanelProps) {
 
   return (
@@ -37,7 +48,7 @@ export function VersionListPanel({
           {versions.map((version) => {
             const isPublished = version.id === publishedVersionId;
             const isCurrent = version.id === currentVersionId;
-            const date = new Date(version.createdAt);
+            const { label, time } = formatVersionLabel(version);
 
             return (
               <div
@@ -51,27 +62,29 @@ export function VersionListPanel({
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span>Version #{version.id}</span>
-
-                      {isPublished && (
-                        <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">
-                          Published
-                        </span>
-                      )}
-
-                      {isCurrent && (
-                        <span className="px-2 py-0.5 bg-blue-500 text-white rounded text-xs">
-                          Current
-                        </span>
-                      )}
-
-                    </div>
+                    <span>{label}</span>
 
                     <div className="text-xs text-gray-500 mt-1">
-                      {date.toLocaleString()}
+                      {time}
                     </div>
                   </div>
+
+                  {isPublished ? (
+                    <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs shrink-0">
+                      Published
+                    </span>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPublishVersion(version.id);
+                      }}
+                      disabled={isPublishing}
+                      className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shrink-0"
+                    >
+                      Publish
+                    </button>
+                  )}
                 </div>
               </div>
             );
