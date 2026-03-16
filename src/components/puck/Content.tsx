@@ -3,8 +3,8 @@ import React from 'react';
 import { paddingSettingsField, backgroundColorSettingField } from '../../lib/settings-fields';
 
 export type ContentProps = {
-    backgroundColor?: string;
-    padding?: string;
+    backgroundColor: string;
+    padding: string;
     minHeight?: string;
     text?: string;
 };

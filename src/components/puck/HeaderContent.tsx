@@ -4,10 +4,10 @@ import { paddingSettingsField, textColorSettingField } from '../../lib/settings-
 
 export type HeaderContentProps = {
     backgroundColor?: string;
-    padding?: string;
+    padding: string;
     titleText?: string;
     titleSize?: string;
-    titleColor?: string;
+    titleColor: string;
     logoSrc?: string;
     logoAltText?: string;
     logoWidth?: string;

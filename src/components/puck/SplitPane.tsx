@@ -6,9 +6,9 @@ export interface SplitPaneProps {
     paneTwoContent?: SlotComponent,
     paneOneRatio?: number,
     paneTwoRatio?: number,
-    gap?: string,
-    padding?: string,
-    backgroundColor?: string;
+    gap: string,
+    padding: string,
+    backgroundColor: string;
 }
 
 export interface SplitPanePropsForRender extends SplitPaneProps {

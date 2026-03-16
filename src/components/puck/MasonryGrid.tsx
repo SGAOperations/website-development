@@ -3,7 +3,7 @@ import { gapSettingsField } from "../../lib/settings-fields";
 
 export interface MasonryGridProps {
     content?: SlotComponent;
-    gap?: string;
+    gap: string;
     childrenBottomMargin?: string;
 }
 

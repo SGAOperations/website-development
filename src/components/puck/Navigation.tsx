@@ -9,7 +9,7 @@ type NavItem = {
 
 export type NavigationProps = {
     backgroundColor?: string;
-    padding?: string;
+    padding: string;
     nav: Array<{
         label: string;
         items: Array<NavItem>;

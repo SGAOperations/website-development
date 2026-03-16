@@ -3,7 +3,7 @@ import { textColorSettingField } from "../../lib/settings-fields";
 
 export interface ParagraphProps {
     text: RichText,
-    textColor?: string;
+    textColor: string;
 }
 
 export const Paragraph: React.FC<ParagraphProps> = ({
