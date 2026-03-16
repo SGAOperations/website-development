@@ -1,9 +1,6 @@
 import type { Config } from "@puckeditor/core";
-import { PageHeaderConfig } from "./components/puck/PageHeader";
-import { CommitteeGridConfig } from "./components/puck/CommitteeGrid";
 import { HeaderContentConfig } from "./components/puck/HeaderContent";
 import { NavigationConfig } from "./components/puck/Navigation";
-import { ContentConfig } from "./components/puck/Content";
 import { FooterConfig } from "./components/puck/Footer";
 import { TitleConfig } from "./components/puck/Title";
 import { ContainerConfig } from "./components/puck/Container";
@@ -23,7 +20,7 @@ export const config = {
     },
     content: {
       title: "Content",
-      components: ["Title", "Paragraph", "BulletList", "PageHeader"],
+      components: ["Title", "Paragraph", "BulletList"],
     },
     grid: {
       title: "Grids",
@@ -45,10 +42,7 @@ export const config = {
   components: {
     HeaderContent: HeaderContentConfig,
     Navigation: NavigationConfig,
-    Content: ContentConfig,
     Footer: FooterConfig,
-    CommitteeGrid: CommitteeGridConfig,
-    PageHeader: PageHeaderConfig,
     Title: TitleConfig,
     Container: ContainerConfig,
     Paragraph: ParagraphConfig,
