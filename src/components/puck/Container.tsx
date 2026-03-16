@@ -15,7 +15,7 @@ export const Container: React.FC<ContainerProps> = ({
     outline = "",
 }) => (
   <div className={`w-full ${padding} ${outline}`}>
-    {Content && <Content className={`flex flex-col w-full ${gap}`} />}
+    {Content && <Content minEmptyHeight="256px" className={`flex flex-col w-full ${gap}`} />}
   </div>
 )
 
