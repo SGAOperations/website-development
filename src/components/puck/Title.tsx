@@ -18,9 +18,9 @@ const titleSizeField: Field<TitleSize> = {
 export interface TitleProps {
     text: string;
     size: TitleSize;
-    center?: boolean;
-    uppercase?: boolean;
-    textColor?: string;
+    center: boolean;
+    uppercase: boolean;
+    textColor: string;
 }
 
 

@@ -3,8 +3,8 @@ import { booleanSettingsField } from "../../lib/settings-fields";
 
 export interface RootContainerProps {
     content?: SlotComponent;
-    padTop?: boolean;
-    padBottom?: boolean;
+    padTop: boolean;
+    padBottom: boolean;
 }
 
 export const RootContainer: React.FC<RootContainerProps> = ({

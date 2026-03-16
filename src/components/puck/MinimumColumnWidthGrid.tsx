@@ -4,7 +4,7 @@ import { gapSettingsField } from "../../lib/settings-fields";
 export interface MinimumColumnWidthGridProps {
     content?: SlotComponent;
     minimumColumnWidthPixels?: number;
-    gap?: string;
+    gap: string;
 }
 
 export const MinimumColumnWidthGrid: React.FC<MinimumColumnWidthGridProps> = ({

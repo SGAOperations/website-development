@@ -3,9 +3,9 @@ import { gapSettingsField, outlineSettingsField, paddingSettingsField } from "..
 
 export interface ContainerProps {
     content?: SlotComponent;
-    padding?: string;
-    gap?: string;
-    outline?: string;
+    padding: string;
+    gap: string;
+    outline: string;
 }
 
 export const Container: React.FC<ContainerProps> = ({
@@ -27,6 +27,7 @@ export const ContainerConfig: ComponentConfig<ContainerProps> = {
       defaultProps: {
         padding: "p-10",
         gap: "gap-6",
+        outline: "",
       },
       render: (props) => <Container {...props} />,
 }
