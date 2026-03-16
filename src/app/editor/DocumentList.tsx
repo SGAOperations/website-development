@@ -42,7 +42,7 @@ function NewDocumentCard() {
       type="button"
       onClick={handleCreateDocument}
       disabled={isCreating}
-      className="flex h-48 w-32 cursor-pointer rounded-lg flex-col items-center justify-center border border-dashed border-gray-400 bg-white p-4 text-center text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+      className="flex h-48 w-32 shrink-0 cursor-pointer rounded-lg flex-col items-center justify-center border border-dashed border-gray-400 bg-white p-4 text-center text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
     >
       <span className="text-3xl leading-none">+</span>
       <span className="mt-2 text-sm font-medium">
@@ -54,7 +54,7 @@ function NewDocumentCard() {
 
 function DocumentCard({ id, name, lastModified }: { id: number; name: string | null; lastModified: Date | null }) {
   return (
-    <Link href={`/editor/${id}`} className="flex flex-col bg-gray-100 w-32 h-48 rounded-lg">
+    <Link href={`/editor/${id}`} className="flex flex-col bg-gray-100 w-32 h-48 shrink-0 rounded-lg">
       <div className="p-4 text-center">
         {getDocumentName({ id, name })}
       </div>
@@ -72,7 +72,7 @@ export function DocumentList({ documents }: {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Documents</h1>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <NewDocumentCard />
 
         {documents.map((doc) => (
