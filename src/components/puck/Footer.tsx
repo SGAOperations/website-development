@@ -3,114 +3,76 @@ import React from 'react';
 
 export type FooterProps = {
     showActionButtons?: boolean;
-    actionButton1Text?: string;
-    actionButton1Href?: string;
-    actionButton2Text?: string;
-    actionButton2Href?: string;
-    actionButton3Text?: string;
-    actionButton3Href?: string;
+    actionButtons: Array<{
+        label: string;
+        href: string;
+    }>;
     showSocialMedia?: boolean;
-    socialMedia1Label?: string;
-    socialMedia1LogoSrc?: string;
-    socialMedia1LogoAlt?: string;
-    socialMedia2Label?: string;
-    socialMedia2LogoSrc?: string;
-    socialMedia2LogoAlt?: string;
-    socialMedia3Label?: string;
-    socialMedia3LogoSrc?: string;
-    socialMedia3LogoAlt?: string;
+    socialMedia: Array<{
+        label: string;
+        logoSrc: string;
+        logoAlt: string;
+    }>;
     organizationName?: string;
     organizationAddress?: string;
-    webmasterEmail?: string;
-    webmasterLabel?: string;
-    mediaInquiriesEmail?: string;
-    mediaInquiriesLabel?: string;
+    emailDisplay: Array<{
+        label: string;
+        email: string;
+    }>;
 };
 
 export const Footer: React.FC<FooterProps> = ({
     showActionButtons,
-    actionButton1Text,
-    actionButton1Href,
-    actionButton2Text,
-    actionButton2Href,
-    actionButton3Text,
-    actionButton3Href,
+    actionButtons,
     showSocialMedia,
-    socialMedia1Label,
-    socialMedia1LogoSrc,
-    socialMedia1LogoAlt,
-    socialMedia2Label,
-    socialMedia2LogoSrc,
-    socialMedia2LogoAlt,
-    socialMedia3Label,
-    socialMedia3LogoSrc,
-    socialMedia3LogoAlt,
+    socialMedia,
     organizationName,
     organizationAddress,
-    webmasterEmail,
-    webmasterLabel,
-    mediaInquiriesEmail,
-    mediaInquiriesLabel,
+    emailDisplay,
 }) => (
     <footer className="bg-black w-full text-center overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center">
 
         {showActionButtons && (
             <div className="flex justify-center items-center pt-10 gap-5">
-                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton1Text}</button>
-                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton2Text}</button>
-                <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">{actionButton3Text}</button>
+                { actionButtons.map((group, index) => (
+                    <a key={index} href={group.href}>
+                        <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">
+                           {group.label}
+                        </button>
+                    </a>
+                ))}
             </div>
         )}
 
         {showSocialMedia && (
             <div className="flex flex-wrap justify-center items-center gap-8 py-6 px-4">
-                <div className="flex flex-col items-center px-5">
-                    <p className="text-white font-light pb-3">{socialMedia1Label}</p>
-                    {socialMedia1LogoSrc ? (
-                        <img src={socialMedia1LogoSrc} alt={socialMedia1LogoAlt} className="w-16 h-auto" />
-                    ) : (
-                        <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                    )}
-                </div>
-                <div className="flex flex-col items-center px-5">
-                    <p className="text-white font-light pb-3">{socialMedia2Label}</p>
-                    {socialMedia2LogoSrc ? (
-                        <img src={socialMedia2LogoSrc} alt={socialMedia2LogoAlt} className="w-16 h-auto" />
-                    ) : (
-                        <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                    )}
-                </div>
-                <div className="flex flex-col items-center px-5">
-                    <p className="text-white font-light pb-3">{socialMedia3Label}</p>
-                    {socialMedia3LogoSrc ? (
-                        <img src={socialMedia3LogoSrc} alt={socialMedia3LogoAlt} className="w-16 h-auto" />
-                    ) : (
-                        <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
-                    )}
-                </div>
+                { socialMedia.map((group, index) => (
+                    <div key={index} className="flex flex-col items-center px-5">
+                        <p className="text-white font-light pb-3">{group.label}</p>
+                            {group.logoSrc ? (
+                            <img src={group.logoSrc} alt={group.logoAlt} className="w-16 h-auto" />
+                        ) : (
+                            <div className="w-16 h-16 bg-gray-600 flex items-center justify-center text-white text-xs">Logo</div>
+                        )}
+                    </div>
+                    ))}
             </div>
         )}
 
         <div className="pb-10">
             <p className="text-white font-light pb-4">{organizationName}</p>
             <p className="text-white font-light pb-4">{organizationAddress}</p>
-            <p className="text-white font-light pb-4 break-words">{webmasterLabel}&nbsp;
-                <a
-                    href={`mailto:${webmasterEmail}`}
-                    className="underline text-white font-light hover:text-gray-300 wrap-break-word"
-                >
-                    {webmasterEmail}
-                </a>
-            </p>
-            <p className="text-white font-light pb-4 break-words">{mediaInquiriesLabel}&nbsp;
-                <a
-                    href={`mailto:${mediaInquiriesEmail}`}
-                    className="underline text-white font-light hover:text-gray-300 transition duration-300 wrap-break-word"
-                >
-                    {mediaInquiriesEmail}
-                </a>
-            </p>
+            { emailDisplay.map((group, index) => (
+                <p key={index} className="text-white font-light pb-4 break-words">{group.label}&nbsp;
+                    <a
+                        href={`mailto:${group.email}`}
+                        className="underline text-white font-light hover:text-gray-300 wrap-break-word"
+                    >
+                        {group.email}
+                    </a>
+                </p>
+            ))}
         </div>
         </div>
     </footer>
@@ -126,12 +88,13 @@ export const FooterConfig: ComponentConfig<FooterProps> = {
                 { label: "Hide", value: false },
             ]
         },
-        actionButton1Text: { type: "text" },
-        actionButton1Href: { type: "text" },
-        actionButton2Text: { type: "text" },
-        actionButton2Href: { type: "text" },
-        actionButton3Text: { type: "text" },
-        actionButton3Href: { type: "text" },
+        actionButtons: {
+            type: "array",
+            arrayFields: {
+                label: { type: "text" },
+                href: { type: "text" },
+            },
+        },
         showSocialMedia: {
             type: "radio",
             options: [
@@ -139,46 +102,43 @@ export const FooterConfig: ComponentConfig<FooterProps> = {
                 { label: "Hide", value: false },
             ]
         },
-        socialMedia1Label: { type: "text" },
-        socialMedia1LogoSrc: { type: "text" },
-        socialMedia1LogoAlt: { type: "text" },
-        socialMedia2Label: { type: "text" },
-        socialMedia2LogoSrc: { type: "text" },
-        socialMedia2LogoAlt: { type: "text" },
-        socialMedia3Label: { type: "text" },
-        socialMedia3LogoSrc: { type: "text" },
-        socialMedia3LogoAlt: { type: "text" },
+        socialMedia: {
+            type: "array",
+            arrayFields: {
+                label: { type: "text" },
+                logoSrc: { type: "text" },
+                logoAlt: { type: "text" },
+            },
+        },
         organizationName: { type: "text" },
         organizationAddress: { type: "text" },
-        webmasterEmail: { type: "text" },
-        webmasterLabel: { type: "text" },
-        mediaInquiriesEmail: { type: "text" },
-        mediaInquiriesLabel: { type: "text" },
+        emailDisplay: {
+            type: "array",
+            arrayFields: {
+                label: { type: "text" },
+                email: { type: "text" },
+            },
+        },
     },
     defaultProps: {
         showActionButtons: true,
-        actionButton1Text: "GIVE FEEDBACK",
-        actionButton1Href: "#",
-        actionButton2Text: "MAILING LIST",
-        actionButton2Href: "#",
-        actionButton3Text: "GET INVOLVED",
-        actionButton3Href: "#",
+        actionButtons: [
+            { label: "GIVE FEEDBACK", href: "#"  },
+            { label: "MAILING LIST", href: "#"  },
+            { label: "GET INVOLVED", href: "#"  },
+        ],
         showSocialMedia: true,
-        socialMedia1Label: "SGA",
-        socialMedia1LogoSrc: "",
-        socialMedia1LogoAlt: "SGA Instagram",
-        socialMedia2Label: "Campus Affairs",
-        socialMedia2LogoSrc: "",
-        socialMedia2LogoAlt: "Campus Affairs Instagram",
-        socialMedia3Label: "SGA",
-        socialMedia3LogoSrc: "",
-        socialMedia3LogoAlt: "SGA TikTok",
+        socialMedia: [
+            { label: "SGA", logoSrc: "", logoAlt: "SGA Instagram" },
+            { label: "Campus Affairs", logoSrc: "", logoAlt: "Campus Affairs Instagram" },
+            { label: "SGA", logoSrc: "", logoAlt: "SGA TikTok" },
+        ],
         organizationName: "Northeastern University Student Government Association",
         organizationAddress: "332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115",
-        webmasterEmail: "sgaOperations@northeastern.edu",
-        webmasterLabel: "Webmaster:",
-        mediaInquiriesEmail: "sgaExternalAffairs@northeastern.edu",
-        mediaInquiriesLabel: "Media Inquiries:",
+        emailDisplay: [
+            { label: "Webmaster:", email: "sgaOperations@northeastern.edu"  },
+            { label: "Media Inquiries:", email: "sgaExternalAffairs@northeastern.edu"  },
+        ],
     },
     render: (props) => <Footer {...props} />,
-}
+};
