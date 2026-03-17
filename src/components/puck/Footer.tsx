@@ -36,8 +36,8 @@ export const Footer: React.FC<FooterProps> = ({
         {showActionButtons && (
             <div className="flex justify-center items-center pt-10 gap-5">
                 { actionButtons.map((group, index) => (
-                    <a href={group.href}>
-                        <button key={index} className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">
+                    <a key={index} href={group.href}>
+                        <button className="button bg-black text-white border-2 p-5 border-white transition-all duration-350 ease-in-out hover:bg-white hover:text-black">
                            {group.label}
                         </button>
                     </a>
