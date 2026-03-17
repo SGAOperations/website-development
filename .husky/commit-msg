@@ -1,0 +1,7 @@
+commit_msg=$(cat "$1")
+
+if ! echo "$commit_msg" | grep -qE "^WEB-[0-9]+"; then
+  echo "ERROR: Commit message must start with 'WEB-XX' (e.g., 'WEB-67 Fix bug')"
+  echo "  got: $commit_msg"
+  exit 1
+fi
