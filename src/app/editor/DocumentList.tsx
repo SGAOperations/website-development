@@ -52,14 +52,34 @@ function NewDocumentCard() {
   );
 }
 
+function formatRelativeTime(date: Date): string {
+  const now = Date.now();
+  const seconds = Math.floor((now - date.getTime()) / 1000);
+
+  if (seconds < 60) return "just now";
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} min ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hr ago`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} mo ago`;
+
+  return `${Math.floor(days / 365)} yr ago`;
+}
+
 function DocumentCard({ id, name, lastModified }: { id: number; name: string | null; lastModified: Date | null }) {
   return (
-    <Link href={`/editor/${id}`} className="flex flex-col bg-gray-100 w-32 h-48 shrink-0 rounded-lg">
-      <div className="p-4 text-center">
+    <Link href={`/editor/${id}`} className="flex flex-col bg-gray-100 w-32 h-48 shrink-0 rounded-lg p-2">
+      <div className="flex flex-1 w-full items-center justify-center text-center font-medium line-clamp-3 break-words">
         {getDocumentName({ id, name })}
       </div>
-      <div className="mt-auto text-xs text-gray-600 bg-gray-200 rounded-b-lg px-2 py-1">
-        {lastModified ? lastModified.toLocaleString() : "No versions"}
+      <div className="text-xs text-gray-600 px-2 py-1 text-center">
+        {lastModified ? formatRelativeTime(lastModified) : "No versions"}
       </div>
     </Link>
   );
