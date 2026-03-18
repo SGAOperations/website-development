@@ -14,7 +14,7 @@
     "@puckeditor/core": "0.21.1",
     "classnames": "^2.3.2",
     "lucide-react": "^0.575.0",
-    "next": "^15.2.4",
+    "next": "^15.5.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
