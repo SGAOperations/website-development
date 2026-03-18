@@ -16,17 +16,7 @@ import type {
   UpdateRouteInput,
   Version,
 } from "./types";
-
-async function wrapAction<T>(fn: () => Promise<T>): Promise<ActionResult<T>> {
-  try {
-    return { success: true, data: await fn() };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
-  }
-}
+import { wrapAction } from "./wrap-action";
 
 function assertValidRoutePath(path: string): void {
   if (!path.startsWith("/")) {

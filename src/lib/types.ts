@@ -39,3 +39,15 @@ export type UpdateRouteInput = {
 export type DeleteRouteInput = {
   id: number;
 };
+
+export type MediaFile = {
+  name: string;
+  size: number;
+  contentType: string | undefined;
+  createdAt: string;
+  url: string;
+};
+
+export type DeleteMediaInput = {
+  name: string;
+};

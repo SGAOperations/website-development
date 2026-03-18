@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
 import {
   createRouteAction,
   updateRouteAction,
   deleteRouteAction,
 } from "../../lib/actions";
-import type { ActionResult } from "../../lib/types";
+import { useRunAction } from "./useRunAction";
 
 type RouteRow = {
   id: number;
@@ -182,20 +181,8 @@ export function RouteTable({
   routes: RouteRow[];
   documents: DocumentOption[];
 }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isPending, run] = useRunAction();
   const [creating, setCreating] = useState(false);
-
-  function run(action: Promise<ActionResult<unknown>>) {
-    startTransition(async () => {
-      const result = await action;
-      if (!result.success) {
-        alert(result.error);
-        return;
-      }
-      router.refresh();
-    });
-  }
 
   function handleCreate(path: string, documentId: number) {
     setCreating(false);
