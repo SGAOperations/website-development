@@ -10,9 +10,17 @@ export const Paragraph: React.FC<ParagraphProps> = ({
     text,
     textColor = "text-black"
 }) => (
-    <p className={textColor}>
-        {text}
-    </p>
+    typeof text === "string"
+     ? (
+        <p className={textColor}>
+            {text}
+        </p>
+     )
+     : (
+        <div className={textColor}>
+            {text}
+        </div>
+     )
 )
 
 export const ParagraphConfig: ComponentConfig<ParagraphProps> = {
