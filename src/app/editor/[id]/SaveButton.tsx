@@ -2,7 +2,6 @@
 
 import { createUsePuck } from "@puckeditor/core";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
 import { saveVersionAction } from "../../../lib/actions";
 
@@ -11,8 +10,7 @@ const usePuck = createUsePuck();
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
   const dispatch = usePuck((s) => s.dispatch);
-  const router = useRouter();
-  const { documentId } = useDocumentContext();
+  const { documentId, addVersion } = useDocumentContext();
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -27,7 +25,8 @@ export function SaveButton() {
     }
 
     dispatch({ type: "setData", data });
-    router.push(`/editor/${documentId}?versionId=${result.data.version.id}`);
+    addVersion(result.data.version);
+    setIsSaving(false);
   };
 
   return (

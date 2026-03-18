@@ -175,7 +175,7 @@ function RouteRowComponent({
 }
 
 export function RouteTable({
-  routes,
+  routes: initialRoutes,
   documents,
 }: {
   routes: RouteRow[];
@@ -183,19 +183,31 @@ export function RouteTable({
 }) {
   const [isPending, run] = useRunAction();
   const [creating, setCreating] = useState(false);
+  const [routes, setRoutes] = useState(initialRoutes);
 
-  function handleCreate(path: string, documentId: number) {
+  async function handleCreate(path: string, documentId: number) {
     setCreating(false);
-    run(createRouteAction({ path, documentId }));
+    const result = await run(createRouteAction({ path, documentId }));
+    if (result.success) {
+      const docName = documents.find((d) => d.id === documentId)?.name ?? "";
+      setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: docName }]);
+    }
   }
 
-  function handleUpdate(id: number, path: string, documentId: number) {
-    run(updateRouteAction({ id, path, documentId }));
+  async function handleUpdate(id: number, path: string, documentId: number) {
+    const result = await run(updateRouteAction({ id, path, documentId }));
+    if (result.success) {
+      const docName = documents.find((d) => d.id === documentId)?.name ?? "";
+      setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: docName } : r)));
+    }
   }
 
-  function handleDelete(route: RouteRow) {
+  async function handleDelete(route: RouteRow) {
     if (!window.confirm(`Delete route "${route.path}"?`)) return;
-    run(deleteRouteAction({ id: route.id }));
+    const result = await run(deleteRouteAction({ id: route.id }));
+    if (result.success) {
+      setRoutes((prev) => prev.filter((r) => r.id !== route.id));
+    }
   }
 
   return (

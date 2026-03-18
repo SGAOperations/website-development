@@ -1,20 +1,23 @@
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState } from "react";
 import type { ActionResult } from "../../lib/types";
 
 export function useRunAction() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
-  function run(action: Promise<ActionResult<unknown>>) {
-    startTransition(async () => {
+  async function run<T>(action: Promise<ActionResult<T>>): Promise<ActionResult<T>> {
+    setIsPending(true);
+    try {
       const result = await action;
       if (!result.success) {
         alert(result.error);
-        return;
       }
-      router.refresh();
-    });
+      return result;
+    } catch {
+      alert("Something went wrong. Please try again.");
+      return { success: false, error: "Transport error" } as ActionResult<T>;
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return [isPending, run] as const;

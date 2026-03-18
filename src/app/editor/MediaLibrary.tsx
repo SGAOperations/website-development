@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { File as FileIcon, Trash2, Copy } from "lucide-react";
 import { uploadMediaAction, deleteMediaAction } from "../../lib/media-actions";
 import type { MediaFile } from "../../lib/types";
@@ -110,18 +110,25 @@ function MediaCard({
   );
 }
 
-export function MediaLibrary({ files }: { files: MediaFile[] }) {
+export function MediaLibrary({ files: initialFiles }: { files: MediaFile[] }) {
   const [isPending, run] = useRunAction();
+  const [files, setFiles] = useState(initialFiles);
 
-  function handleUpload(file: File) {
+  async function handleUpload(file: File) {
     const formData = new FormData();
     formData.append("file", file);
-    run(uploadMediaAction(formData));
+    const result = await run(uploadMediaAction(formData));
+    if (result.success) {
+      setFiles((prev) => [...prev, result.data]);
+    }
   }
 
-  function handleDelete(file: MediaFile) {
+  async function handleDelete(file: MediaFile) {
     if (!window.confirm(`Delete "${file.name}"?`)) return;
-    run(deleteMediaAction({ name: file.name }));
+    const result = await run(deleteMediaAction({ name: file.name }));
+    if (result.success) {
+      setFiles((prev) => prev.filter((f) => f.name !== file.name));
+    }
   }
 
   return (

@@ -28,7 +28,7 @@ export function VersionListPanel({
 }: VersionListPanelProps) {
 
   return (
-    <div className="border-t border-gray-200 pt-3">
+    <div className="">
       <div className="text-xs font-semibold text-gray-600 mb-2">
         Versions ({versions.length})
       </div>
@@ -44,7 +44,7 @@ export function VersionListPanel({
         </div>
       ) :
       (
-        <div className="space-y-1 max-h-96 overflow-y-auto">
+        <div className="space-y-1 max-h-96">
           {versions.map((version) => {
             const isPublished = version.id === publishedVersionId;
             const isCurrent = version.id === currentVersionId;
