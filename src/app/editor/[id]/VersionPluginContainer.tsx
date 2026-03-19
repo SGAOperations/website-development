@@ -8,7 +8,7 @@ import { VersionListPanel } from "./VersionListPanel";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, versionId, publishedVersionId, versions } = useDocumentContext();
+  const { documentId, versionId, publishedVersionId, versions, setPublishedVersionId } = useDocumentContext();
   const [isPublishing, setIsPublishing] = useState(false);
 
   const handlePublishVersion = async (targetVersionId: number) => {
@@ -21,12 +21,12 @@ export function VersionPluginContainer() {
       return;
     }
 
-    router.push(`/editor/${documentId}?versionId=${targetVersionId}`);
+    setPublishedVersionId(targetVersionId);
     setIsPublishing(false);
   };
 
   const handleLoadVersion = (versionIdToLoad: number) => {
-    router.push(`/editor/${documentId}?versionId=${versionIdToLoad}`);
+    router.replace(`/editor/${documentId}?versionId=${versionIdToLoad}`);
   };
 
   return (
