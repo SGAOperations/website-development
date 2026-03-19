@@ -59,10 +59,10 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
         backgroundColor: {
             type: "select",
             options: [
-                { label: "Semi-transparent Black", value: "rgba(0, 0, 0, 0.5)" },
-                { label: "Solid Black", value: "#000000" },
-                { label: "Semi-transparent White", value: "rgba(255, 255, 255, 0.9)" },
-                { label: "SGA Red", value: "#dc2626" },
+                { label: "Semi-transparent Black", value: "var(--color-semi-transparent-black)" },
+                { label: "Solid Black", value: "var(--color-solid-black)" },
+                { label: "Semi-transparent White", value: "var(--color-semi-transparent-white)" },
+                { label: "SGA Red", value: "var(--color-sga-red)" },
                 { label: "Transparent", value: "transparent" },
             ]
         },
@@ -142,7 +142,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
         },
     },
     defaultProps: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "var(--color-semi-transparent-black)",
         padding: "p-5",
         titleText: "SGA",
         titleSize: "text-9xl",
