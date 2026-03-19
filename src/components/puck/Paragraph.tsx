@@ -6,10 +6,11 @@ export interface ParagraphProps {
     textColor: string;
 }
 
-export const Paragraph: React.FC<ParagraphProps> = ({
+export function Paragraph({
     text,
     textColor = "text-black"
-}) => (
+}: ParagraphProps) {
+    return (
     typeof text === "string"
      ? (
         <p className={textColor}>
@@ -21,7 +22,8 @@ export const Paragraph: React.FC<ParagraphProps> = ({
             {text}
         </div>
      )
-)
+    )
+}
 
 export const ParagraphConfig: ComponentConfig<ParagraphProps> = {
     fields: {

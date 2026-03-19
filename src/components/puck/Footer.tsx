@@ -1,5 +1,4 @@
 import { ComponentConfig } from '@puckeditor/core';
-import React from 'react';
 
 export type FooterProps = {
     showActionButtons?: boolean;
@@ -27,7 +26,7 @@ export type FooterProps = {
     mediaInquiriesLabel?: string;
 };
 
-export const Footer: React.FC<FooterProps> = ({
+export function Footer({
     showActionButtons,
     actionButton1Text,
     actionButton1Href,
@@ -51,7 +50,8 @@ export const Footer: React.FC<FooterProps> = ({
     webmasterLabel,
     mediaInquiriesEmail,
     mediaInquiriesLabel,
-}) => (
+}: FooterProps) {
+    return (
     <footer className="bg-black w-full text-center overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center">
 
@@ -114,7 +114,8 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
         </div>
     </footer>
-);
+    )
+}
 
 
 export const FooterConfig: ComponentConfig<FooterProps> = {

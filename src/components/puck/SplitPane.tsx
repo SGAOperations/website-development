@@ -15,7 +15,7 @@ export interface SplitPanePropsForRender extends SplitPaneProps {
     puck: PuckContext
 }
 
-export const SplitPane: React.FC<SplitPanePropsForRender> = ({
+export function SplitPane({
     paneOneContent: ContentOne,
     paneTwoContent: ContentTwo,
     paneOneRatio = 1,
@@ -24,7 +24,7 @@ export const SplitPane: React.FC<SplitPanePropsForRender> = ({
     padding = "p-8",
     backgroundColor = "#ffffff",
     puck
-}) => {
+}: SplitPanePropsForRender) {
 
     return <div ref={puck.dragRef} className={`${gap} ${padding} flex flex-col md:flex-row items-center`} style={{backgroundColor}}>
             <div style={{flex: paneOneRatio}}>

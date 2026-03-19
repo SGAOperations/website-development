@@ -7,11 +7,11 @@ export interface RootContainerProps {
     padBottom: boolean;
 }
 
-export const RootContainer: React.FC<RootContainerProps> = ({
+export function RootContainer({
     content: Content,
     padTop = false,
     padBottom = false,
-}) => {
+}: RootContainerProps) {
     const paddingStyles = "px-[clamp(1rem,4vw,4rem)] " +
         (padTop ? "pt-[clamp(1rem,4vw,4rem)] " : "") +
         (padBottom ? "pb-[clamp(1rem,4vw,4rem)] " : "")

@@ -1,5 +1,4 @@
 import { ComponentConfig } from '@puckeditor/core';
-import React from 'react';
 import { paddingSettingsField } from '../../lib/settings-fields';
 
 type NavItem = {
@@ -16,11 +15,12 @@ export type NavigationProps = {
     }>;
 };
 
-export const Navigation: React.FC<NavigationProps> = ({
+export function Navigation({
     backgroundColor,
     padding,
     nav,
-}) => (
+}: NavigationProps) {
+    return (
     <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto relative top-0 ${padding}`}
@@ -60,7 +60,8 @@ export const Navigation: React.FC<NavigationProps> = ({
             </div>
         </header>
     </div>
-);
+    )
+}
 
 
 export const NavigationConfig: ComponentConfig<NavigationProps> = {

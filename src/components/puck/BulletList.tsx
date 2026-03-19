@@ -10,11 +10,11 @@ export interface BulletListProps {
     textColor: string;
 }
 
-export const BulletList: React.FC<BulletListProps> = ({
+export function BulletList({
     items,
     bullet = "disc",
     textColor = "text-black"
-}) => {
+}: BulletListProps) {
     const ListComponent = bullet === "decimal" ? "ol" : "ul" as keyof JSX.IntrinsicElements;
 
     const listStyleMap = {

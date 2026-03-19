@@ -1,5 +1,4 @@
 import { ComponentConfig } from '@puckeditor/core';
-import React from 'react';
 import { paddingSettingsField, textColorSettingField } from '../../lib/settings-fields';
 
 export type HeaderContentProps = {
@@ -18,7 +17,7 @@ export type HeaderContentProps = {
     dividerMargin?: string;
 };
 
-export const HeaderContent: React.FC<HeaderContentProps> = ({
+export function HeaderContent({
     backgroundColor,
     padding,
     titleText,
@@ -32,7 +31,8 @@ export const HeaderContent: React.FC<HeaderContentProps> = ({
     dividerWidth,
     dividerHeight,
     dividerMargin
-}) => (
+}: HeaderContentProps) {
+    return (
     <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto w-full relative ${padding}`}
@@ -51,7 +51,8 @@ export const HeaderContent: React.FC<HeaderContentProps> = ({
             </div>
         </header>
     </div>
-);
+    )
+}
 
 export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
     fields: {

@@ -1,5 +1,5 @@
 import { Field, ComponentConfig } from "@puckeditor/core";
-import React, { JSX } from "react";
+import { JSX } from "react";
 import { booleanSettingsField, textColorSettingField } from "../../lib/settings-fields";
 
 
@@ -24,13 +24,13 @@ export interface TitleProps {
 }
 
 
-export const Title: React.FC<TitleProps> = ({
+export function Title({
     text,
     size = 'main',
     center = false,
     uppercase = true,
     textColor = "text-black"
-}) => {
+}: TitleProps) {
     const sizeComponentMap = {
         main: 'h1',
         section: 'h2',
