@@ -2,9 +2,11 @@
 
 import { createUsePuck } from "@puckeditor/core";
 import { useTransition } from "react";
+import { toast } from "sonner";
 import { useDocumentContext } from "./client";
 import { saveVersionAction } from "../../../lib/actions";
 import { runAction } from "../runAction";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 const usePuck = createUsePuck();
 
@@ -12,6 +14,7 @@ export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
   const dispatch = usePuck((s) => s.dispatch);
   const { documentId, addVersion } = useDocumentContext();
+  const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
 
@@ -20,12 +23,13 @@ export function SaveButton() {
       const result = await runAction(saveVersionAction({ documentId, content: data }));
 
       if (result.success === false) {
-        alert(result.error);
+        await alert(result.error);
         return;
       }
 
       dispatch({ type: "setData", data });
       addVersion(result.data.version);
+      toast.success("Saved");
     });
   };
 

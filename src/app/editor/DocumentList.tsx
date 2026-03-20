@@ -8,13 +8,15 @@ import { createDocumentAction, renameDocumentAction } from "../../lib/actions";
 import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents";
 import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 function NewDocumentCard() {
   const router = useRouter();
   const [isCreating, startTransition] = useTransition();
+  const { prompt, alert } = useDialogs();
 
   async function handleCreateDocument() {
-    const name = window.prompt("Document name");
+    const name = await prompt({ title: "Document name" });
 
     if (name === null) {
       return;
@@ -32,7 +34,7 @@ function NewDocumentCard() {
       });
 
       if (result.success === false) {
-        alert(result.error);
+        await alert(result.error);
         return;
       }
 
@@ -93,16 +95,17 @@ export function DocumentList({ documents }: {
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { prompt, alert } = useDialogs();
 
-  function handleRename(id: number, currentName: string) {
-    const newName = window.prompt("Rename document", currentName);
+  async function handleRename(id: number, currentName: string) {
+    const newName = await prompt({ title: "Rename document", defaultValue: currentName });
     if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
     startTransition(async () => {
       const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
       if (result.success) {
         router.refresh();
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }

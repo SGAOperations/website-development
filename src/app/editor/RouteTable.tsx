@@ -9,6 +9,7 @@ import {
   deleteRouteAction,
 } from "../../lib/actions";
 import { runAction } from "./runAction";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 type RouteRow = {
   id: number;
@@ -184,6 +185,7 @@ export function RouteTable({
   const [isPending, startTransition] = useTransition();
   const [creating, setCreating] = useState(false);
   const [routes, setRoutes] = useState(initialRoutes);
+  const { confirm, alert } = useDialogs();
 
   function handleCreate(path: string, documentId: number) {
     setCreating(false);
@@ -193,7 +195,7 @@ export function RouteTable({
         const docName = documents.find((d) => d.id === documentId)?.name ?? "";
         setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: docName }]);
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }
@@ -205,19 +207,19 @@ export function RouteTable({
         const docName = documents.find((d) => d.id === documentId)?.name ?? "";
         setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: docName } : r)));
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }
 
-  function handleDelete(route: RouteRow) {
-    if (!window.confirm(`Delete route "${route.path}"?`)) return;
+  async function handleDelete(route: RouteRow) {
+    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete" })) return;
     startTransition(async () => {
       const result = await runAction(deleteRouteAction({ id: route.id }));
       if (result.success) {
         setRoutes((prev) => prev.filter((r) => r.id !== route.id));
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }

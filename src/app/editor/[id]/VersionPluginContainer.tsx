@@ -6,22 +6,26 @@ import { useDocumentContext } from "./client";
 import { publishVersionAction } from "../../../lib/actions";
 import { runAction } from "../runAction";
 import { VersionListPanel } from "./VersionListPanel";
+import { useDialogs } from "@/components/ui/dialog-provider";
+import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
   const { documentId, versionId, publishedVersionId, versions, setPublishedVersionId } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
+  const { alert } = useDialogs();
 
   const handlePublishVersion = (targetVersionId: number) => {
     startTransition(async () => {
       const result = await runAction(publishVersionAction({ documentId, versionId: targetVersionId }));
 
       if (result.success === false) {
-        alert(result.error);
+        await alert(result.error);
         return;
       }
 
       setPublishedVersionId(targetVersionId);
+      toast.success("Published");
     });
   };
 

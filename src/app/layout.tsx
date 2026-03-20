@@ -1,4 +1,6 @@
 import "./styles.css";
+import { Toaster } from "@/components/ui/sonner";
+import { DialogProvider } from "@/components/ui/dialog-provider";
 
 export default function RootLayout({
   children,
@@ -7,7 +9,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <DialogProvider>
+          {children}
+        </DialogProvider>
+        <Toaster />
+      </body>
     </html>
   )
 }

@@ -4,6 +4,7 @@ import { useCallback, useRef } from "react";
 import { ActionBar, createUsePuck } from "@puckeditor/core";
 import type { ComponentData, Config } from "@puckeditor/core";
 import { Copy, CopyPlus, ClipboardPaste } from "lucide-react";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 const usePuck = createUsePuck();
 
@@ -99,6 +100,7 @@ export function ActionBarOverride({
   const dispatch = usePuck((s) => s.dispatch);
   const getSelectorForId = usePuck((s) => s.getSelectorForId);
   const isPastingRef = useRef(false);
+  const { alert } = useDialogs();
 
   const handleDuplicate = useCallback(() => {
     if (!selectedItem) return;
@@ -131,7 +133,7 @@ export function ActionBarOverride({
       // Read and validate clipboard
       const raw = await readFromClipboard();
       if (!raw) {
-        alert("Invalid clipboard data")
+        await alert("Invalid clipboard data");
         return;
       }
 
@@ -175,7 +177,7 @@ export function ActionBarOverride({
     } finally {
       isPastingRef.current = false;
     }
-  }, [selectedItem, config, dispatch, getSelectorForId]);
+  }, [selectedItem, config, dispatch, getSelectorForId, alert]);
 
   return (
     <ActionBar label={label}>
