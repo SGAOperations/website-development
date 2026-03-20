@@ -2,10 +2,12 @@
 
 import { useRef, useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/actions";
 import type { Media } from "../../generated/prisma/client";
 import { runAction } from "./runAction";
 import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 type MediaWithUrl = Media & { url: string };
 
@@ -80,7 +82,7 @@ function MediaCard({
           <ActionButton onClick={() => onRename(file)} disabled={disabled} title="Rename">
             <Pencil className="h-3 w-3" />
           </ActionButton>
-          <ActionButton onClick={() => navigator.clipboard.writeText(file.url)} title="Copy URL">
+          <ActionButton onClick={() => { navigator.clipboard.writeText(file.url); toast.success("URL copied"); }} title="Copy URL">
             <Copy className="h-3 w-3" />
           </ActionButton>
           <ActionButton onClick={() => onDelete(file)} disabled={disabled} title="Delete" variant="danger">
@@ -95,6 +97,7 @@ function MediaCard({
 export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
   const [files, setFiles] = useState(initialFiles);
+  const { confirm, prompt, alert } = useDialogs();
 
   function handleUpload(file: File) {
     const formData = new FormData();
@@ -104,32 +107,32 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
       if (result.success) {
         setFiles((prev) => [result.data, ...prev]);
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }
 
-  function handleRename(file: MediaWithUrl) {
-    const newName = window.prompt("Rename file", file.name);
+  async function handleRename(file: MediaWithUrl) {
+    const newName = await prompt({ title: "Rename file", defaultValue: file.name });
     if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
     startTransition(async () => {
       const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
       if (result.success) {
         setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, name: newName.trim() } : f)));
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }
 
-  function handleDelete(file: MediaWithUrl) {
-    if (!window.confirm(`Delete "${file.name}"?`)) return;
+  async function handleDelete(file: MediaWithUrl) {
+    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete" })) return;
     startTransition(async () => {
       const result = await runAction(deleteMediaAction({ id: file.id }));
       if (result.success) {
         setFiles((prev) => prev.filter((f) => f.id !== file.id));
       } else {
-        alert(result.error);
+        await alert(result.error);
       }
     });
   }
