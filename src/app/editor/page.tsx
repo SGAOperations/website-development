@@ -1,39 +1,33 @@
 import { prisma } from "../../lib/prisma";
-import { supabase, MEDIA_BUCKET } from "../../lib/supabase";
+import { getMediaUrl } from "../../lib/supabase";
 import { getDocumentName } from "../../lib/documents";
 import { DocumentList } from "./DocumentList";
 import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
-import type { MediaFile } from "../../lib/types";
 
 export default async function EditorIndexPage() {
-  const routes = await prisma.route.findMany({
-    include: { document: true },
-    orderBy: { path: "asc" },
-  });
-
-  const { data: storageFiles } = await supabase.storage
-    .from(MEDIA_BUCKET)
-    .list(undefined, { sortBy: { column: "created_at", order: "desc" } });
-
-  const mediaFiles: MediaFile[] = (storageFiles ?? []).map((f) => ({
-    name: f.name,
-    size: f.metadata?.size ?? 0,
-    contentType: f.metadata?.mimetype,
-    createdAt: f.created_at ?? "",
-    url: supabase.storage.from(MEDIA_BUCKET).getPublicUrl(f.name).data.publicUrl,
-  }));
-
-  const documents = await prisma.document.findMany({
-    include: {
-      versions: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { createdAt: true },
+  const [routes, media, documents] = await Promise.all([
+    prisma.route.findMany({
+      include: { document: true },
+      orderBy: { path: "asc" },
+    }),
+    prisma.media.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.document.findMany({
+      include: {
+        versions: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { createdAt: true },
+        },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  const mediaFiles = media.map((m) => ({
+    ...m,
+    url: getMediaUrl(m.storagePath),
+  }));
 
   return (
     <div className="p-6 flex flex-col gap-6">

@@ -17,3 +17,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export const MEDIA_BUCKET = "media";
+
+export function getMediaUrl(storagePath: string): string {
+  return supabase.storage.from(MEDIA_BUCKET).getPublicUrl(storagePath).data
+    .publicUrl;
+}

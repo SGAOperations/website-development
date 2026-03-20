@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { FileText } from "lucide-react";
-import { createDocumentAction } from "../../lib/actions";
+import { FileText, Pencil } from "lucide-react";
+import { createDocumentAction, renameDocumentAction } from "../../lib/actions";
+import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents";
-import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
 
 function NewDocumentCard() {
   const router = useRouter();
@@ -49,7 +50,19 @@ function NewDocumentCard() {
   );
 }
 
-function DocumentCard({ id, name, lastModified }: { id: number; name: string | null; lastModified: Date | null }) {
+function DocumentCard({
+  id,
+  name,
+  lastModified,
+  onRename,
+  disabled,
+}: {
+  id: number;
+  name: string | null;
+  lastModified: Date | null;
+  onRename: (id: number, currentName: string) => void;
+  disabled: boolean;
+}) {
   const displayName = getDocumentName({ id, name });
 
   return (
@@ -58,6 +71,18 @@ function DocumentCard({ id, name, lastModified }: { id: number; name: string | n
         preview={<FileText className="h-10 w-10 text-gray-400" />}
         name={displayName}
         date={lastModified ? formatRelativeTime(lastModified) : "No versions"}
+        actions={
+          <ActionButton
+            onClick={(e) => {
+              e.preventDefault();
+              onRename(id, displayName);
+            }}
+            disabled={disabled}
+            title="Rename"
+          >
+            <Pencil className="h-3 w-3" />
+          </ActionButton>
+        }
       />
     </Link>
   );
@@ -66,6 +91,22 @@ function DocumentCard({ id, name, lastModified }: { id: number; name: string | n
 export function DocumentList({ documents }: {
   documents: { id: number; name: string | null; lastModified: Date | null }[];
 }) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  function handleRename(id: number, currentName: string) {
+    const newName = window.prompt("Rename document", currentName);
+    if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
+    startTransition(async () => {
+      const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        alert(result.error);
+      }
+    });
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Documents</h1>
@@ -79,6 +120,8 @@ export function DocumentList({ documents }: {
             id={doc.id}
             name={doc.name}
             lastModified={doc.lastModified}
+            onRename={handleRename}
+            disabled={isPending}
           />
         ))}
       </div>

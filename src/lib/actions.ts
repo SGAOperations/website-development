@@ -6,11 +6,15 @@ import {
   publishVersion as publishVersionUtil,
 } from "./version-utils";
 import { prisma } from "./prisma";
+import { supabase, MEDIA_BUCKET, getMediaUrl } from "./supabase";
+import type { Media } from "../generated/prisma/client";
 import type {
   ActionResult,
   CreateDocumentInput,
   CreateRouteInput,
+  DeleteMediaInput,
   DeleteRouteInput,
+  RenameInput,
   SaveVersionInput,
   PublishVersionInput,
   UpdateRouteInput,
@@ -57,6 +61,28 @@ export async function publishVersionAction(
   });
 }
 
+async function renameRecord(
+  model: "document" | "media",
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    const name = input.name.trim();
+    if (!name) {
+      throw new Error("Name cannot be empty");
+    }
+    await (prisma[model] as typeof prisma.document).update({
+      where: { id: input.id },
+      data: { name },
+    });
+  });
+}
+
+export async function renameDocumentAction(
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return renameRecord("document", input);
+}
+
 export async function createRouteAction(
   input: CreateRouteInput
 ): Promise<ActionResult<{ routeId: number }>> {
@@ -94,5 +120,69 @@ export async function deleteRouteAction(
     await prisma.route.delete({
       where: { id: input.id },
     });
+  });
+}
+
+export async function uploadMediaAction(
+  formData: FormData
+): Promise<ActionResult<Media & { url: string }>> {
+  return wrapAction(async () => {
+    const file = formData.get("file");
+
+    if (!(file instanceof File)) {
+      throw new Error("No file provided");
+    }
+
+    if (file.size === 0) {
+      throw new Error("File is empty");
+    }
+
+    const ext = file.name.includes(".") ? `.${file.name.split(".").pop()}` : "";
+    const storagePath = `${crypto.randomUUID()}${ext}`;
+
+    const { error } = await supabase.storage
+      .from(MEDIA_BUCKET)
+      .upload(storagePath, file, { contentType: file.type });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const media = await prisma.media.create({
+      data: {
+        name: file.name,
+        storagePath,
+        size: file.size,
+        contentType: file.type || null,
+      },
+    });
+
+    return { ...media, url: getMediaUrl(media.storagePath) };
+  });
+}
+
+export async function renameMediaAction(
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return renameRecord("media", input);
+}
+
+export async function deleteMediaAction(
+  input: DeleteMediaInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    const media = await prisma.media.findUniqueOrThrow({
+      where: { id: input.id },
+    });
+
+    const { error } = await supabase.storage
+      .from(MEDIA_BUCKET)
+      .remove([media.storagePath]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await prisma.media.delete({ where: { id: input.id } });
   });
 }

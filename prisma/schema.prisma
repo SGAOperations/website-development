@@ -27,6 +27,15 @@ model Version {
   createdAt           DateTime  @default(now())
 }
 
+model Media {
+  id          Int      @id @default(autoincrement())
+  name        String
+  storagePath String   @unique
+  size        Int
+  contentType String?
+  createdAt   DateTime @default(now())
+}
+
 model Route {
   id          Int       @id @default(autoincrement())
   path        String    @unique
