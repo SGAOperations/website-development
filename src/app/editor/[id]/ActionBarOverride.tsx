@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { ActionBar, usePuck } from "@puckeditor/core";
+import { ActionBar, createUsePuck } from "@puckeditor/core";
 import type { ComponentData, Config } from "@puckeditor/core";
 import { Copy, CopyPlus, ClipboardPaste } from "lucide-react";
+
+const usePuck = createUsePuck();
 
 const CLIPBOARD_MARKER = "_puckClipboard";
 
@@ -92,7 +94,10 @@ export function ActionBarOverride({
   label?: string;
   parentAction: React.ReactNode;
 }) {
-  const { selectedItem, config, dispatch, getSelectorForId } = usePuck();
+  const selectedItem = usePuck((s) => s.selectedItem);
+  const config = usePuck((s) => s.config);
+  const dispatch = usePuck((s) => s.dispatch);
+  const getSelectorForId = usePuck((s) => s.getSelectorForId);
   const isPastingRef = useRef(false);
 
   const handleDuplicate = useCallback(() => {
