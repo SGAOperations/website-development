@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { File as FileIcon, Trash2, Copy } from "lucide-react";
-import { uploadMediaAction, deleteMediaAction } from "../../lib/actions";
+import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
+import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/actions";
 import type { Media } from "../../generated/prisma/client";
 import { runAction } from "./runAction";
-import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
 
 type MediaWithUrl = Media & { url: string };
 
@@ -48,10 +48,12 @@ function UploadCard({
 
 function MediaCard({
   file,
+  onRename,
   onDelete,
   disabled,
 }: {
   file: MediaWithUrl;
+  onRename: (file: MediaWithUrl) => void;
   onDelete: (file: MediaWithUrl) => void;
   disabled: boolean;
 }) {
@@ -75,23 +77,15 @@ function MediaCard({
       date={`${createdDate} \u00B7 ${formatFileSize(file.size)}`}
       actions={
         <>
-          <button
-            type="button"
-            onClick={() => navigator.clipboard.writeText(file.url)}
-            className="rounded p-1 text-gray-500 hover:text-blue-600"
-            title="Copy URL"
-          >
+          <ActionButton onClick={() => onRename(file)} disabled={disabled} title="Rename">
+            <Pencil className="h-3 w-3" />
+          </ActionButton>
+          <ActionButton onClick={() => navigator.clipboard.writeText(file.url)} title="Copy URL">
             <Copy className="h-3 w-3" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onDelete(file)}
-            disabled={disabled}
-            className="rounded p-1 text-gray-500 hover:text-red-600 disabled:opacity-50"
-            title="Delete"
-          >
+          </ActionButton>
+          <ActionButton onClick={() => onDelete(file)} disabled={disabled} title="Delete" variant="danger">
             <Trash2 className="h-3 w-3" />
-          </button>
+          </ActionButton>
         </>
       }
     />
@@ -109,6 +103,19 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
       const result = await runAction(uploadMediaAction(formData));
       if (result.success) {
         setFiles((prev) => [result.data, ...prev]);
+      } else {
+        alert(result.error);
+      }
+    });
+  }
+
+  function handleRename(file: MediaWithUrl) {
+    const newName = window.prompt("Rename file", file.name);
+    if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
+    startTransition(async () => {
+      const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
+      if (result.success) {
+        setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, name: newName.trim() } : f)));
       } else {
         alert(result.error);
       }
@@ -138,6 +145,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
           <MediaCard
             key={file.id}
             file={file}
+            onRename={handleRename}
             onDelete={handleDelete}
             disabled={isPending}
           />

@@ -40,6 +40,11 @@ export type DeleteRouteInput = {
   id: number;
 };
 
+export type RenameInput = {
+  id: number;
+  name: string;
+};
+
 export type DeleteMediaInput = {
   id: number;
 };

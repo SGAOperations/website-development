@@ -83,3 +83,30 @@ export function NewResourceCard({
     </button>
   );
 }
+
+export function ActionButton({
+  onClick,
+  disabled,
+  title,
+  variant = "default",
+  children,
+}: {
+  onClick: (e: React.MouseEvent) => void;
+  disabled?: boolean;
+  title: string;
+  variant?: "default" | "danger";
+  children: ReactNode;
+}) {
+  const hoverColor = variant === "danger" ? "hover:text-red-600" : "hover:text-blue-600";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`rounded p-1 text-gray-500 ${hoverColor} disabled:opacity-50`}
+      title={title}
+    >
+      {children}
+    </button>
+  );
+}

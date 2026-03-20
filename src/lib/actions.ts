@@ -14,6 +14,7 @@ import type {
   CreateRouteInput,
   DeleteMediaInput,
   DeleteRouteInput,
+  RenameInput,
   SaveVersionInput,
   PublishVersionInput,
   UpdateRouteInput,
@@ -58,6 +59,28 @@ export async function publishVersionAction(
   return wrapAction(async () => {
     await publishVersionUtil(input.documentId, input.versionId);
   });
+}
+
+async function renameRecord(
+  model: "document" | "media",
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    const name = input.name.trim();
+    if (!name) {
+      throw new Error("Name cannot be empty");
+    }
+    await (prisma[model] as typeof prisma.document).update({
+      where: { id: input.id },
+      data: { name },
+    });
+  });
+}
+
+export async function renameDocumentAction(
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return renameRecord("document", input);
 }
 
 export async function createRouteAction(
@@ -114,7 +137,8 @@ export async function uploadMediaAction(
       throw new Error("File is empty");
     }
 
-    const storagePath = `${Date.now()}-${file.name}`;
+    const ext = file.name.includes(".") ? `.${file.name.split(".").pop()}` : "";
+    const storagePath = `${crypto.randomUUID()}${ext}`;
 
     const { error } = await supabase.storage
       .from(MEDIA_BUCKET)
@@ -135,6 +159,12 @@ export async function uploadMediaAction(
 
     return { ...media, url: getMediaUrl(media.storagePath) };
   });
+}
+
+export async function renameMediaAction(
+  input: RenameInput
+): Promise<ActionResult<void>> {
+  return renameRecord("media", input);
 }
 
 export async function deleteMediaAction(
