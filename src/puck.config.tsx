@@ -11,6 +11,7 @@ import { LinkButtonConfig } from "./components/puck/Button";
 import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWidthGrid";
 import { RootContainerConfig } from "./components/puck/RootContainer";
 import { SplitPaneConfig  } from "./components/puck/SplitPane";
+import { IconConfig } from "./components/puck/Icon"; 
 
 export const config = {
   categories: {
@@ -20,7 +21,7 @@ export const config = {
     },
     content: {
       title: "Content",
-      components: ["Title", "Paragraph", "BulletList"],
+      components: ["Title", "Paragraph", "BulletList", "Icon"],
     },
     grid: {
       title: "Grids",
@@ -51,7 +52,8 @@ export const config = {
     LinkButton: LinkButtonConfig,
     MinimumColumnWidthGrid: MinimumColumnWidthGridConfig,
     RootContainer: RootContainerConfig,
-    SplitPane: SplitPaneConfig
+    SplitPane: SplitPaneConfig,
+    Icon: IconConfig
   },
 } satisfies Config;
 
