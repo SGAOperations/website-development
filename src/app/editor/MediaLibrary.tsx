@@ -5,6 +5,7 @@ import { File as FileIcon, Trash2, Copy } from "lucide-react";
 import { uploadMediaAction, deleteMediaAction } from "../../lib/media-actions";
 import type { MediaFile } from "../../lib/types";
 import { runAction } from "./runAction";
+import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -21,31 +22,25 @@ function UploadCard({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) onFileSelected(file);
-    e.target.value = "";
-  }
-
   return (
-    <button
-      type="button"
-      onClick={() => inputRef.current?.click()}
+    <NewResourceCard
+      label="Upload File"
+      loadingLabel="Uploading..."
       disabled={disabled}
-      className="flex h-48 w-32 shrink-0 cursor-pointer rounded-lg flex-col items-center justify-center border border-dashed border-gray-400 bg-white p-4 text-center text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+      onClick={() => inputRef.current?.click()}
     >
-      <span className="text-3xl leading-none">+</span>
-      <span className="mt-2 text-sm font-medium">
-        {disabled ? "Uploading..." : "Upload File"}
-      </span>
       <input
         ref={inputRef}
         type="file"
         hidden
-        onChange={handleChange}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onFileSelected(file);
+          e.target.value = "";
+        }}
         disabled={disabled}
       />
-    </button>
+    </NewResourceCard>
   );
 }
 
@@ -59,15 +54,12 @@ function MediaCard({
   disabled: boolean;
 }) {
   const isImage = file.contentType?.startsWith("image/");
-
-  function handleCopyUrl() {
-    navigator.clipboard.writeText(file.url);
-  }
+  const createdDate = file.createdAt ? formatRelativeTime(new Date(file.createdAt)) : null;
 
   return (
-    <div className="flex h-48 w-32 shrink-0 flex-col rounded-lg bg-gray-100 overflow-hidden">
-      <div className="flex h-28 items-center justify-center bg-gray-200">
-        {isImage ? (
+    <ResourceCard
+      preview={
+        isImage ? (
           <img
             src={file.url}
             alt={file.name}
@@ -75,21 +67,15 @@ function MediaCard({
           />
         ) : (
           <FileIcon className="h-10 w-10 text-gray-400" />
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col p-2">
-        <span className="truncate text-xs font-medium" title={file.name}>
-          {file.name}
-        </span>
-        <span className="text-xs text-gray-500">
-          {formatFileSize(file.size)}
-        </span>
-
-        <div className="mt-auto flex gap-1">
+        )
+      }
+      name={file.name}
+      date={createdDate ? `${createdDate} \u00B7 ${formatFileSize(file.size)}` : formatFileSize(file.size)}
+      actions={
+        <>
           <button
             type="button"
-            onClick={handleCopyUrl}
+            onClick={() => navigator.clipboard.writeText(file.url)}
             className="rounded p-1 text-gray-500 hover:text-blue-600"
             title="Copy URL"
           >
@@ -104,9 +90,9 @@ function MediaCard({
           >
             <Trash2 className="h-3 w-3" />
           </button>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }
 
