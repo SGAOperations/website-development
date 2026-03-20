@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint src/",
     "prepare": "husky",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma migrate deploy && next build"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
