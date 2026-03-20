@@ -7,11 +7,11 @@ export interface MinimumColumnWidthGridProps {
     gap: string;
 }
 
-export const MinimumColumnWidthGrid: React.FC<MinimumColumnWidthGridProps> = ({
+export function MinimumColumnWidthGrid({
     content: Content,
     minimumColumnWidthPixels = 250,
     gap = "gap-4"
-}) => {
+}: MinimumColumnWidthGridProps) {
     return Content && (
         <Content className={`grid ${gap}`} style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${minimumColumnWidthPixels}px, 1fr))`, gridAutoRows: '1fr' }} />
     )

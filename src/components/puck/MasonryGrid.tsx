@@ -7,11 +7,11 @@ export interface MasonryGridProps {
     childrenBottomMargin?: string;
 }
 
-export const MasonryGrid: React.FC<MasonryGridProps> = ({
+export function MasonryGrid({
     content: Content,
     gap = "gap-4",
     childrenBottomMargin = "[&>*]:mb-4",
-}) => {
+}: MasonryGridProps) {
     // TODO: robust handling of gap to margin conversion
     // make the prop and setting numerical
 

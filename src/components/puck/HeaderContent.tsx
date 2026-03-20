@@ -1,5 +1,4 @@
 import { ComponentConfig } from '@puckeditor/core';
-import React from 'react';
 import { paddingSettingsField, textColorSettingField } from '../../lib/settings-fields';
 
 export type HeaderContentProps = {
@@ -18,7 +17,7 @@ export type HeaderContentProps = {
     dividerMargin?: string;
 };
 
-export const HeaderContent: React.FC<HeaderContentProps> = ({
+export function HeaderContent({
     backgroundColor,
     padding,
     titleText,
@@ -32,7 +31,8 @@ export const HeaderContent: React.FC<HeaderContentProps> = ({
     dividerWidth,
     dividerHeight,
     dividerMargin
-}) => (
+}: HeaderContentProps) {
+    return (
     <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto w-full relative ${padding}`}
@@ -51,17 +51,18 @@ export const HeaderContent: React.FC<HeaderContentProps> = ({
             </div>
         </header>
     </div>
-);
+    )
+}
 
 export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
     fields: {
         backgroundColor: {
             type: "select",
             options: [
-                { label: "Semi-transparent Black", value: "rgba(0, 0, 0, 0.5)" },
-                { label: "Solid Black", value: "#000000" },
-                { label: "Semi-transparent White", value: "rgba(255, 255, 255, 0.9)" },
-                { label: "SGA Red", value: "#dc2626" },
+                { label: "Semi-transparent Black", value: "var(--color-semi-transparent-black)" },
+                { label: "Solid Black", value: "var(--color-solid-black)" },
+                { label: "Semi-transparent White", value: "var(--color-semi-transparent-white)" },
+                { label: "SGA Red", value: "var(--color-sga-red)" },
                 { label: "Transparent", value: "transparent" },
             ]
         },
@@ -141,7 +142,7 @@ export const HeaderContentConfig: ComponentConfig<HeaderContentProps> = {
         },
     },
     defaultProps: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "var(--color-semi-transparent-black)",
         padding: "p-5",
         titleText: "SGA",
         titleSize: "text-9xl",

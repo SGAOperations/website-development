@@ -1,9 +1,10 @@
 "use client";
 
 import { createUsePuck } from "@puckeditor/core";
-import { useState } from "react";
+import { useTransition } from "react";
 import { useDocumentContext } from "./client";
 import { saveVersionAction } from "../../../lib/actions";
+import { runAction } from "../runAction";
 
 const usePuck = createUsePuck();
 
@@ -12,21 +13,20 @@ export function SaveButton() {
   const dispatch = usePuck((s) => s.dispatch);
   const { documentId, addVersion } = useDocumentContext();
 
-  const [isSaving, setIsSaving] = useState(false);
+  const [isSaving, startTransition] = useTransition();
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    const result = await saveVersionAction({ documentId, content: data });
+  const handleSave = () => {
+    startTransition(async () => {
+      const result = await runAction(saveVersionAction({ documentId, content: data }));
 
-    if (result.success === false) {
-      alert(`Error: ${result.error}`);
-      setIsSaving(false);
-      return;
-    }
+      if (result.success === false) {
+        alert(result.error);
+        return;
+      }
 
-    dispatch({ type: "setData", data });
-    addVersion(result.data.version);
-    setIsSaving(false);
+      dispatch({ type: "setData", data });
+      addVersion(result.data.version);
+    });
   };
 
   return (

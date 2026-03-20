@@ -23,38 +23,42 @@ export interface LinkButtonProps extends BaseButtonProps {
     href: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export function Button({
     label,
     style,
     padding = "p-4",
     height = "h-full",
     width = "w-full",
     onClick
-}) => (
+}: ButtonProps) {
+    return (
     <button
         onClick={onClick}
         className={`${buttonStylesMap[style]} ${padding} ${height} ${width}`}
     >
         {label}
     </button>
-)
+    )
+}
 
 
-export const LinkButton: React.FC<LinkButtonProps> = ({
+export function LinkButton({
     label,
     style,
     padding = "p-4",
     height = "h-full",
     width = "w-full",
     href
-}) => (
-    <a
-        href={href}
-        className={`${buttonStylesMap[style]} ${padding} ${height} ${width}`}
-    >
-        {label}
-    </a>
-)
+}: LinkButtonProps) {
+    return (
+        <a
+            href={href}
+            className={`${buttonStylesMap[style]} ${padding} ${height} ${width}`}
+        >
+            {label}
+        </a>
+    )
+}
 
 export const LinkButtonConfig: ComponentConfig<LinkButtonProps> = {
     fields: {

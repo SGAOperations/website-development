@@ -1,5 +1,4 @@
 import { ComponentConfig } from '@puckeditor/core';
-import React from 'react';
 import { paddingSettingsField } from '../../lib/settings-fields';
 
 type NavItem = {
@@ -16,11 +15,12 @@ export type NavigationProps = {
     }>;
 };
 
-export const Navigation: React.FC<NavigationProps> = ({
+export function Navigation({
     backgroundColor,
     padding,
     nav,
-}) => (
+}: NavigationProps) {
+    return (
     <div className="relative w-full overflow-x-hidden">
         <header
             className={`flex flex-col justify-center items-center h-auto relative top-0 ${padding}`}
@@ -60,7 +60,8 @@ export const Navigation: React.FC<NavigationProps> = ({
             </div>
         </header>
     </div>
-);
+    )
+}
 
 
 export const NavigationConfig: ComponentConfig<NavigationProps> = {
@@ -68,10 +69,10 @@ export const NavigationConfig: ComponentConfig<NavigationProps> = {
         backgroundColor: {
             type: "select",
             options: [
-                { label: "Semi-transparent Black", value: "rgba(0, 0, 0, 0.5)" },
-                { label: "Solid Black", value: "#000000" },
-                { label: "Semi-transparent White", value: "rgba(255, 255, 255, 0.9)" },
-                { label: "SGA Red", value: "#dc2626" },
+                { label: "Semi-transparent Black", value: "var(--color-semi-transparent-black)" },
+                { label: "Solid Black", value: "var(--color-solid-black)" },
+                { label: "Semi-transparent White", value: "var(--color-semi-transparent-white)" },
+                { label: "SGA Red", value: "var(--color-sga-red)" },
                 { label: "Transparent", value: "transparent" },
             ]
         },
@@ -91,7 +92,7 @@ export const NavigationConfig: ComponentConfig<NavigationProps> = {
         },
     },
     defaultProps: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "var(--color-semi-transparent-black)",
         padding: "p-5",
         nav: [
             { label: "Home", items: [] },

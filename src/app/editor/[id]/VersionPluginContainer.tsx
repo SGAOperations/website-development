@@ -1,28 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
 import { publishVersionAction } from "../../../lib/actions";
+import { runAction } from "../runAction";
 import { VersionListPanel } from "./VersionListPanel";
 
 export function VersionPluginContainer() {
   const router = useRouter();
   const { documentId, versionId, publishedVersionId, versions, setPublishedVersionId } = useDocumentContext();
-  const [isPublishing, setIsPublishing] = useState(false);
+  const [isPublishing, startTransition] = useTransition();
 
-  const handlePublishVersion = async (targetVersionId: number) => {
-    setIsPublishing(true);
-    const result = await publishVersionAction({ documentId, versionId: targetVersionId });
+  const handlePublishVersion = (targetVersionId: number) => {
+    startTransition(async () => {
+      const result = await runAction(publishVersionAction({ documentId, versionId: targetVersionId }));
 
-    if (result.success === false) {
-      alert(`Error: ${result.error}`);
-      setIsPublishing(false);
-      return;
-    }
+      if (result.success === false) {
+        alert(result.error);
+        return;
+      }
 
-    setPublishedVersionId(targetVersionId);
-    setIsPublishing(false);
+      setPublishedVersionId(targetVersionId);
+    });
   };
 
   const handleLoadVersion = (versionIdToLoad: number) => {

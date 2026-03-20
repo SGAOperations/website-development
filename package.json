@@ -2,40 +2,41 @@
   "name": "sga-puck",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky"
+    "lint": "eslint src/",
+    "prepare": "husky",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
     "@puckeditor/core": "0.21.1",
     "@supabase/supabase-js": "^2.99.2",
     "classnames": "^2.3.2",
     "lucide-react": "^0.575.0",
-    "next": "^15.5.13",
+    "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
-    "@types/node": "^17.0.12",
+    "@types/node": "^20.19.37",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^17.3.1",
     "eslint-config-custom": "*",
     "husky": "^9.1.7",
     "postcss": "^8.5.6",
-    "prisma": "^6.19.0",
+    "prisma": "^7.5.0",
     "supabase": "^2.81.3",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "^5.5.4"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
 }

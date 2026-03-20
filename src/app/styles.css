@@ -16,14 +16,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.text-sga-red {
-  color: #C8102E !important;
-}
-
-.bg-sga-red {
-  background-color: #C8102E !important;
-}
-
 body {
   margin: 0;
 }
