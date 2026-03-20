@@ -6,28 +6,28 @@ import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
 
 export default async function EditorIndexPage() {
-  const routes = await prisma.route.findMany({
-    include: { document: true },
-    orderBy: { path: "asc" },
-  });
-
-  const mediaFiles = (
-    await prisma.media.findMany({ orderBy: { createdAt: "desc" } })
-  ).map((media) => ({
-    ...media,
-    url: getMediaUrl(media.storagePath),
-  }));
-
-  const documents = await prisma.document.findMany({
-    include: {
-      versions: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { createdAt: true },
+  const [routes, media, documents] = await Promise.all([
+    prisma.route.findMany({
+      include: { document: true },
+      orderBy: { path: "asc" },
+    }),
+    prisma.media.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.document.findMany({
+      include: {
+        versions: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { createdAt: true },
+        },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  const mediaFiles = media.map((m) => ({
+    ...m,
+    url: getMediaUrl(m.storagePath),
+  }));
 
   return (
     <div className="p-6 flex flex-col gap-6">
