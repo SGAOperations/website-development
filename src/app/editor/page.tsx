@@ -1,10 +1,9 @@
 import { prisma } from "../../lib/prisma";
-import { supabase, MEDIA_BUCKET } from "../../lib/supabase";
+import { getMediaUrl } from "../../lib/supabase";
 import { getDocumentName } from "../../lib/documents";
 import { DocumentList } from "./DocumentList";
 import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
-import type { MediaFile } from "../../lib/types";
 
 export default async function EditorIndexPage() {
   const routes = await prisma.route.findMany({
@@ -12,16 +11,11 @@ export default async function EditorIndexPage() {
     orderBy: { path: "asc" },
   });
 
-  const { data: storageFiles } = await supabase.storage
-    .from(MEDIA_BUCKET)
-    .list(undefined, { sortBy: { column: "created_at", order: "desc" } });
-
-  const mediaFiles: MediaFile[] = (storageFiles ?? []).map((f) => ({
-    name: f.name,
-    size: f.metadata?.size ?? 0,
-    contentType: f.metadata?.mimetype,
-    createdAt: f.created_at ?? "",
-    url: supabase.storage.from(MEDIA_BUCKET).getPublicUrl(f.name).data.publicUrl,
+  const mediaFiles = (
+    await prisma.media.findMany({ orderBy: { createdAt: "desc" } })
+  ).map((media) => ({
+    ...media,
+    url: getMediaUrl(media.storagePath),
   }));
 
   const documents = await prisma.document.findMany({

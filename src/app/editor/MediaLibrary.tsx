@@ -2,10 +2,12 @@
 
 import { useRef, useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy } from "lucide-react";
-import { uploadMediaAction, deleteMediaAction } from "../../lib/media-actions";
-import type { MediaFile } from "../../lib/types";
+import { uploadMediaAction, deleteMediaAction } from "../../lib/actions";
+import type { Media } from "../../generated/prisma/client";
 import { runAction } from "./runAction";
 import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+
+type MediaWithUrl = Media & { url: string };
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -49,12 +51,12 @@ function MediaCard({
   onDelete,
   disabled,
 }: {
-  file: MediaFile;
-  onDelete: (file: MediaFile) => void;
+  file: MediaWithUrl;
+  onDelete: (file: MediaWithUrl) => void;
   disabled: boolean;
 }) {
   const isImage = file.contentType?.startsWith("image/");
-  const createdDate = file.createdAt ? formatRelativeTime(new Date(file.createdAt)) : null;
+  const createdDate = formatRelativeTime(new Date(file.createdAt));
 
   return (
     <ResourceCard
@@ -70,7 +72,7 @@ function MediaCard({
         )
       }
       name={file.name}
-      date={createdDate ? `${createdDate} \u00B7 ${formatFileSize(file.size)}` : formatFileSize(file.size)}
+      date={`${createdDate} \u00B7 ${formatFileSize(file.size)}`}
       actions={
         <>
           <button
@@ -96,7 +98,7 @@ function MediaCard({
   );
 }
 
-export function MediaLibrary({ files: initialFiles }: { files: MediaFile[] }) {
+export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
   const [files, setFiles] = useState(initialFiles);
 
@@ -106,19 +108,19 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaFile[] }) {
     startTransition(async () => {
       const result = await runAction(uploadMediaAction(formData));
       if (result.success) {
-        setFiles((prev) => [...prev, result.data]);
+        setFiles((prev) => [result.data, ...prev]);
       } else {
         alert(result.error);
       }
     });
   }
 
-  function handleDelete(file: MediaFile) {
+  function handleDelete(file: MediaWithUrl) {
     if (!window.confirm(`Delete "${file.name}"?`)) return;
     startTransition(async () => {
-      const result = await runAction(deleteMediaAction({ name: file.name }));
+      const result = await runAction(deleteMediaAction({ id: file.id }));
       if (result.success) {
-        setFiles((prev) => prev.filter((f) => f.name !== file.name));
+        setFiles((prev) => prev.filter((f) => f.id !== file.id));
       } else {
         alert(result.error);
       }
@@ -134,7 +136,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaFile[] }) {
 
         {files.map((file) => (
           <MediaCard
-            key={file.name}
+            key={file.id}
             file={file}
             onDelete={handleDelete}
             disabled={isPending}
