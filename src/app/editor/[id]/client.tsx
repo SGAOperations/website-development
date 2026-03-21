@@ -65,7 +65,10 @@ export function Client({
         data={currentData}
         ui={{plugin: {current: "version-plugin"}}}
         plugins={[VersionPlugin]}
-        permissions={{ duplicate: false }}
+        permissions={isArchived
+          ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
+          : { duplicate: false } // Re replace this with our own, to avoid an icon collision
+        }
         overrides={{
           actionBar: ActionBarOverride,
           headerActions: SaveButton
