@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, versionId, publishedVersionId, versions, setPublishedVersionId } = useDocumentContext();
+  const { documentId, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
@@ -43,6 +43,7 @@ export function VersionPluginContainer() {
         onLoadVersion={handleLoadVersion}
         onPublishVersion={handlePublishVersion}
         isPublishing={isPublishing}
+        isPublishDisabled={isArchived}
       />
     </div>
   );

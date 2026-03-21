@@ -10,6 +10,7 @@ import { supabase, MEDIA_BUCKET, getMediaUrl } from "./supabase";
 import type { Media } from "../generated/prisma/client";
 import type {
   ActionResult,
+  ArchiveDocumentInput,
   CreateDocumentInput,
   CreateRouteInput,
   DeleteMediaInput,
@@ -73,6 +74,28 @@ async function renameRecord(
     await (prisma[model] as typeof prisma.document).update({
       where: { id: input.id },
       data: { name },
+    });
+  });
+}
+
+export async function archiveDocumentAction(
+  input: ArchiveDocumentInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await prisma.document.update({
+      where: { id: input.id },
+      data: { archivedAt: new Date() },
+    });
+  });
+}
+
+export async function unarchiveDocumentAction(
+  input: ArchiveDocumentInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await prisma.document.update({
+      where: { id: input.id },
+      data: { archivedAt: null },
     });
   });
 }

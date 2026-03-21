@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { getMediaUrl } from "../../lib/supabase";
 import { getDocumentName } from "../../lib/documents";
-import { DocumentList } from "./DocumentList";
+import { DocumentList, ArchivedDocumentList } from "./DocumentList";
 import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
 
@@ -29,6 +29,15 @@ export default async function EditorIndexPage() {
     url: getMediaUrl(m.storagePath),
   }));
 
+  const toDocumentItem = (doc: (typeof documents)[number]) => ({
+    id: doc.id,
+    name: doc.name,
+    lastModified: doc.versions[0]?.createdAt ?? null,
+  });
+
+  const activeDocuments = documents.filter((doc) => doc.archivedAt === null).map(toDocumentItem);
+  const archivedDocuments = documents.filter((doc) => doc.archivedAt !== null).map(toDocumentItem);
+
   return (
     <div className="p-6 flex flex-col gap-6">
 
@@ -45,13 +54,9 @@ export default async function EditorIndexPage() {
         }))}
       />
 
-      <DocumentList
-        documents={documents.map((doc) => ({
-          id: doc.id,
-          name: doc.name,
-          lastModified: doc.versions[0]?.createdAt ?? null,
-        }))}
-      />
+      <DocumentList documents={activeDocuments} />
+
+      <ArchivedDocumentList documents={archivedDocuments} />
 
       <MediaLibrary files={mediaFiles} />
     </div>

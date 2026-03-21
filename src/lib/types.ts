@@ -48,3 +48,7 @@ export type RenameInput = {
 export type DeleteMediaInput = {
   id: number;
 };
+
+export type ArchiveDocumentInput = {
+  id: number;
+};

@@ -14,6 +14,7 @@ type DocumentContextType = {
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
+  isArchived: boolean;
   addVersion: (version: Version) => void;
   setPublishedVersionId: (id: number) => void;
 };
@@ -21,6 +22,7 @@ type DocumentContextType = {
 const DocumentContext = createContext<DocumentContextType>({
   documentId: 0,
   versions: [],
+  isArchived: false,
   addVersion: () => {},
   setPublishedVersionId: () => {},
 });
@@ -35,12 +37,14 @@ export function Client({
   versionId: initialVersionId,
   publishedVersionId: initialPublishedVersionId,
   versions: initialVersions,
+  isArchived,
 }: {
   documentId: number;
   data: Partial<Data>;
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
+  isArchived: boolean;
 }) {
   const [currentData, setCurrentData] = useState<Data>(data as Data);
   const [versions, setVersions] = useState(initialVersions);
@@ -54,7 +58,7 @@ export function Client({
 
   return (
     <DocumentContext.Provider
-      value={{ documentId, versionId, publishedVersionId, versions, addVersion, setPublishedVersionId }}
+      value={{ documentId, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
     >
       <Puck
         config={config}
