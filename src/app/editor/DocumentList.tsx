@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { FileText, Pencil } from "lucide-react";
 import { createDocumentAction, renameDocumentAction } from "../../lib/actions";
 import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents";
-import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
 function NewDocumentCard() {
@@ -68,25 +68,27 @@ function DocumentCard({
   const displayName = getDocumentName({ id, name });
 
   return (
-    <Link href={`/editor/${id}`} className="block">
-      <ResourceCard
-        preview={<FileText className="h-10 w-10 text-gray-400" />}
-        name={displayName}
-        date={lastModified ? formatRelativeTime(lastModified) : "No versions"}
-        actions={
-          <ActionButton
-            onClick={(e) => {
-              e.preventDefault();
-              onRename(id, displayName);
-            }}
-            disabled={disabled}
-            title="Rename"
-          >
-            <Pencil className="h-3 w-3" />
-          </ActionButton>
-        }
-      />
-    </Link>
+    <ResourceCard
+      preview={<FileText className="h-10 w-10 text-muted-foreground" />}
+      name={displayName}
+      date={lastModified ? formatRelativeTime(lastModified) : "No versions"}
+      href={`/editor/${id}`}
+      actions={
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRename(id, displayName);
+          }}
+          disabled={disabled}
+          title="Rename"
+        >
+          <Pencil className="h-3 w-3" />
+        </Button>
+      }
+    />
   );
 }
 

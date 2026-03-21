@@ -1,4 +1,8 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function formatRelativeTime(date: Date): string {
   const now = Date.now();
@@ -26,32 +30,67 @@ export function ResourceCard({
   preview,
   name,
   date,
+  href,
+  external,
   actions,
 }: {
   preview: ReactNode;
   name: string;
   date: string | null;
+  href?: string;
+  external?: boolean;
   actions?: ReactNode;
 }) {
-  return (
-    <div className="flex h-48 w-32 shrink-0 flex-col rounded-lg bg-gray-100 overflow-hidden">
-      <div className="flex h-24 items-center justify-center bg-gray-200">
-        {preview}
-      </div>
+  const linkProps = external
+    ? { target: "_blank" as const, rel: "noopener noreferrer" }
+    : {};
 
-      <div className="flex flex-1 flex-col p-2">
-        <span className="truncate text-xs font-medium" title={name}>
-          {name}
-        </span>
-        <span className="text-xs text-gray-500">
+  const previewContent = (
+    <div className="flex h-24 items-center justify-center bg-muted">
+      {preview}
+    </div>
+  );
+
+  const nameContent = (
+    <span className="truncate text-xs font-medium" title={name}>
+      {name}
+    </span>
+  );
+
+  return (
+    <Card className="h-48 w-32 shrink-0 gap-0 py-0">
+      {href ? (
+        <Link href={href} className="block" {...linkProps}>
+          {previewContent}
+        </Link>
+      ) : (
+        previewContent
+      )}
+
+      <CardContent className="flex flex-1 flex-col px-2 py-2">
+        {href ? (
+          <Link
+            href={href}
+            className="truncate text-xs font-medium hover:underline"
+            title={name}
+            {...linkProps}
+          >
+            {name}
+          </Link>
+        ) : (
+          nameContent
+        )}
+        <span className="text-xs text-muted-foreground">
           {date ?? "\u00A0"}
         </span>
 
         {actions && (
-          <div className="mt-auto flex gap-1">{actions}</div>
+          <CardFooter className="mt-auto gap-1 border-t-0 bg-transparent p-0">
+            {actions}
+          </CardFooter>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -69,44 +108,28 @@ export function NewResourceCard({
   children?: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="flex h-48 w-32 shrink-0 cursor-pointer rounded-lg flex-col items-center justify-center border border-dashed border-gray-400 bg-white p-4 text-center text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+    <Card
+      className={cn(
+        "h-48 w-32 shrink-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
+        disabled && "cursor-not-allowed opacity-60",
+      )}
+      role="button"
+      tabIndex={0}
+      onClick={disabled ? undefined : onClick}
+      onKeyDown={(e) => {
+        if (!disabled && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
-      <span className="text-3xl leading-none">+</span>
-      <span className="mt-2 text-sm font-medium">
-        {disabled ? loadingLabel : label}
-      </span>
-      {children}
-    </button>
-  );
-}
-
-export function ActionButton({
-  onClick,
-  disabled,
-  title,
-  variant = "default",
-  children,
-}: {
-  onClick: (e: React.MouseEvent) => void;
-  disabled?: boolean;
-  title: string;
-  variant?: "default" | "danger";
-  children: ReactNode;
-}) {
-  const hoverColor = variant === "danger" ? "hover:text-red-600" : "hover:text-blue-600";
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`rounded p-1 text-gray-500 ${hoverColor} disabled:opacity-50`}
-      title={title}
-    >
-      {children}
-    </button>
+      <div className="flex flex-1 flex-col items-center justify-center p-4">
+        <span className="text-3xl leading-none">+</span>
+        <span className="mt-2 text-sm font-medium">
+          {disabled ? loadingLabel : label}
+        </span>
+        {children}
+      </div>
+    </Card>
   );
 }
