@@ -25,12 +25,14 @@ import { useRef } from "react";
 
 type PromptInput = {
   title: string;
+  label?: string;
   defaultValue?: string;
 };
 
 type ConfirmInput = {
   message: string;
   actionLabel?: string;
+  destructive?: boolean;
 };
 
 type DialogContextValue = {
@@ -43,10 +45,12 @@ const DialogContext = createContext<DialogContextValue | null>(null);
 
 function PromptDialogContent({
   title,
+  label,
   defaultValue,
   onResolve,
 }: {
   title: string;
+  label?: string;
   defaultValue?: string;
   onResolve: (value: string | null) => void;
 }) {
@@ -63,11 +67,18 @@ function PromptDialogContent({
           onResolve(inputRef.current?.value ?? "");
         }}
       >
-        <Input
-          ref={inputRef}
-          defaultValue={defaultValue}
-          autoFocus
-        />
+        <div className="grid gap-2">
+          {label && (
+            <label className="text-sm font-medium text-foreground">
+              {label}
+            </label>
+          )}
+          <Input
+            ref={inputRef}
+            defaultValue={defaultValue}
+            autoFocus
+          />
+        </div>
         <DialogFooter className="mt-4">
           <Button type="button" variant="outline" onClick={() => onResolve(null)}>
             Cancel
@@ -94,16 +105,19 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     </AlertDialog>
   ));
 
-  const [confirmDialog, confirm] = useDialogPromise<ConfirmInput, boolean>(({ message, actionLabel }, resolve) => (
+  const [confirmDialog, confirm] = useDialogPromise<ConfirmInput, boolean>(({ message, actionLabel, destructive }, resolve) => (
     <AlertDialog open onOpenChange={() => resolve(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => resolve(false)}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => resolve(true)}>
+          <AlertDialogAction
+            variant={destructive ? "destructive" : "default"}
+            onClick={() => resolve(true)}
+          >
             {actionLabel ?? "Confirm"}
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -111,11 +125,12 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     </AlertDialog>
   ));
 
-  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, defaultValue }, resolve, key) => (
+  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, label, defaultValue }, resolve, key) => (
     <Dialog open onOpenChange={() => resolve(null)}>
       <PromptDialogContent
         key={key}
         title={title}
+        label={label}
         defaultValue={defaultValue}
         onResolve={resolve}
       />

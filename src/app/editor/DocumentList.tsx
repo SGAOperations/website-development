@@ -16,7 +16,7 @@ function NewDocumentCard() {
   const { prompt, alert } = useDialogs();
 
   async function handleCreateDocument() {
-    const name = await prompt({ title: "Document name" });
+    const name = await prompt({ title: "Create document", label: "Name" });
 
     if (name === null) {
       return;
@@ -98,7 +98,7 @@ export function DocumentList({ documents }: {
   const { prompt, alert } = useDialogs();
 
   async function handleRename(id: number, currentName: string) {
-    const newName = await prompt({ title: "Rename document", defaultValue: currentName });
+    const newName = await prompt({ title: `Rename "${currentName}"`, label: "New name", defaultValue: currentName });
     if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
     startTransition(async () => {
       const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));

@@ -113,7 +113,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
   }
 
   async function handleRename(file: MediaWithUrl) {
-    const newName = await prompt({ title: "Rename file", defaultValue: file.name });
+    const newName = await prompt({ title: `Rename "${file.name}"`, label: "New name", defaultValue: file.name });
     if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
     startTransition(async () => {
       const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
@@ -126,7 +126,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
   }
 
   async function handleDelete(file: MediaWithUrl) {
-    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete" })) return;
+    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete", destructive: true })) return;
     startTransition(async () => {
       const result = await runAction(deleteMediaAction({ id: file.id }));
       if (result.success) {
