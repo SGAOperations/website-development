@@ -39,10 +39,21 @@ export async function createDocumentAction(
   });
 }
 
+async function assertNotArchived(documentId: number): Promise<void> {
+  const doc = await prisma.document.findUniqueOrThrow({
+    where: { id: documentId },
+    select: { archivedAt: true },
+  });
+  if (doc.archivedAt !== null) {
+    throw new Error("Cannot modify an archived document");
+  }
+}
+
 export async function saveVersionAction(
   input: SaveVersionInput
 ): Promise<ActionResult<{ version: Version }>> {
   return wrapAction(async () => {
+    await assertNotArchived(input.documentId);
     const result = await createVersion(input.documentId, input.content);
     return {
       version: {
@@ -58,6 +69,7 @@ export async function publishVersionAction(
   input: PublishVersionInput
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
+    await assertNotArchived(input.documentId);
     await publishVersionUtil(input.documentId, input.versionId);
   });
 }
@@ -103,7 +115,11 @@ export async function unarchiveDocumentAction(
 export async function renameDocumentAction(
   input: RenameInput
 ): Promise<ActionResult<void>> {
-  return renameRecord("document", input);
+  return wrapAction(async () => {
+    await assertNotArchived(input.id);
+    const result = await renameRecord("document", input);
+    if (!result.success) throw new Error(result.error);
+  });
 }
 
 export async function createRouteAction(
