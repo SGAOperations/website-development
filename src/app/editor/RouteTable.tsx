@@ -213,7 +213,7 @@ export function RouteTable({
   }
 
   async function handleDelete(route: RouteRow) {
-    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete" })) return;
+    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete", destructive: true })) return;
     startTransition(async () => {
       const result = await runAction(deleteRouteAction({ id: route.id }));
       if (result.success) {

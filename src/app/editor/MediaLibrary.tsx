@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/actions";
 import type { Media } from "../../generated/prisma/client";
 import { runAction } from "./runAction";
-import { ResourceCard, NewResourceCard, ActionButton, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
 type MediaWithUrl = Media & { url: string };
@@ -72,22 +73,24 @@ function MediaCard({
             className="h-full w-full object-cover"
           />
         ) : (
-          <FileIcon className="h-10 w-10 text-gray-400" />
+          <FileIcon className="h-10 w-10 text-muted-foreground" />
         )
       }
       name={file.name}
       date={`${createdDate} \u00B7 ${formatFileSize(file.size)}`}
+      href={file.url}
+      external
       actions={
         <>
-          <ActionButton onClick={() => onRename(file)} disabled={disabled} title="Rename">
+          <Button variant="ghost" size="icon-xs" onClick={() => onRename(file)} disabled={disabled} title="Rename">
             <Pencil className="h-3 w-3" />
-          </ActionButton>
-          <ActionButton onClick={() => { navigator.clipboard.writeText(file.url); toast.success("URL copied"); }} title="Copy URL">
+          </Button>
+          <Button variant="ghost" size="icon-xs" onClick={() => { navigator.clipboard.writeText(file.url); toast.success("URL copied"); }} title="Copy URL">
             <Copy className="h-3 w-3" />
-          </ActionButton>
-          <ActionButton onClick={() => onDelete(file)} disabled={disabled} title="Delete" variant="danger">
+          </Button>
+          <Button variant="ghost" size="icon-xs" className="hover:text-destructive" onClick={() => onDelete(file)} disabled={disabled} title="Delete">
             <Trash2 className="h-3 w-3" />
-          </ActionButton>
+          </Button>
         </>
       }
     />
@@ -113,7 +116,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
   }
 
   async function handleRename(file: MediaWithUrl) {
-    const newName = await prompt({ title: "Rename file", defaultValue: file.name });
+    const newName = await prompt({ title: `Rename "${file.name}"`, label: "New name", defaultValue: file.name });
     if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
     startTransition(async () => {
       const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
@@ -126,7 +129,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
   }
 
   async function handleDelete(file: MediaWithUrl) {
-    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete" })) return;
+    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete", destructive: true })) return;
     startTransition(async () => {
       const result = await runAction(deleteMediaAction({ id: file.id }));
       if (result.success) {

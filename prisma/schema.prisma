@@ -16,6 +16,7 @@ model Document {
   routes              Route[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+  archivedAt          DateTime?
 }
 
 model Version {

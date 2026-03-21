@@ -8,6 +8,7 @@ export interface VersionListPanelProps {
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
   isPublishing?: boolean;
+  isPublishDisabled?: boolean;
 }
 
 function formatVersionLabel(version: Version) {
@@ -25,6 +26,7 @@ export function VersionListPanel({
   onLoadVersion,
   onPublishVersion,
   isPublishing,
+  isPublishDisabled,
 }: VersionListPanelProps) {
 
   return (
@@ -79,7 +81,7 @@ export function VersionListPanel({
                         e.stopPropagation();
                         onPublishVersion(version.id);
                       }}
-                      disabled={isPublishing}
+                      disabled={isPublishing || isPublishDisabled}
                       className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shrink-0"
                     >
                       Publish

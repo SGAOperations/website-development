@@ -48,6 +48,7 @@ export default async function Page({ params, searchParams }: PageProps) {
       versionId={resolved.versionId}
       publishedVersionId={document.publishedVersionId || undefined}
       versions={versions}
+      isArchived={document.archivedAt !== null}
     />
   );
 }
