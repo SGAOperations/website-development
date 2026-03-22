@@ -34,7 +34,6 @@ function validateName(name: string): string {
 
 const ROUTE_SEGMENT_RE = /^[a-z0-9_-]+$/;
 
-
 function assertValidRoutePath(path: string): void {
   if (path.trim() !== path) {
     throw new Error("Path cannot have leading or trailing whitespace");
@@ -65,12 +64,11 @@ function assertValidRoutePath(path: string): void {
   }
 
   const segments = path.split("/").slice(1);
-  for (const segment of segments) {
-    if (!ROUTE_SEGMENT_RE.test(segment)) {
-      throw new Error(
-        "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
-      );
-    }
+  const isValidSegement = (segment: string) => ROUTE_SEGMENT_RE.test(segment);
+  if (!segments.every(isValidSegement)) {
+    throw new Error(
+      "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
+    );
   }
 }
 
