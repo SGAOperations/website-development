@@ -72,10 +72,10 @@ async function readFromClipboard(): Promise<ComponentData | null> {
   try {
     const parsed = JSON.parse(text);
     if (
-      parsed?.[CLIPBOARD_MARKER] &&
-      parsed?.version === 1 &&
-      parsed?.component?.type &&
-      parsed?.component?.props?.id
+      parsed[CLIPBOARD_MARKER] &&
+      parsed.version === 1 &&
+      parsed.component?.type &&
+      parsed.component?.props?.id
     ) {
       return parsed.component as ComponentData;
     }

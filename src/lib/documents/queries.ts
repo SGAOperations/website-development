@@ -63,7 +63,7 @@ export const getDocumentName = async (id: number) => {
     where: { id },
     select: { name: true },
   });
-  return doc?.name ?? null;
+  return doc?.name;
 };
 
 export const getVersionById = async (versionId: number) => {

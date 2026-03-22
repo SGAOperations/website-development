@@ -193,8 +193,8 @@ export function RouteTable({
     startTransition(async () => {
       const result = await runAction(createRouteAction({ path, documentId }));
       if (result.success) {
-        const docName = documents.find((d) => d.id === documentId)?.name ?? "";
-        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: docName }]);
+        const doc = documents.find((d) => d.id === documentId)!;
+        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
       } else {
         await alert(result.error);
       }
@@ -205,8 +205,8 @@ export function RouteTable({
     startTransition(async () => {
       const result = await runAction(updateRouteAction({ id, path, documentId }));
       if (result.success) {
-        const docName = documents.find((d) => d.id === documentId)?.name ?? "";
-        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: docName } : r)));
+        const doc = documents.find((d) => d.id === documentId)!;
+        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
       } else {
         await alert(result.error);
       }
