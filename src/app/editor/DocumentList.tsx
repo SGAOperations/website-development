@@ -3,10 +3,11 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Archive, ArchiveRestore, ChevronDown, FileText, Pencil } from "lucide-react";
+import { Archive, ArchiveRestore, ChevronDown, CopyPlus, FileText, Pencil } from "lucide-react";
 import {
   archiveDocumentAction,
   createDocumentAction,
+  duplicateDocumentAction,
   renameDocumentAction,
   unarchiveDocumentAction,
 } from "../../lib/actions";
@@ -91,7 +92,24 @@ function useDocumentActions() {
     });
   }
 
-  return { isPending, handleRename, handleArchive, handleUnarchive };
+  async function handleDuplicate(id: number, displayName: string) {
+    const name = await prompt({
+      title: "Duplicate document",
+      label: "Name",
+      defaultValue: `Copy of ${displayName}`,
+    });
+    if (name === null || name.trim() === "") return;
+    startTransition(async () => {
+      const result = await runAction(duplicateDocumentAction({ id, name: name.trim() }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
+
+  return { isPending, handleRename, handleArchive, handleUnarchive, handleDuplicate };
 }
 
 function NewDocumentCard() {
@@ -137,7 +155,7 @@ function NewDocumentCard() {
 }
 
 export function DocumentList({ documents }: { documents: DocumentItem[] }) {
-  const { isPending, handleRename, handleArchive } = useDocumentActions();
+  const { isPending, handleRename, handleArchive, handleDuplicate } = useDocumentActions();
 
   return (
     <div className="flex flex-col gap-4">
@@ -168,6 +186,19 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
                     title="Rename"
                   >
                     <Pencil className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDuplicate(doc.id, displayName);
+                    }}
+                    disabled={isPending}
+                    title="Duplicate"
+                  >
+                    <CopyPlus className="h-3 w-3" />
                   </Button>
                   <Button
                     variant="ghost"

@@ -15,6 +15,7 @@ import type {
   CreateRouteInput,
   DeleteMediaInput,
   DeleteRouteInput,
+  DuplicateDocumentInput,
   RenameInput,
   SaveVersionInput,
   PublishVersionInput,
@@ -22,6 +23,14 @@ import type {
   Version,
 } from "./types";
 import { wrapAction } from "./wrap-action";
+
+function validateName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    throw new Error("Name cannot be empty");
+  }
+  return trimmed;
+}
 
 const ROUTE_SEGMENT_RE = /^[a-z0-9_-]+$/;
 
@@ -55,12 +64,11 @@ function assertValidRoutePath(path: string): void {
   }
 
   const segments = path.split("/").slice(1);
-  for (const segment of segments) {
-    if (!ROUTE_SEGMENT_RE.test(segment)) {
-      throw new Error(
-        "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
-      );
-    }
+  const isValidSegement = (segment: string) => ROUTE_SEGMENT_RE.test(segment);
+  if (!segments.every(isValidSegement)) {
+    throw new Error(
+      "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
+    );
   }
 }
 
@@ -68,8 +76,9 @@ export async function createDocumentAction(
   input: CreateDocumentInput
 ): Promise<ActionResult<{ documentId: number }>> {
   return wrapAction(async () => {
+    const name = validateName(input.name);
     const content = input.content || { content: [], root: {} };
-    const document = await createDocumentWithVersion(input.name, content, false);
+    const document = await createDocumentWithVersion(name, content, false);
     return { documentId: document.id };
   });
 }
@@ -109,21 +118,6 @@ export async function publishVersionAction(
   });
 }
 
-async function renameRecord(
-  model: "document" | "media",
-  input: RenameInput
-): Promise<ActionResult<void>> {
-  return wrapAction(async () => {
-    const name = input.name.trim();
-    if (!name) {
-      throw new Error("Name cannot be empty");
-    }
-    await (prisma[model] as typeof prisma.document).update({
-      where: { id: input.id },
-      data: { name },
-    });
-  });
-}
 
 export async function archiveDocumentAction(
   input: ArchiveDocumentInput
@@ -147,13 +141,38 @@ export async function unarchiveDocumentAction(
   });
 }
 
+export async function duplicateDocumentAction(
+  input: DuplicateDocumentInput
+): Promise<ActionResult<{ documentId: number }>> {
+  return wrapAction(async () => {
+    await assertNotArchived(input.id);
+    const name = validateName(input.name);
+    const doc = await prisma.document.findUniqueOrThrow({
+      where: { id: input.id },
+      include: { publishedVersion: true },
+    });
+    if (!doc.publishedVersion) {
+      throw new Error("Document has no published version to duplicate");
+    }
+    const newDoc = await createDocumentWithVersion(
+      name,
+      doc.publishedVersion.content as any,
+      false
+    );
+    return { documentId: newDoc.id };
+  });
+}
+
 export async function renameDocumentAction(
   input: RenameInput
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await assertNotArchived(input.id);
-    const result = await renameRecord("document", input);
-    if (!result.success) throw new Error(result.error);
+    const name = validateName(input.name);
+    await prisma.document.update({
+      where: { id: input.id },
+      data: { name },
+    });
   });
 }
 
@@ -238,7 +257,13 @@ export async function uploadMediaAction(
 export async function renameMediaAction(
   input: RenameInput
 ): Promise<ActionResult<void>> {
-  return renameRecord("media", input);
+  return wrapAction(async () => {
+    const name = validateName(input.name);
+    await prisma.media.update({
+      where: { id: input.id },
+      data: { name },
+    });
+  });
 }
 
 export async function deleteMediaAction(
