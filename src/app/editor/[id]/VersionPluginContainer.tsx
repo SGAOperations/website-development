@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
-import { publishVersionAction } from "../../../lib/actions";
+import { publishVersionAction } from "../../../lib/documents/actions";
 import { runAction } from "../runAction";
 import { VersionListPanel } from "./VersionListPanel";
 import { useDialogs } from "@/components/ui/dialog-provider";

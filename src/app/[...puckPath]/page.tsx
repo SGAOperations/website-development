@@ -1,7 +1,7 @@
 import { Client } from "./client";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getDocumentByPath } from "../../lib/get-document";
+import { getDocumentByPath } from "../../lib/documents/queries";
 
 export async function generateMetadata({
   params,

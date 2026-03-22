@@ -1,9 +1,6 @@
 import { Data } from "@puckeditor/core";
-import { prisma } from "./prisma";
+import { prisma } from "../prisma";
 
-/**
- * Get document by ID with published version and all versions
- */
 export const getDocumentById = async (id: number) => {
   return await prisma.document.findUnique({
     where: { id },
@@ -16,9 +13,6 @@ export const getDocumentById = async (id: number) => {
   });
 };
 
-/**
- * Get document content by route path (used by public renderer)
- */
 export const getDocumentByPath = async (path: string): Promise<Data | null> => {
   const route = await prisma.route.findUnique({
     where: { path },
@@ -33,12 +27,9 @@ export const getDocumentByPath = async (path: string): Promise<Data | null> => {
     return null;
   }
 
-  return (route.document.publishedVersion.content as Data) ?? null;
+  return route.document.publishedVersion.content as Data;
 };
 
-/**
- * Get all routes with published content, keyed by path
- */
 export const getAllRoutes = async (): Promise<Record<string, Data> | null> => {
   const routes = await prisma.route.findMany({
     include: {
@@ -60,9 +51,6 @@ export const getAllRoutes = async (): Promise<Record<string, Data> | null> => {
   }, {} as Record<string, Data>);
 };
 
-/**
- * Get all versions for a document
- */
 export const getVersions = async (documentId: number) => {
   return await prisma.version.findMany({
     where: { documentId },
@@ -70,12 +58,22 @@ export const getVersions = async (documentId: number) => {
   });
 };
 
-/**
- * Get a specific version by ID
- */
 export const getVersionById = async (versionId: number) => {
   return await prisma.version.findUnique({
     where: { id: versionId },
     include: { document: true },
   });
 };
+
+export async function getDocumentSummaries() {
+  return await prisma.document.findMany({
+    include: {
+      versions: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: { createdAt: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}

@@ -2,7 +2,7 @@ import "@puckeditor/core/puck.css";
 import type { Data } from "@puckeditor/core";
 import { Client } from "./client";
 import { Metadata } from "next";
-import { getDocumentById, getVersionById } from "../../../lib/get-document";
+import { getDocumentById, getVersionById } from "../../../lib/documents/queries";
 
 interface PageProps {
   params: Promise<{ id: string }>;

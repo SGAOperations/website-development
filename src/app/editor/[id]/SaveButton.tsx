@@ -4,7 +4,7 @@ import { createUsePuck } from "@puckeditor/core";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { useDocumentContext } from "./client";
-import { saveVersionAction } from "../../../lib/actions";
+import { saveVersionAction } from "../../../lib/documents/actions";
 import { runAction } from "../runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
 

@@ -7,7 +7,7 @@ import {
   createRouteAction,
   updateRouteAction,
   deleteRouteAction,
-} from "../../lib/actions";
+} from "../../lib/routes/actions";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
