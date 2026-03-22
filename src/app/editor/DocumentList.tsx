@@ -13,6 +13,7 @@ import {
 } from "../../lib/documents/actions";
 import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents/utils";
+import { getEditorUrl } from "../../lib/editor-url";
 import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
@@ -42,7 +43,7 @@ function DocumentCard({
       preview={<FileText className="h-10 w-10 text-muted-foreground" />}
       name={displayName}
       date={lastModified ? formatRelativeTime(lastModified) : "No versions"}
-      href={`/editor/${id}`}
+      href={getEditorUrl(id, name)}
       actions={actions}
     />
   );
@@ -140,7 +141,7 @@ function NewDocumentCard() {
         return;
       }
 
-      router.push(`/editor/${result.data.documentId}`);
+      router.push(getEditorUrl(result.data.documentId, trimmedName));
     });
   }
 

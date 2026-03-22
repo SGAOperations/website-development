@@ -4,16 +4,16 @@ import { createUsePuck } from "@puckeditor/core";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { useDocumentContext } from "./client";
-import { saveVersionAction } from "../../../lib/documents/actions";
-import { runAction } from "../runAction";
+import { saveVersionAction } from "../../../../lib/documents/actions";
+import { getEditorUrl } from "../../../../lib/editor-url";
+import { runAction } from "../../runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
 const usePuck = createUsePuck();
 
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
-  const dispatch = usePuck((s) => s.dispatch);
-  const { documentId, isArchived, addVersion } = useDocumentContext();
+  const { documentId, documentName, isArchived, addVersion } = useDocumentContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
@@ -27,8 +27,8 @@ export function SaveButton() {
         return;
       }
 
-      dispatch({ type: "setData", data });
       addVersion(result.data.version);
+      window.history.replaceState(null, "", getEditorUrl(documentId, documentName, result.data.version.id));
       toast.success("Saved");
     });
   };

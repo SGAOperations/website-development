@@ -2,15 +2,16 @@
 
 import type { Data } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
-import config from "../../../puck.config";
+import config from "../../../../puck.config";
 import { useState, createContext, useContext, useCallback } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
-import type { Version } from "../../../lib/types";
+import type { Version } from "../../../../lib/types";
 
 type DocumentContextType = {
   documentId: number;
+  documentName: string;
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
@@ -21,6 +22,7 @@ type DocumentContextType = {
 
 const DocumentContext = createContext<DocumentContextType>({
   documentId: 0,
+  documentName: "",
   versions: [],
   isArchived: false,
   addVersion: () => {},
@@ -33,6 +35,7 @@ export function useDocumentContext() {
 
 export function Client({
   documentId,
+  documentName,
   data,
   versionId: initialVersionId,
   publishedVersionId: initialPublishedVersionId,
@@ -40,6 +43,7 @@ export function Client({
   isArchived,
 }: {
   documentId: number;
+  documentName: string;
   data: Partial<Data>;
   versionId?: number;
   publishedVersionId?: number;
@@ -58,7 +62,7 @@ export function Client({
 
   return (
     <DocumentContext.Provider
-      value={{ documentId, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
+      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
     >
       <Puck
         config={config}

@@ -8,6 +8,7 @@ import {
   updateRouteAction,
   deleteRouteAction,
 } from "../../lib/routes/actions";
+import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
@@ -143,7 +144,7 @@ function RouteRowComponent({
       </td>
       <td className="py-1">
         <Link
-          href={`/editor/${route.documentId}`}
+          href={getEditorUrl(route.documentId, route.documentName)}
           className="text-blue-500 hover:underline"
         >
           {route.documentName}

@@ -1,4 +1,4 @@
-import type { Version } from "../../../lib/types";
+import type { Version } from "../../../../lib/types";
 
 export interface VersionListPanelProps {
   versions: Version[];
