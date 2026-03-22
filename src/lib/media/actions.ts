@@ -9,7 +9,7 @@ import type {
   DeleteMediaInput,
   RenameInput,
 } from "../types";
-import { wrapAction } from "../wrap-action";
+import { wrapAction } from "../utils";
 
 export async function uploadMediaAction(
   formData: FormData

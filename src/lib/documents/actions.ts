@@ -13,7 +13,7 @@ import type {
   PublishVersionInput,
   Version,
 } from "../types";
-import { wrapAction } from "../wrap-action";
+import { wrapAction } from "../utils";
 
 function assertNotArchived(doc: { archivedAt: Date | null }): void {
   if (doc.archivedAt !== null) {

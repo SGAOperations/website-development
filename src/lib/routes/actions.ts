@@ -7,7 +7,7 @@ import type {
   DeleteRouteInput,
   UpdateRouteInput,
 } from "../types";
-import { wrapAction } from "../wrap-action";
+import { wrapAction } from "../utils";
 
 const ROUTE_SEGMENT_RE = /^[a-z0-9_-]+$/;
 
