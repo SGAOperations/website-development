@@ -71,7 +71,7 @@ export function Client({
         plugins={[VersionPlugin]}
         permissions={isArchived
           ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
-          : { duplicate: false } // Re replace this with our own, to avoid an icon collision
+          : { duplicate: false } // We replace this with our own, to avoid an icon collision
         }
         overrides={{
           actionBar: ActionBarOverride,

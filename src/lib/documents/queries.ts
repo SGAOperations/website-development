@@ -58,6 +58,14 @@ export const getVersions = async (documentId: number) => {
   });
 };
 
+export const getDocumentName = async (id: number) => {
+  const doc = await prisma.document.findUnique({
+    where: { id },
+    select: { name: true },
+  });
+  return doc?.name ?? null;
+};
+
 export const getVersionById = async (versionId: number) => {
   return await prisma.version.findUnique({
     where: { id: versionId },

@@ -1,7 +1,3 @@
-/**
- * Generates a URL-friendly slug from a document name.
- * Returns "untitled" for empty/missing names.
- */
 export function getEditorSlug(name: string | null): string {
   if (!name) return "untitled";
 
