@@ -3,15 +3,16 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
-import { publishVersionAction } from "../../../lib/documents/actions";
-import { runAction } from "../runAction";
+import { publishVersionAction } from "../../../../lib/documents/actions";
+import { getEditorUrl } from "../../../../lib/editor-url";
+import { runAction } from "../../runAction";
 import { VersionListPanel } from "./VersionListPanel";
 import { useDialogs } from "@/components/ui/dialog-provider";
 import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
+  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
@@ -30,7 +31,7 @@ export function VersionPluginContainer() {
   };
 
   const handleLoadVersion = (versionIdToLoad: number) => {
-    router.replace(`/editor/${documentId}?versionId=${versionIdToLoad}`);
+    router.replace(getEditorUrl(documentId, documentName, versionIdToLoad));
   };
 
   return (
