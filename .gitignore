@@ -38,3 +38,6 @@ next-env.d.ts
 
 # prisma generated client
 src/generated/
+
+# ts build info output
+tsconfig.tsbuildinfo

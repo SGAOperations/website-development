@@ -1,33 +1,17 @@
-import { prisma } from "../../lib/prisma";
-import { getMediaUrl } from "../../lib/supabase";
-import { getDocumentName } from "../../lib/documents";
+import { getDocumentSummaries } from "../../lib/documents/queries";
+import { getDocumentName } from "../../lib/documents/utils";
+import { getMediaFiles } from "../../lib/media/queries";
+import { getRoutesWithDocuments } from "../../lib/routes/queries";
 import { DocumentList, ArchivedDocumentList } from "./DocumentList";
 import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
 
 export default async function EditorIndexPage() {
-  const [routes, media, documents] = await Promise.all([
-    prisma.route.findMany({
-      include: { document: true },
-      orderBy: { path: "asc" },
-    }),
-    prisma.media.findMany({ orderBy: { createdAt: "desc" } }),
-    prisma.document.findMany({
-      include: {
-        versions: {
-          orderBy: { createdAt: "desc" },
-          take: 1,
-          select: { createdAt: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    }),
+  const [routes, mediaFiles, documents] = await Promise.all([
+    getRoutesWithDocuments(),
+    getMediaFiles(),
+    getDocumentSummaries(),
   ]);
-
-  const mediaFiles = media.map((m) => ({
-    ...m,
-    url: getMediaUrl(m.storagePath),
-  }));
 
   const toDocumentItem = (doc: (typeof documents)[number]) => ({
     id: doc.id,

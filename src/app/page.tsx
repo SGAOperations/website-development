@@ -1,6 +1,6 @@
 import { Client } from "./[...puckPath]/client";
 import { notFound } from "next/navigation";
-import { getDocumentByPath } from "../lib/get-document";
+import { getDocumentByPath } from "../lib/documents/queries";
 
 
 export default async function Page() {

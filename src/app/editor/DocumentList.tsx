@@ -10,9 +10,9 @@ import {
   duplicateDocumentAction,
   renameDocumentAction,
   unarchiveDocumentAction,
-} from "../../lib/actions";
+} from "../../lib/documents/actions";
 import { runAction } from "./runAction";
-import { getDocumentName } from "../../lib/documents";
+import { getDocumentName } from "../../lib/documents/utils";
 import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";

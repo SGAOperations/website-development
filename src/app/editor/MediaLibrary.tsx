@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/actions";
+import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/media/actions";
 import type { Media } from "../../generated/prisma/client";
 import { runAction } from "./runAction";
 import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
