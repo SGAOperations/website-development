@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepare": "husky",
     "postinstall": "prisma generate",
     "vercel-build": "prisma migrate deploy && next build"
@@ -44,6 +46,7 @@
     "supabase": "^2.81.3",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^4.1.0"
   }
 }
