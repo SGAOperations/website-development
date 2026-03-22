@@ -15,6 +15,7 @@ import type {
   CreateRouteInput,
   DeleteMediaInput,
   DeleteRouteInput,
+  DuplicateDocumentInput,
   RenameInput,
   SaveVersionInput,
   PublishVersionInput,
@@ -109,6 +110,31 @@ export async function unarchiveDocumentAction(
       where: { id: input.id },
       data: { archivedAt: null },
     });
+  });
+}
+
+export async function duplicateDocumentAction(
+  input: DuplicateDocumentInput
+): Promise<ActionResult<{ documentId: number }>> {
+  return wrapAction(async () => {
+    await assertNotArchived(input.id);
+    const doc = await prisma.document.findUniqueOrThrow({
+      where: { id: input.id },
+      include: { publishedVersion: true },
+    });
+    if (!doc.publishedVersion) {
+      throw new Error("Document has no published version to duplicate");
+    }
+    const name = input.name.trim();
+    if (!name) {
+      throw new Error("Name cannot be empty");
+    }
+    const newDoc = await createDocumentWithVersion(
+      name,
+      doc.publishedVersion.content as any,
+      false
+    );
+    return { documentId: newDoc.id };
   });
 }
 

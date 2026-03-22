@@ -52,3 +52,8 @@ export type DeleteMediaInput = {
 export type ArchiveDocumentInput = {
   id: number;
 };
+
+export type DuplicateDocumentInput = {
+  id: number;
+  name: string;
+};
