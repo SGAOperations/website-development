@@ -41,6 +41,7 @@ pg_dump -h localhost -p 5432 -U sga_puck_app -d sga_db --schema=public --data-on
 ```
 
 Restore data to Supabase-managed Postgres, setting `session_replication_role` to `replica` to avoid triggering any constraints or triggers during the restore:
+
 ```bash
 psql -h 127.0.0.1 -p 54322 -U postgres -d postgres <<'EOF'
 SET session_replication_role = 'replica';

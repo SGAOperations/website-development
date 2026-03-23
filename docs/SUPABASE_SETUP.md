@@ -86,4 +86,3 @@ The config lives in `supabase/config.toml`.
 - Storage: Enabled with a public `media` bucket
 - Auth/API: Enabled because storage depends on them
 - Everything else: Disabled
-
