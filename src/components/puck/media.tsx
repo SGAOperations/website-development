@@ -4,17 +4,18 @@ import { cn } from "@/lib/utils";
 import { fields, radiusVariants, selectFrom, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 
-const aspectRatioOptions = ["auto", "square", "video", "wide"] as const;
+const aspectRatioOptions = ["auto", "square", "photo", "video", "wide"] as const;
 type AspectRatio = (typeof aspectRatioOptions)[number];
 
 const objectFitOptions = ["cover", "contain", "fill"] as const;
 type ObjectFit = (typeof objectFitOptions)[number];
 
-const mediaWrapperVariants = cva("relative w-full overflow-hidden", {
+const mediaWrapperVariants = cva("relative h-full w-full overflow-hidden", {
   variants: {
     aspectRatio: {
       auto: "",
       square: "aspect-square",
+      photo: "aspect-[4/3]",
       video: "aspect-video",
       wide: "aspect-[21/9]",
     },
@@ -59,6 +60,7 @@ export const Media: ComponentConfig<MediaProps> = {
       options: [
         { label: "Auto", value: "auto" },
         { label: "Square (1:1)", value: "square" },
+        { label: "Photo (4:3)", value: "photo" },
         { label: "Video (16:9)", value: "video" },
         { label: "Wide (21:9)", value: "wide" },
       ],
