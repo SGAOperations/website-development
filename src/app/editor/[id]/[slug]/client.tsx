@@ -5,6 +5,7 @@ import { Puck } from "@puckeditor/core";
 import config from "../../../../puck.config";
 import { useState, createContext, useContext, useCallback } from "react";
 import { VersionPlugin } from "./VersionPlugin";
+import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
 import type { Version } from "../../../../lib/types";
@@ -68,7 +69,7 @@ export function Client({
         config={config}
         data={currentData}
         ui={{plugin: {current: "version-plugin"}}}
-        plugins={[VersionPlugin]}
+        plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
         permissions={isArchived
           ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
           : { duplicate: false } // We replace this with our own, to avoid an icon collision
