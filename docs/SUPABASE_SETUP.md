@@ -20,7 +20,7 @@ npx supabase start
 
 If Docker is running, Supabase will begin creating a local instance of the necessary services. On success, it should output something like:
 
-```
+```bash
 ╭─────────────────────────────────────────────────╮
 │ 🌐 APIs                                         │
 ├─────────────┬───────────────────────────────────┤
@@ -61,11 +61,12 @@ SUPABASE_SERVICE_ROLE_KEY="sb_secret_XXXXXXXXX"
 
 ```bash
 npx prisma migrate dev
-``` 
+```
 
 This will apply the Prisma schema to your local database. You can also use `npx prisma studio` to view and manage your database records in a nice UI.
 
 ## Resetting the database
+
 If you want to reset your database (e.g. to clear all data), you can run:
 
 ```bash
