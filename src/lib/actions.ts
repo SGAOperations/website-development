@@ -24,6 +24,7 @@ import type {
 import { wrapAction } from "./wrap-action";
 
 const ROUTE_SEGMENT_RE = /^[a-z0-9_-]+$/;
+const isValidSegment = (segment: string) => ROUTE_SEGMENT_RE.test(segment);
 
 function assertValidRoutePath(path: string): void {
   if (path.trim() !== path) {
@@ -55,12 +56,10 @@ function assertValidRoutePath(path: string): void {
   }
 
   const segments = path.split("/").slice(1);
-  for (const segment of segments) {
-    if (!ROUTE_SEGMENT_RE.test(segment)) {
-      throw new Error(
-        "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
-      );
-    }
+  if (!segments.every(isValidSegment)) {
+    throw new Error(
+      "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
+    );
   }
 }
 

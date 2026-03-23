@@ -11,7 +11,15 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
+  const {
+    documentId,
+    versionId,
+    publishedVersionId,
+    versions,
+    isArchived,
+    setPublishedVersionId,
+    confirmNavigationIfUnsaved,
+  } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
@@ -30,6 +38,10 @@ export function VersionPluginContainer() {
   };
 
   const handleLoadVersion = (versionIdToLoad: number) => {
+    if (!confirmNavigationIfUnsaved()) {
+      return;
+    }
+
     router.replace(`/editor/${documentId}?versionId=${versionIdToLoad}`);
   };
 

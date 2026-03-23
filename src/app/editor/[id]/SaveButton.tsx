@@ -13,7 +13,7 @@ const usePuck = createUsePuck();
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
   const dispatch = usePuck((s) => s.dispatch);
-  const { documentId, isArchived, addVersion } = useDocumentContext();
+  const { documentId, isArchived, addVersion, markSaved } = useDocumentContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
@@ -29,6 +29,7 @@ export function SaveButton() {
 
       dispatch({ type: "setData", data });
       addVersion(result.data.version);
+      markSaved(data);
       toast.success("Saved");
     });
   };
