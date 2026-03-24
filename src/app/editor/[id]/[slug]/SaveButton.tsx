@@ -13,7 +13,7 @@ const usePuck = createUsePuck();
 
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
-  const { documentId, documentName, isArchived, addVersion } = useDocumentContext();
+  const { documentId, documentName, isArchived, addVersion, setIsDirty } = useDocumentContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
@@ -27,6 +27,7 @@ export function SaveButton() {
         return;
       }
 
+      setIsDirty(false);
       addVersion(result.data.version);
       window.history.replaceState(null, "", getEditorUrl(documentId, documentName, result.data.version.id));
       toast.success("Saved");

@@ -19,6 +19,7 @@ type DocumentContextType = {
   isArchived: boolean;
   addVersion: (version: Version) => void;
   setPublishedVersionId: (id: number) => void;
+  setIsDirty: (value: boolean) => void;
 };
 
 const DocumentContext = createContext<DocumentContextType>({
@@ -28,6 +29,9 @@ const DocumentContext = createContext<DocumentContextType>({
   isArchived: false,
   addVersion: () => {},
   setPublishedVersionId: () => {},
+  setIsDirty: (boolean) => {
+    //empty function, will pass state change in later
+  },
 });
 
 export function useDocumentContext() {
@@ -55,6 +59,20 @@ export function Client({
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
+  const [isDirty, setIsDirty ] = useState<boolean>(false);
+
+  const showSaveModal = (event: Event) => {
+  if ("hidden" == window.document.visibilityState && isDirty) {
+    if (window.confirm("You have unsaved changes. Continue?")) {
+      //continue
+    } else {
+      event.preventDefault()
+    }
+  }
+}
+
+
+window.addEventListener("visibilitychange", () => showSaveModal )
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
@@ -63,7 +81,7 @@ export function Client({
 
   return (
     <DocumentContext.Provider
-      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
+      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId, setIsDirty }}
     >
       <Puck
         config={config}
@@ -80,6 +98,7 @@ export function Client({
         }}
         onChange={(data) => {
           setCurrentData(data);
+          setIsDirty(true);
         }}
       />
     </DocumentContext.Provider>
