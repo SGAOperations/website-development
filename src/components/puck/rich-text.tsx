@@ -1,6 +1,6 @@
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
-import { defineProps, field } from "@/components/puck/define-props";
+import { defineProps, field } from "@/lib/puck/define-props";
 import {
   textColor,
   textAlign,

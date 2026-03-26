@@ -1,8 +1,8 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { defineProps, responsive, field } from "@/components/puck/define-props";
+import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { getGridClassName, getMaxCols } from "@/components/puck/layout";
+import { getGridClassName, getMaxCols } from "@/lib/puck/layout";
 
 type SlotKey = `column${ColumnCount}`;
 

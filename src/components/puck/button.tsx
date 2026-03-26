@@ -1,6 +1,6 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "@/components/ui/button";
-import { defineProps, field } from "@/components/puck/define-props";
+import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue } from "@/lib/puck/tokens";
 
 const variant = defineToken({

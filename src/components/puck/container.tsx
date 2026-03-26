@@ -4,8 +4,8 @@ import {
   getContainerSlotClassName,
   getContainerSurfaceClassName,
   type ContainerStyle,
-} from "@/components/puck/layout";
-import { defineProps, responsive, field } from "@/components/puck/define-props";
+} from "@/lib/puck/layout";
+import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, padding, gap, bgColor, textColor, radius, shadow, crossAxisAlign, layout, justify, width } from "@/lib/puck/tokens";
 
 const tag = defineToken({

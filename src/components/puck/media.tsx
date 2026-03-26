@@ -1,6 +1,6 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
-import { defineProps, field } from "@/components/puck/define-props";
+import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 
