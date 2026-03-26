@@ -21,7 +21,7 @@ Unset breakpoints inherit from the nearest smaller one.
 
 `defineToken` creates a constrained set of choices. Two forms:
 
-A **class token** maps each key to a single class string:
+A **class token** maps each key to a Tailwind class string (and optionally any number of extra columns):
 
 ```ts
 const padding = defineToken({
@@ -32,7 +32,19 @@ const padding = defineToken({
 padding.classes // → { sm: "p-2", md: "p-4" }
 ```
 
-A **plain token** uses string values — the key is the value and the string is the editor label. These have no classes and are useful when there are no Tailwind classes to map to (e.g. HTML tag names):
+Every property in the spec object besides `label` becomes a `Record<K, V>` on the returned token. The values aren't limited to strings — any type works:
+
+```ts
+const spacing = defineToken({
+  sm: { label: "Small", classes: "gap-2", px: 8 },
+  lg: { label: "Large", classes: "gap-6", px: 24 },
+});
+
+spacing.classes // → { sm: "gap-2", lg: "gap-6" }
+spacing.px      // → { sm: 8, lg: 24 }
+```
+
+A **plain token** uses string values — the key is the value and the string is the editor label. These have no columns and are useful when there are no Tailwind classes to map to (e.g. HTML tag names):
 
 ```ts
 const tag = defineToken({ div: "<div>", section: "<section>" });

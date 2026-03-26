@@ -17,6 +17,16 @@ describe("defineToken", () => {
     expect("classes" in token).toBe(false);
   });
 
+  it("extracts arbitrary extra columns from object specs", () => {
+    const token = defineToken({
+      sm: { label: "Small", classes: "gap-2", px: 8 },
+      lg: { label: "Large", classes: "gap-6", px: 24 },
+    });
+
+    expect(token.classes).toEqual({ sm: "gap-2", lg: "gap-6" });
+    expect(token.px).toEqual({ sm: 8, lg: 24 });
+  });
+
   it("builds class tokens from object specs", () => {
     const token = defineToken({
       sm: { label: "Small", classes: "text-sm" },

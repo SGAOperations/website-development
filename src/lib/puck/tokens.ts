@@ -8,6 +8,12 @@ export type Token<K extends string = string> = {
   defaultValue: K;
 };
 
+// Extracts the extra columns (everything except "label") from a spec value type
+// and maps each column to Record<K, V>.
+type TokenColumns<K extends string, V extends { label: string }> = {
+  [P in keyof V as P extends "label" ? never : P]: Record<K, V[P]>;
+};
+
 export type ClassToken<K extends string = string> = Token<K> & {
   classes: Record<K, string>;
 };
@@ -17,13 +23,16 @@ export function defineToken<const K extends string>(
   defaultValue?: NoInfer<K>,
 ): Token<K>;
 
-export function defineToken<const K extends string>(
-  spec: Record<K, { label: string; classes: string }>,
+export function defineToken<
+  const K extends string,
+  const V extends { label: string },
+>(
+  spec: Record<K, V>,
   defaultValue?: NoInfer<K>,
-): ClassToken<K>;
+): Token<K> & TokenColumns<K, V>;
 
 export function defineToken<const K extends string>(
-  spec: Record<K, string | { label: string; classes: string }>,
+  spec: Record<K, string | { label: string }>,
   defaultValue?: NoInfer<K>,
 ) {
   const keys = Object.keys(spec) as K[];
@@ -38,17 +47,26 @@ export function defineToken<const K extends string>(
     return { options, defaultValue: defaultValue ?? keys[0] };
   }
 
-  // Class values → extract labels and classes
+  // Object values → extract label + all extra columns
   const options = keys.map((k) => ({
     value: k,
     label: (spec[k] as { label: string }).label,
   })) as TokenOption<K>[];
 
-  const classes = Object.fromEntries(
-    keys.map((k) => [k, (spec[k] as { classes: string }).classes]),
-  ) as Record<K, string>;
+  const columnNames = Object.keys(first as object).filter(
+    (p) => p !== "label",
+  );
 
-  return { options, defaultValue: defaultValue ?? keys[0], classes };
+  const columns = Object.fromEntries(
+    columnNames.map((col) => [
+      col,
+      Object.fromEntries(
+        keys.map((k) => [k, (spec[k] as Record<string, unknown>)[col]]),
+      ),
+    ]),
+  );
+
+  return { options, defaultValue: defaultValue ?? keys[0], ...columns };
 }
 
 export type TokenValue<T> = T extends Token<infer K> ? K : never;
