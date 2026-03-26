@@ -80,3 +80,16 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.prose ul {
+  @apply list-disc pl-6;
+}
+
+.prose ol {
+  @apply list-decimal pl-6;
+}
+
+.prose p:has(br:only-child),
+.prose p:empty {
+  @apply block min-h-lh;
+}
