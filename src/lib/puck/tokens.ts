@@ -81,6 +81,26 @@ export const padding = defineToken({
   "2xl": { label: "2XL",    classes: "p-12" },
 });
 
+export const paddingX = defineToken({
+  none:  { label: "None",   classes: "px-0" },
+  xs:    { label: "XS",     classes: "px-1" },
+  sm:    { label: "Small",  classes: "px-2" },
+  md:    { label: "Medium", classes: "px-4" },
+  lg:    { label: "Large",  classes: "px-6" },
+  xl:    { label: "XL",     classes: "px-8" },
+  "2xl": { label: "2XL",    classes: "px-12" },
+});
+
+export const paddingY = defineToken({
+  none:  { label: "None",   classes: "py-0" },
+  xs:    { label: "XS",     classes: "py-1" },
+  sm:    { label: "Small",  classes: "py-2" },
+  md:    { label: "Medium", classes: "py-4" },
+  lg:    { label: "Large",  classes: "py-6" },
+  xl:    { label: "XL",     classes: "py-8" },
+  "2xl": { label: "2XL",    classes: "py-12" },
+});
+
 export const gap = defineToken({
   none:  { label: "None",   classes: "gap-0" },
   xs:    { label: "XS",     classes: "gap-1" },
@@ -89,6 +109,16 @@ export const gap = defineToken({
   lg:    { label: "Large",  classes: "gap-6" },
   xl:    { label: "XL",     classes: "gap-8" },
   "2xl": { label: "2XL",    classes: "gap-12" },
+});
+
+export const columnGap = defineToken({
+  none:  { label: "None",   classes: "gap-x-0" },
+  xs:    { label: "XS",     classes: "gap-x-1" },
+  sm:    { label: "Small",  classes: "gap-x-2" },
+  md:    { label: "Medium", classes: "gap-x-4" },
+  lg:    { label: "Large",  classes: "gap-x-6" },
+  xl:    { label: "XL",     classes: "gap-x-8" },
+  "2xl": { label: "2XL",    classes: "gap-x-12" },
 });
 
 export type Spacing = TokenValue<typeof padding>;
@@ -168,6 +198,15 @@ export const columnCount = defineToken({
 });
 
 export type ColumnCount = TokenValue<typeof columnCount>;
+
+export const textColumns = defineToken({
+  "1": { label: "1", classes: "columns-1" },
+  "2": { label: "2", classes: "columns-2" },
+  "3": { label: "3", classes: "columns-3" },
+  "4": { label: "4", classes: "columns-4" },
+});
+
+export type TextColumnCount = TokenValue<typeof textColumns>;
 
 export const layout = defineToken({
   stack: { label: "Stack", classes: "flex flex-col" },

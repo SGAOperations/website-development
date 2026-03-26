@@ -1,17 +1,25 @@
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
-import { defineProps, field } from "@/lib/puck/define-props";
+import { defineProps, field, responsive } from "@/lib/puck/define-props";
+import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import {
   textColor,
   textAlign,
+  textColumns,
+  columnGap,
   type Color,
   type TextAlign,
+  type TextColumnCount,
+  type Spacing,
 } from "@/lib/puck/tokens";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
 
 type RichTextProps = {
   content: RichText;
   textColor: Color;
   align: TextAlign;
+  columns: ResponsiveValue<TextColumnCount>;
+  columnGap: ResponsiveValue<Spacing>;
 };
 
 const props = defineProps({
@@ -21,14 +29,22 @@ const props = defineProps({
   ),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
+  columns: responsive.token(textColumns, { label: "Columns", default: "1" }),
+  columnGap: responsive.token(columnGap, { label: "Column gap", default: "md" }),
 });
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
   ...props,
-  render: ({ content, textColor: tc, align }) => {
+  render: ({ content, textColor: tc, align, columns, columnGap: cg }) => {
     return (
-      <div className={cn("prose max-w-none", textColor.classes[tc], textAlign.classes[align])}>
+      <div className={cn(
+        "prose max-w-none",
+        textColor.classes[tc],
+        textAlign.classes[align],
+        resolveResponsive(columns, textColumns.classes),
+        resolveResponsive(cg, columnGap.classes),
+      )}>
         {content}
       </div>
     );

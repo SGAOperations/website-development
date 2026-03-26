@@ -103,6 +103,17 @@ resolveResponsive(gap, gapToken.classes)
 
 Multi-class values are split and each utility prefixed individually — `"grid-rows-2 auto-rows-[0] overflow-hidden"` becomes `"md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden"`.
 
+### Tailwind source hints for responsive tokens
+
+Because `resolveResponsive` builds prefixed class names like `md:p-4` at runtime, Tailwind's scanner never sees them in source code. Every responsive token needs a corresponding `@source inline(...)` directive in `src/app/styles.css` so the classes are included in the CSS output:
+
+```css
+@source inline("{md:,lg:,}p-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}columns-{1,2,3,4}");
+```
+
+Static tokens (used via `field.select` / `field.radio`) don't need this — their class strings appear literally in `tokens.ts` and are picked up by the scanner.
+
 ## Putting it together
 
 ```ts

@@ -5,14 +5,16 @@ import { Grid } from "@/components/puck/grid";
 import { RichTextComponent } from "@/components/puck/rich-text";
 import { Media } from "@/components/puck/media";
 import { PuckButton } from "@/components/puck/button";
+import { Section } from "@/components/puck/section";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Container", "Columns", "Grid"] },
+    layout: { title: "Layout", components: ["Section", "Container", "Columns", "Grid"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
+    Section,
     Container,
     Columns,
     Grid,
