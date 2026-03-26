@@ -2,6 +2,8 @@
 
 import { Data } from "@puckeditor/core";
 import { prisma } from "../prisma";
+import type { Prisma } from "../../generated/prisma/client";
+import { createEmptyPuckData } from "../puck/utils";
 import { validateName } from "../utils";
 import type {
   ActionResult,
@@ -33,7 +35,7 @@ async function createVersion(documentId: number, content: Data) {
   return await prisma.version.create({
     data: {
       documentId,
-      content: content as any,
+      content: content as Prisma.InputJsonValue,
     },
   });
 }
@@ -72,7 +74,7 @@ async function createDocumentWithVersion(
     const version = await tx.version.create({
       data: {
         documentId: document.id,
-        content: content as any,
+        content: content as Prisma.InputJsonValue,
       },
     });
 
@@ -92,7 +94,7 @@ export async function createDocumentAction(
 ): Promise<ActionResult<{ documentId: number }>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
-    const content = input.content || { content: [], root: {} };
+    const content = input.content ?? createEmptyPuckData();
     const document = await createDocumentWithVersion(name, content, false);
     return { documentId: document.id };
   });
@@ -160,7 +162,7 @@ export async function duplicateDocumentAction(
     }
     const newDoc = await createDocumentWithVersion(
       name,
-      doc.publishedVersion.content as any,
+      doc.publishedVersion.content as Data,
       false
     );
     return { documentId: newDoc.id };

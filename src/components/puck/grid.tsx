@@ -1,77 +1,44 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { cva } from "class-variance-authority";
-import { cn } from "@/lib/utils";
-import { fields, gapVariants, type Spacing } from "@/lib/puck/tokens";
-
-const columnValues = ["1", "2", "3", "4", "5", "6"] as const;
-type Columns = (typeof columnValues)[number];
-
-const rowValues = ["auto", "1", "2", "3", "4", "5", "6"] as const;
-type Rows = (typeof rowValues)[number];
-
-const gridVariants = cva("grid w-full", {
-  variants: {
-    columns: {
-      "1": "grid-cols-1",
-      "2": "grid-cols-2",
-      "3": "grid-cols-3",
-      "4": "grid-cols-4",
-      "5": "grid-cols-5",
-      "6": "grid-cols-6",
-    },
-    rows: {
-      auto: "",
-      "1": "grid-rows-1",
-      "2": "grid-rows-2",
-      "3": "grid-rows-3",
-      "4": "grid-rows-4",
-      "5": "grid-rows-5",
-      "6": "grid-rows-6",
-    },
-    gap: gapVariants,
-  },
-  defaultVariants: {
-    columns: "3",
-    rows: "auto",
-    gap: "md",
-  },
-});
+import { defineProps, responsive, field } from "@/components/puck/define-props";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
+import { columnCount, gap, gridRows, type ColumnCount, type Spacing, type GridRows } from "@/lib/puck/tokens";
+import { getGridClassName } from "@/components/puck/layout";
 
 type GridProps = {
   content: any;
-  columns: Columns;
-  rows: Rows;
-  gap: Spacing;
+  columns: ResponsiveValue<ColumnCount>;
+  rows: ResponsiveValue<GridRows>;
+  gap: ResponsiveValue<Spacing>;
 };
+
+const props = defineProps({
+  content: field.raw({ type: "slot" } as const),
+  columns: responsive.token(columnCount, { label: "Columns", default: "3" }),
+  rows: responsive.token(gridRows, { label: "Rows", default: "auto" }),
+  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+});
 
 export const Grid: ComponentConfig<GridProps> = {
   label: "Grid",
-  fields: {
-    content: { type: "slot" },
-    columns: {
-      type: "select",
-      label: "Columns",
-      options: columnValues.map((v) => ({ label: v, value: v })),
-    },
-    rows: {
-      type: "select",
-      label: "Rows",
-      options: rowValues.map((v) => ({
-        label: v === "auto" ? "Auto" : v,
-        value: v,
-      })),
-    },
-    gap: fields.gap(),
-  },
-  defaultProps: {
-    columns: "3",
-    rows: "auto",
-    gap: "md",
-  } as GridProps,
-  render: ({ content: Content, columns, rows, gap }) => {
+  ...props,
+  defaultProps: props.defaultProps,
+  render: ({ content: Content, columns, rows: r, gap }) => {
+    if (!Content) {
+      return (
+        <div
+          className={getGridClassName({
+            columns,
+            rows: r,
+            gap,
+            empty: true,
+          })}
+        />
+      );
+    }
+
     return (
       <Content
-        className={cn(gridVariants({ columns, rows, gap }))}
+        className={getGridClassName({ columns, rows: r, gap })}
         minEmptyHeight="200px"
       />
     );

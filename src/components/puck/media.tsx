@@ -1,44 +1,24 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { fields, radiusVariants, selectFrom, type Radius } from "@/lib/puck/tokens";
+import { defineProps, field } from "@/components/puck/define-props";
+import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 
-const aspectRatioOptions = ["auto", "square", "photo", "video", "wide"] as const;
-type AspectRatio = (typeof aspectRatioOptions)[number];
-
-const objectFitOptions = ["cover", "contain", "fill"] as const;
-type ObjectFit = (typeof objectFitOptions)[number];
-
-const mediaWrapperVariants = cva("relative h-full w-full overflow-hidden", {
-  variants: {
-    aspectRatio: {
-      auto: "",
-      square: "aspect-square",
-      photo: "aspect-[4/3]",
-      video: "aspect-video",
-      wide: "aspect-[21/9]",
-    },
-    radius: radiusVariants,
-  },
-  defaultVariants: {
-    aspectRatio: "auto",
-    radius: "none",
-  },
+const aspectRatio = defineToken({
+  auto:   { label: "Auto", classes: "" },
+  square: { label: "Square (1:1)", classes: "aspect-square" },
+  photo:  { label: "Photo (4:3)", classes: "aspect-[4/3]" },
+  video:  { label: "Video (16:9)", classes: "aspect-video" },
+  wide:   { label: "Wide (21:9)", classes: "aspect-[21/9]" },
 });
+type AspectRatio = TokenValue<typeof aspectRatio>;
 
-const mediaImgVariants = cva("h-full w-full", {
-  variants: {
-    objectFit: {
-      cover: "object-cover",
-      contain: "object-contain",
-      fill: "object-fill",
-    },
-  },
-  defaultVariants: {
-    objectFit: "cover",
-  },
+const objectFit = defineToken({
+  cover:   { label: "Cover", classes: "object-cover" },
+  contain: { label: "Contain", classes: "object-contain" },
+  fill:    { label: "Fill", classes: "object-fill" },
 });
+type ObjectFit = TokenValue<typeof objectFit>;
 
 type MediaProps = {
   url: string;
@@ -48,38 +28,29 @@ type MediaProps = {
   radius: Radius;
 };
 
+const props = defineProps({
+  url: field.raw({ type: "text", label: "URL" } as const, ""),
+  alt: field.raw({ type: "text", label: "Alt text" } as const, ""),
+  objectFit: field.select(objectFit, { label: "Object fit" }),
+  aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
+  radius: field.select(radius, { label: "Corners" }),
+});
+
 export const Media: ComponentConfig<MediaProps> = {
   label: "Image",
-  fields: {
-    url: { type: "text", label: "URL" },
-    alt: { type: "text", label: "Alt text" },
-    objectFit: selectFrom(objectFitOptions, "Object fit"),
-    aspectRatio: {
-      type: "select",
-      label: "Aspect ratio",
-      options: [
-        { label: "Auto", value: "auto" },
-        { label: "Square (1:1)", value: "square" },
-        { label: "Photo (4:3)", value: "photo" },
-        { label: "Video (16:9)", value: "video" },
-        { label: "Wide (21:9)", value: "wide" },
-      ],
-    },
-    radius: fields.radius(),
-  },
-  defaultProps: {
-    url: "",
-    alt: "",
-    objectFit: "cover",
-    aspectRatio: "auto",
-    radius: "none",
-  },
-  render: ({ url, alt, objectFit, aspectRatio, radius }) => {
+  ...props,
+  render: ({ url, alt, objectFit: fit, aspectRatio: ratio, radius: r }) => {
+    const wrapperClass = cn(
+      "relative h-full w-full overflow-hidden",
+      aspectRatio.classes[ratio],
+      radius.classes[r],
+    );
+
     if (!url) {
       return (
         <div
           className={cn(
-            mediaWrapperVariants({ aspectRatio, radius }),
+            wrapperClass,
             "flex min-h-32 items-center justify-center bg-muted",
           )}
         >
@@ -89,11 +60,11 @@ export const Media: ComponentConfig<MediaProps> = {
     }
 
     return (
-      <div className={cn(mediaWrapperVariants({ aspectRatio, radius }))}>
+      <div className={wrapperClass}>
         <img
           src={url}
           alt={alt}
-          className={cn(mediaImgVariants({ objectFit }))}
+          className={cn("h-full w-full", objectFit.classes[fit])}
         />
       </div>
     );

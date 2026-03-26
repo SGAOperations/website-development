@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Client } from "./client";
 import { getDocumentById } from "../../../../lib/documents/queries";
 import { getEditorSlug, getEditorUrl } from "../../../../lib/editor-url";
+import { createEmptyPuckData } from "../../../../lib/puck/utils";
 
 export default async function EditorPage({
   documentId,
@@ -63,5 +64,5 @@ function resolveVersion(
     return { data: versions[0].content as Data, versionId: versions[0].id };
   }
 
-  return { data: { content: [], root: {} } as Data };
+  return { data: createEmptyPuckData() };
 }

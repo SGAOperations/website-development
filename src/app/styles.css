@@ -2,6 +2,13 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@source inline("{md:,lg:,}p-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}gap-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}grid-cols-{1,2,3,4,5,6}");
+@source inline("{md:,lg:,}grid-rows-{none,1,2,3,4,5,6}");
+@source inline("{md:,lg:,}auto-rows-{auto,[0]}");
+@source inline("{md:,lg:,}overflow-{visible,hidden}");
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

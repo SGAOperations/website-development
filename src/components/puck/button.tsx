@@ -1,19 +1,24 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "@/components/ui/button";
-import { selectFrom } from "@/lib/puck/tokens";
+import { defineProps, field } from "@/components/puck/define-props";
+import { defineToken, type TokenValue } from "@/lib/puck/tokens";
 
-const variantOptions = [
-  "default",
-  "secondary",
-  "outline",
-  "ghost",
-  "destructive",
-  "link",
-] as const;
-type Variant = (typeof variantOptions)[number];
+const variant = defineToken({
+  default:     "Default",
+  secondary:   "Secondary",
+  outline:     "Outline",
+  ghost:       "Ghost",
+  destructive: "Destructive",
+  link:        "Link",
+});
+type Variant = TokenValue<typeof variant>;
 
-const sizeOptions = ["sm", "default", "lg"] as const;
-type Size = (typeof sizeOptions)[number];
+const size = defineToken({
+  sm:      "Small",
+  default: "Default",
+  lg:      "Large",
+}, "default");
+type Size = TokenValue<typeof size>;
 
 type PuckButtonProps = {
   label: string;
@@ -22,31 +27,19 @@ type PuckButtonProps = {
   size: Size;
 };
 
+const props = defineProps({
+  label: field.raw({ type: "text", label: "Label" } as const, "Click me"),
+  href: field.raw({ type: "text", label: "Link URL" } as const, ""),
+  variant: field.select(variant, { label: "Variant" }),
+  size: field.select(size, { label: "Size" }),
+});
+
 export const PuckButton: ComponentConfig<PuckButtonProps> = {
   label: "Button",
-  fields: {
-    label: { type: "text", label: "Label" },
-    href: { type: "text", label: "Link URL" },
-    variant: selectFrom(variantOptions, "Variant"),
-    size: {
-      type: "select",
-      label: "Size",
-      options: [
-        { label: "Small", value: "sm" },
-        { label: "Default", value: "default" },
-        { label: "Large", value: "lg" },
-      ],
-    },
-  },
-  defaultProps: {
-    label: "Click me",
-    href: "",
-    variant: "default",
-    size: "default",
-  },
-  render: ({ label, href, variant, size }) => {
+  ...props,
+  render: ({ label, href, variant: v, size: s }) => {
     const button = (
-      <Button variant={variant} size={size}>
+      <Button variant={v} size={s}>
         {label}
       </Button>
     );

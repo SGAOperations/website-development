@@ -1,48 +1,34 @@
 import type { ComponentConfig, RichText } from "@puckeditor/core";
-import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { fields, textColorVariants, type Color, type Align } from "@/lib/puck/tokens";
-
-const richTextVariants = cva("prose max-w-none", {
-  variants: {
-    textColor: textColorVariants,
-    align: {
-      left: "text-left",
-      center: "text-center",
-      right: "text-right",
-    },
-  },
-  defaultVariants: {
-    textColor: "foreground",
-    align: "left",
-  },
-});
+import { defineProps, field } from "@/components/puck/define-props";
+import {
+  textColor,
+  textAlign,
+  type Color,
+  type TextAlign,
+} from "@/lib/puck/tokens";
 
 type RichTextProps = {
   content: RichText;
   textColor: Color;
-  align: Align;
+  align: TextAlign;
 };
+
+const props = defineProps({
+  content: field.raw(
+    { type: "richtext", contentEditable: true } as const,
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." as unknown as RichText,
+  ),
+  textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
+  align: field.radio(textAlign, { label: "Text align", default: "left" }),
+});
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
-  fields: {
-    content: {
-      type: "richtext",
-      contentEditable: true,
-    },
-    textColor: fields.textColor(),
-    align: fields.align(),
-  },
-  defaultProps: {
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    textColor: "foreground",
-    align: "left",
-  } as RichTextProps,
-  render: ({ content, textColor, align }) => {
+  ...props,
+  render: ({ content, textColor: tc, align }) => {
     return (
-      <div className={cn(richTextVariants({ textColor, align }))}>
+      <div className={cn("prose max-w-none", textColor.classes[tc], textAlign.classes[align])}>
         {content}
       </div>
     );

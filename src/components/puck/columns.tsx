@@ -1,92 +1,59 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { cva } from "class-variance-authority";
-import { cn } from "@/lib/utils";
-import { fields, gapVariants, type Spacing } from "@/lib/puck/tokens";
+import { defineProps, responsive, field } from "@/components/puck/define-props";
+import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tokens";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
+import { getGridClassName, getMaxCols } from "@/components/puck/layout";
 
-const columnValues = ["2", "3", "4", "5", "6"] as const;
-type ColumnCount = (typeof columnValues)[number];
-
-const columnsVariants = cva("grid", {
-  variants: {
-    columns: {
-      "2": "grid-cols-1 md:grid-cols-2",
-      "3": "grid-cols-1 md:grid-cols-3",
-      "4": "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
-      "5": "grid-cols-1 md:grid-cols-3 lg:grid-cols-5",
-      "6": "grid-cols-1 md:grid-cols-3 lg:grid-cols-6",
-    },
-    gap: gapVariants,
-  },
-  defaultVariants: {
-    columns: "2",
-    gap: "md",
-  },
-});
+type SlotKey = `column${ColumnCount}`;
 
 type ColumnsProps = {
-  column1: any;
-  column2: any;
-  column3: any;
-  column4: any;
-  column5: any;
-  column6: any;
-  columns: ColumnCount;
-  gap: Spacing;
+  [K in SlotKey]: any;
+} & {
+  columns: ResponsiveValue<ColumnCount>;
+  gap: ResponsiveValue<Spacing>;
 };
 
-const slotField = { type: "slot" as const };
+const slotField = { type: "slot" } as const;
+const columnSlotKeys = columnCount.options.map(
+  ({ value }) => `column${value}` as SlotKey,
+);
+
+const columnSlotFields = Object.fromEntries(
+  columnSlotKeys.map((key) => [key, slotField]),
+) as Record<SlotKey, typeof slotField>;
+
+const props = defineProps({
+  columns: responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
+  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+});
 
 export const Columns: ComponentConfig<ColumnsProps> = {
   label: "Columns",
-  fields: {
-    column1: slotField,
-    column2: slotField,
-    column3: slotField,
-    column4: slotField,
-    column5: slotField,
-    column6: slotField,
-    columns: {
-      type: "select",
-      label: "Columns",
-      options: columnValues.map((v) => ({ label: v, value: v })),
-    },
-    gap: fields.gap(),
-  },
-  defaultProps: {
-    columns: "2",
-    gap: "md",
-  } as ColumnsProps,
+  fields: { ...columnSlotFields, ...props.fields },
+  defaultProps: props.defaultProps as ColumnsProps,
+  // Hide column slot fields that exceed the selected column count,
+  // so the editor sidebar only shows slots that are actually rendered.
   resolveFields: (data) => {
     const f = { ...Columns.fields! };
-    const colCount = parseInt(data.props.columns ?? "2", 10);
+    const columns = data.props.columns ?? { base: "1", md: "2" };
+    const maxCols = getMaxCols(columns);
 
-    f.column1 = { ...f.column1, visible: colCount >= 1 };
-    f.column2 = { ...f.column2, visible: colCount >= 2 };
-    f.column3 = { ...f.column3, visible: colCount >= 3 };
-    f.column4 = { ...f.column4, visible: colCount >= 4 };
-    f.column5 = { ...f.column5, visible: colCount >= 5 };
-    f.column6 = { ...f.column6, visible: colCount >= 6 };
+    for (const [index, key] of columnSlotKeys.entries()) {
+      f[key] = { ...f[key], visible: index < maxCols };
+    }
 
     return f;
   },
-  render: ({
-    column1: Column1,
-    column2: Column2,
-    column3: Column3,
-    column4: Column4,
-    column5: Column5,
-    column6: Column6,
-    columns,
-    gap,
-  }) => {
-    const colCount = parseInt(columns ?? "2", 10);
-    const columnSlots = [Column1, Column2, Column3, Column4, Column5, Column6];
+  render: ({ columns, gap, ...slots }) => {
+    const maxCols = getMaxCols(columns);
+    const slotMap = slots as Record<SlotKey, any>;
 
     return (
-      <div className={cn(columnsVariants({ columns, gap }))}>
-        {columnSlots
-          .slice(0, colCount)
-          .map((Col, i) => Col && <Col key={i} />)}
+      <div className={getGridClassName({ columns, rows: { base: "auto" }, gap })}>
+        {columnSlotKeys.slice(0, maxCols).map((key) => {
+          const Col = slotMap[key];
+          return Col && <Col key={key} />;
+        })}
       </div>
     );
   },

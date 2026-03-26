@@ -1,151 +1,189 @@
-export const spacingValues = ["none", "xs", "sm", "md", "lg", "xl", "2xl"] as const;
-export const colorValues = [
-  "background",
-  "foreground",
-  "primary",
-  "primary-foreground",
-  "muted",
-  "muted-foreground",
-  "accent",
-  "accent-foreground",
-  "destructive",
-  "sga-red",
-] as const;
-export const radiusValues = ["none", "sm", "md", "lg", "xl", "full"] as const;
-export const shadowValues = ["none", "sm", "md", "lg", "xl"] as const;
-export const fontSizeValues = [
-  "xs",
-  "sm",
-  "base",
-  "lg",
-  "xl",
-  "2xl",
-  "3xl",
-  "4xl",
-] as const;
-export const fontWeightValues = [
-  "normal",
-  "medium",
-  "semibold",
-  "bold",
-] as const;
-export const alignValues = ["left", "center", "right"] as const;
+export type TokenOption<K extends string = string> = {
+  value: K;
+  label: string;
+};
 
-export type Spacing = (typeof spacingValues)[number];
-export type Color = (typeof colorValues)[number];
-export type Radius = (typeof radiusValues)[number];
-export type Shadow = (typeof shadowValues)[number];
-export type FontSize = (typeof fontSizeValues)[number];
-export type FontWeight = (typeof fontWeightValues)[number];
-export type Align = (typeof alignValues)[number];
+export type Token<K extends string = string> = {
+  options: TokenOption<K>[];
+  defaultValue: K;
+};
 
-// Shared cva variant maps — single source of truth for token-to-class mappings.
+export type ClassToken<K extends string = string> = Token<K> & {
+  classes: Record<K, string>;
+};
 
-export const paddingVariants = {
-  none: "p-0",
-  xs: "p-1",
-  sm: "p-2",
-  md: "p-4",
-  lg: "p-6",
-  xl: "p-8",
-  "2xl": "p-12",
-} as const;
+export function defineToken<const K extends string>(
+  spec: Record<K, string>,
+  defaultValue?: NoInfer<K>,
+): Token<K>;
 
-export const gapVariants = {
-  none: "gap-0",
-  xs: "gap-1",
-  sm: "gap-2",
-  md: "gap-4",
-  lg: "gap-6",
-  xl: "gap-8",
-  "2xl": "gap-12",
-} as const;
+export function defineToken<const K extends string>(
+  spec: Record<K, { label: string; classes: string }>,
+  defaultValue?: NoInfer<K>,
+): ClassToken<K>;
 
-export const bgColorVariants = {
-  background: "bg-background",
-  foreground: "bg-foreground",
-  primary: "bg-primary",
-  "primary-foreground": "bg-primary-foreground",
-  muted: "bg-muted",
-  "muted-foreground": "bg-muted-foreground",
-  accent: "bg-accent",
-  "accent-foreground": "bg-accent-foreground",
-  destructive: "bg-destructive",
-  "sga-red": "bg-sga-red",
-} as const;
-
-export const textColorVariants = {
-  background: "text-background",
-  foreground: "text-foreground",
-  primary: "text-primary",
-  "primary-foreground": "text-primary-foreground",
-  muted: "text-muted",
-  "muted-foreground": "text-muted-foreground",
-  accent: "text-accent",
-  "accent-foreground": "text-accent-foreground",
-  destructive: "text-destructive",
-  "sga-red": "text-sga-red",
-} as const;
-
-export const radiusVariants = {
-  none: "rounded-none",
-  sm: "rounded-sm",
-  md: "rounded-md",
-  lg: "rounded-lg",
-  xl: "rounded-xl",
-  full: "rounded-full",
-} as const;
-
-export const shadowVariants = {
-  none: "shadow-none",
-  sm: "shadow-sm",
-  md: "shadow-md",
-  lg: "shadow-lg",
-  xl: "shadow-xl",
-} as const;
-
-export const alignVariants = {
-  left: "items-start",
-  center: "items-center",
-  right: "items-end",
-} as const;
-
-export function selectFrom<const T extends readonly string[]>(
-  values: T,
-  label: string,
+export function defineToken<const K extends string>(
+  spec: Record<K, string | { label: string; classes: string }>,
+  defaultValue?: NoInfer<K>,
 ) {
-  return {
-    type: "select" as const,
-    label,
-    options: values.map((v) => ({
-      label: v.charAt(0).toUpperCase() + v.slice(1),
-      value: v,
-    })),
-  };
+  const keys = Object.keys(spec) as K[];
+  const first = spec[keys[0]];
+
+  // Plain string values → key is both value and label
+  if (typeof first === "string") {
+    const options = keys.map((k) => ({
+      value: k,
+      label: spec[k] as string,
+    })) as TokenOption<K>[];
+    return { options, defaultValue: defaultValue ?? keys[0] };
+  }
+
+  // Class values → extract labels and classes
+  const options = keys.map((k) => ({
+    value: k,
+    label: (spec[k] as { label: string }).label,
+  })) as TokenOption<K>[];
+
+  const classes = Object.fromEntries(
+    keys.map((k) => [k, (spec[k] as { classes: string }).classes]),
+  ) as Record<K, string>;
+
+  return { options, defaultValue: defaultValue ?? keys[0], classes };
 }
 
-export function radioFrom<const T extends readonly string[]>(
-  values: T,
-  label: string,
-) {
-  return {
-    type: "radio" as const,
-    label,
-    options: values.map((v) => ({
-      label: v.charAt(0).toUpperCase() + v.slice(1),
-      value: v,
-    })),
-  };
-}
+export type TokenValue<T> = T extends Token<infer K> ? K : never;
 
-export const fields = {
-  padding: (label = "Padding") => selectFrom(spacingValues, label),
-  gap: (label = "Gap") => selectFrom(spacingValues, label),
-  bgColor: (label = "Background") => selectFrom(colorValues, label),
-  textColor: (label = "Text color") => selectFrom(colorValues, label),
-  radius: (label = "Corners") => selectFrom(radiusValues, label),
-  shadow: (label = "Shadow") => selectFrom(shadowValues, label),
-  fontSize: (label = "Size") => selectFrom(fontSizeValues, label),
-  fontWeight: (label = "Weight") => selectFrom(fontWeightValues, label),
-  align: (label = "Alignment") => radioFrom(alignValues, label),
-} as const;
+export const padding = defineToken({
+  none:  { label: "None",   classes: "p-0" },
+  xs:    { label: "XS",     classes: "p-1" },
+  sm:    { label: "Small",  classes: "p-2" },
+  md:    { label: "Medium", classes: "p-4" },
+  lg:    { label: "Large",  classes: "p-6" },
+  xl:    { label: "XL",     classes: "p-8" },
+  "2xl": { label: "2XL",    classes: "p-12" },
+});
+
+export const gap = defineToken({
+  none:  { label: "None",   classes: "gap-0" },
+  xs:    { label: "XS",     classes: "gap-1" },
+  sm:    { label: "Small",  classes: "gap-2" },
+  md:    { label: "Medium", classes: "gap-4" },
+  lg:    { label: "Large",  classes: "gap-6" },
+  xl:    { label: "XL",     classes: "gap-8" },
+  "2xl": { label: "2XL",    classes: "gap-12" },
+});
+
+export type Spacing = TokenValue<typeof padding>;
+
+export const bgColor = defineToken({
+  background:           { label: "Background",         classes: "bg-background" },
+  foreground:           { label: "Foreground",          classes: "bg-foreground" },
+  primary:              { label: "Primary",             classes: "bg-primary" },
+  "primary-foreground": { label: "Primary Foreground",  classes: "bg-primary-foreground" },
+  muted:                { label: "Muted",               classes: "bg-muted" },
+  "muted-foreground":   { label: "Muted Foreground",    classes: "bg-muted-foreground" },
+  accent:               { label: "Accent",              classes: "bg-accent" },
+  "accent-foreground":  { label: "Accent Foreground",   classes: "bg-accent-foreground" },
+  destructive:          { label: "Destructive",         classes: "bg-destructive" },
+  "sga-red":            { label: "SGA Red",             classes: "bg-sga-red" },
+});
+
+export const textColor = defineToken({
+  background:           { label: "Background",         classes: "text-background" },
+  foreground:           { label: "Foreground",          classes: "text-foreground" },
+  primary:              { label: "Primary",             classes: "text-primary" },
+  "primary-foreground": { label: "Primary Foreground",  classes: "text-primary-foreground" },
+  muted:                { label: "Muted",               classes: "text-muted" },
+  "muted-foreground":   { label: "Muted Foreground",    classes: "text-muted-foreground" },
+  accent:               { label: "Accent",              classes: "text-accent" },
+  "accent-foreground":  { label: "Accent Foreground",   classes: "text-accent-foreground" },
+  destructive:          { label: "Destructive",         classes: "text-destructive" },
+  "sga-red":            { label: "SGA Red",             classes: "text-sga-red" },
+});
+
+export type Color = TokenValue<typeof bgColor>;
+
+export const radius = defineToken({
+  none: { label: "Square",      classes: "rounded-none" },
+  sm:   { label: "Soft",        classes: "rounded-sm" },
+  md:   { label: "Rounded",     classes: "rounded-md" },
+  lg:   { label: "Large",       classes: "rounded-lg" },
+  xl:   { label: "Extra Large", classes: "rounded-xl" },
+  full: { label: "Pill",        classes: "rounded-full" },
+});
+
+export type Radius = TokenValue<typeof radius>;
+
+export const shadow = defineToken({
+  none: { label: "None",     classes: "shadow-none" },
+  sm:   { label: "Soft",     classes: "shadow-sm" },
+  md:   { label: "Medium",   classes: "shadow-md" },
+  lg:   { label: "Large",    classes: "shadow-lg" },
+  xl:   { label: "Dramatic", classes: "shadow-xl" },
+});
+
+export type Shadow = TokenValue<typeof shadow>;
+
+export const textAlign = defineToken({
+  left:   { label: "Left",   classes: "text-left" },
+  center: { label: "Center", classes: "text-center" },
+  right:  { label: "Right",  classes: "text-right" },
+});
+
+export type TextAlign = TokenValue<typeof textAlign>;
+
+export const crossAxisAlign = defineToken({
+  start:  { label: "Start",  classes: "items-start" },
+  center: { label: "Center", classes: "items-center" },
+  end:    { label: "End",    classes: "items-end" },
+});
+
+export type CrossAxisAlign = TokenValue<typeof crossAxisAlign>;
+
+export const columnCount = defineToken({
+  "1": { label: "1", classes: "grid-cols-1" },
+  "2": { label: "2", classes: "grid-cols-2" },
+  "3": { label: "3", classes: "grid-cols-3" },
+  "4": { label: "4", classes: "grid-cols-4" },
+  "5": { label: "5", classes: "grid-cols-5" },
+  "6": { label: "6", classes: "grid-cols-6" },
+});
+
+export type ColumnCount = TokenValue<typeof columnCount>;
+
+export const layout = defineToken({
+  stack: { label: "Stack", classes: "flex flex-col" },
+  row:   { label: "Row",   classes: "flex flex-row flex-wrap" },
+});
+export type Layout = TokenValue<typeof layout>;
+
+export const justify = defineToken({
+  start:   { label: "Start",   classes: "justify-start" },
+  center:  { label: "Center",  classes: "justify-center" },
+  end:     { label: "End",     classes: "justify-end" },
+  between: { label: "Between", classes: "justify-between" },
+});
+export type Justify = TokenValue<typeof justify>;
+
+export const width = defineToken({
+  full:        { label: "Full",     classes: "w-full" },
+  prose:       { label: "Prose",    classes: "w-full max-w-prose" },
+  "screen-sm": { label: "Small",   classes: "w-full max-w-screen-sm" },
+  "screen-md": { label: "Medium",  classes: "w-full max-w-screen-md" },
+  "screen-lg": { label: "Large",   classes: "w-full max-w-screen-lg" },
+  "screen-xl": { label: "X-Large", classes: "w-full max-w-screen-xl" },
+});
+export type Width = TokenValue<typeof width>;
+
+// Fixed row counts use auto-rows-[0] + overflow-hidden to collapse excess items,
+// so a grid with more children than rows hides the overflow rather than expanding.
+export const gridRows = defineToken({
+  auto: { label: "Auto", classes: "grid-rows-none auto-rows-auto overflow-visible" },
+  "1":  { label: "1",    classes: "grid-rows-1 auto-rows-[0] overflow-hidden" },
+  "2":  { label: "2",    classes: "grid-rows-2 auto-rows-[0] overflow-hidden" },
+  "3":  { label: "3",    classes: "grid-rows-3 auto-rows-[0] overflow-hidden" },
+  "4":  { label: "4",    classes: "grid-rows-4 auto-rows-[0] overflow-hidden" },
+  "5":  { label: "5",    classes: "grid-rows-5 auto-rows-[0] overflow-hidden" },
+  "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
+});
+export type GridRows = TokenValue<typeof gridRows>;
