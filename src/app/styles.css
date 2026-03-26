@@ -19,10 +19,11 @@
   --color-solid-black: #000000;
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
   --color-sga-red-alt: #dc2626;
+  --font-display: var(--font-display), sans-serif;
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -79,6 +80,18 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.prose h1 {
+  @apply font-display text-5xl;
+}
+
+.prose h2 {
+  @apply font-display text-4xl text-sga-red;
+}
+
+.prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-display;
 }
 
 .prose ul {
