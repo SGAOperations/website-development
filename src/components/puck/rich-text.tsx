@@ -5,9 +5,11 @@ import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import {
   textColor,
   textAlign,
+  lineSpacing,
   textColumns,
   columnGap,
   type Color,
+  type LineSpacing,
   type TextAlign,
   type TextColumnCount,
   type Spacing,
@@ -18,6 +20,7 @@ type RichTextProps = {
   content: RichText;
   textColor: Color;
   align: TextAlign;
+  lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
   columnGap: ResponsiveValue<Spacing>;
 };
@@ -29,6 +32,7 @@ const props = defineProps({
   ),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
+  lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.token(textColumns, { label: "Columns", default: "1" }),
   columnGap: responsive.token(columnGap, { label: "Column gap", default: "md" }),
 });
@@ -36,12 +40,13 @@ const props = defineProps({
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
   ...props,
-  render: ({ content, textColor: tc, align, columns, columnGap: cg }) => {
+  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg }) => {
     return (
       <div className={cn(
         "prose max-w-none",
         textColor.classes[tc],
         textAlign.classes[align],
+        lineSpacing.classes[ls],
         resolveResponsive(columns, textColumns.classes),
         resolveResponsive(cg, columnGap.classes),
       )}>

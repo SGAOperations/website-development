@@ -180,6 +180,17 @@ export const textAlign = defineToken({
 
 export type TextAlign = TokenValue<typeof textAlign>;
 
+export const lineSpacing = defineToken({
+  default: { label: "Default", classes: "" },
+  tight:   { label: "Tight",   classes: "rich-text-line-spacing leading-tight" },
+  snug:    { label: "Snug",    classes: "rich-text-line-spacing leading-snug" },
+  normal:  { label: "Normal",  classes: "rich-text-line-spacing leading-normal" },
+  relaxed: { label: "Relaxed", classes: "rich-text-line-spacing leading-relaxed" },
+  loose:   { label: "Loose",   classes: "rich-text-line-spacing leading-loose" },
+});
+
+export type LineSpacing = TokenValue<typeof lineSpacing>;
+
 export const crossAxisAlign = defineToken({
   start:  { label: "Start",  classes: "items-start" },
   center: { label: "Center", classes: "items-center" },

@@ -106,3 +106,7 @@ body {
 .prose p:empty {
   @apply block min-h-lh;
 }
+
+.rich-text-line-spacing .rich-text * {
+  line-height: inherit;
+}
