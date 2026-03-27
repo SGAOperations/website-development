@@ -11,7 +11,7 @@ const inter = Inter({
 const bebasNeue = Bebas_Neue({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-bebas-neue",
 });
 
 export default function RootLayout({

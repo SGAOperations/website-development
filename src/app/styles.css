@@ -19,7 +19,7 @@
   --color-solid-black: #000000;
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
   --color-sga-red-alt: #dc2626;
-  --font-display: var(--font-display), sans-serif;
+  --font-display: var(--font-bebas-neue), sans-serif;
 }
 
 :root {
