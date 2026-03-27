@@ -21,7 +21,6 @@ const props = defineProps({
 export const Grid: ComponentConfig<GridProps> = {
   label: "Grid",
   ...props,
-  defaultProps: props.defaultProps,
   render: ({ content: Content, columns, rows: r, gap }) => {
     if (!Content) {
       return (

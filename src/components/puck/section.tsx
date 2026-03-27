@@ -40,7 +40,6 @@ const props = defineProps({
 export const Section: ComponentConfig<SectionProps> = {
   label: "Section",
   ...props,
-  defaultProps: props.defaultProps,
   render: ({
     content: Content,
     anchorId,

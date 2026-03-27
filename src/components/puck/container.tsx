@@ -43,7 +43,6 @@ const props = defineProps({
 export const Container: ComponentConfig<ContainerProps> = {
   label: "Container",
   ...props,
-  defaultProps: props.defaultProps,
   render: ({ content: Content, tag: t, ...style }) => {
     const Tag = t as ElementType;
 
