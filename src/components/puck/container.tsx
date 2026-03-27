@@ -1,4 +1,4 @@
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ElementType } from "react";
 import {
   getContainerSlotClassName,
@@ -21,12 +21,12 @@ const tag = defineToken({
 type Tag = TokenValue<typeof tag>;
 
 type ContainerProps = ContainerStyle & {
-  content: any;
+  content: Slot;
   tag: Tag;
 };
 
 const props = defineProps({
-  content: field.raw({ type: "slot" } as const),
+  content: field.slot(),
   layout: field.radio(layout, { label: "Layout" }),
   padding: responsive.token(padding, { label: "Padding", default: "md" }),
   gap: responsive.token(gap, { label: "Gap", default: "md" }),

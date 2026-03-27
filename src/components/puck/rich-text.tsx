@@ -24,8 +24,8 @@ type RichTextProps = {
 
 const props = defineProps({
   content: field.raw(
-    { type: "richtext", contentEditable: true } as const,
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." as unknown as RichText,
+    { type: "richtext", contentEditable: true },
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   ),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),

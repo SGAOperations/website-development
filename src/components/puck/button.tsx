@@ -28,8 +28,8 @@ type PuckButtonProps = {
 };
 
 const props = defineProps({
-  label: field.raw({ type: "text", label: "Label" } as const, "Click me"),
-  href: field.raw({ type: "text", label: "Link URL" } as const, ""),
+  label: field.raw({ type: "text", label: "Label" }, "Click me"),
+  href: field.raw({ type: "text", label: "Link URL" }, ""),
   variant: field.select(variant, { label: "Variant" }),
   size: field.select(size, { label: "Size" }),
 });

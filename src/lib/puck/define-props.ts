@@ -1,4 +1,4 @@
-import type { CustomField } from "@puckeditor/core";
+import type { CustomField, Slot } from "@puckeditor/core";
 import type { Token, TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { responsiveField } from "@/components/puck/fields/responsive-field";
@@ -35,6 +35,13 @@ export const responsive = {
 type FieldDescriptor = { type: "select" | "radio"; label: string; options: TokenOption[] };
 
 export const field = {
+  slot(descriptor?: { allow?: string[]; disallow?: string[] }): PropSpec<{ type: "slot" } & typeof descriptor, Slot> {
+    return {
+      field: { type: "slot" as const, ...descriptor },
+      defaultValue: [] as Slot,
+    };
+  },
+
   select<K extends string>(
     token: Token<K>,
     opts: { label: string; default?: NoInfer<K> },
@@ -58,12 +65,11 @@ export const field = {
   raw: fieldRaw,
 };
 
-function fieldRaw<const D>(descriptor: D): PropSpec<D, undefined>;
 function fieldRaw<const D, T>(descriptor: D, defaultValue: T): PropSpec<D, T>;
-function fieldRaw<const D, T>(descriptor: D, defaultValue?: T): PropSpec<D, T | undefined> {
+function fieldRaw<const D, T>(descriptor: D, defaultValue: T): PropSpec<D, T> {
   return {
     field: descriptor,
-    defaultValue: defaultValue as T | undefined,
+    defaultValue,
   };
 }
 

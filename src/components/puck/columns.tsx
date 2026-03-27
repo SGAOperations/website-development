@@ -1,4 +1,4 @@
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, Slot, SlotComponent } from "@puckeditor/core";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
@@ -7,7 +7,7 @@ import { getGridClassName, getMaxCols } from "@/lib/puck/layout";
 type SlotKey = `column${ColumnCount}`;
 
 type ColumnsProps = {
-  [K in SlotKey]: any;
+  [K in SlotKey]: Slot;
 } & {
   columns: ResponsiveValue<ColumnCount>;
   gap: ResponsiveValue<Spacing>;
@@ -22,6 +22,10 @@ const columnSlotFields = Object.fromEntries(
   columnSlotKeys.map((key) => [key, slotField]),
 ) as Record<SlotKey, typeof slotField>;
 
+const columnSlotDefaults = Object.fromEntries(
+  columnSlotKeys.map((key) => [key, [] as Slot]),
+) as Record<SlotKey, Slot>;
+
 const props = defineProps({
   columns: responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
   gap: responsive.token(gap, { label: "Gap", default: "md" }),
@@ -30,7 +34,7 @@ const props = defineProps({
 export const Columns: ComponentConfig<ColumnsProps> = {
   label: "Columns",
   fields: { ...columnSlotFields, ...props.fields },
-  defaultProps: props.defaultProps as ColumnsProps,
+  defaultProps: { ...columnSlotDefaults, ...props.defaultProps },
   // Hide column slot fields that exceed the selected column count,
   // so the editor sidebar only shows slots that are actually rendered.
   resolveFields: (data) => {
@@ -46,7 +50,7 @@ export const Columns: ComponentConfig<ColumnsProps> = {
   },
   render: ({ columns, gap, ...slots }) => {
     const maxCols = getMaxCols(columns);
-    const slotMap = slots as Record<SlotKey, any>;
+    const slotMap = slots as Record<SlotKey, SlotComponent>;
 
     return (
       <div className={getGridClassName({ columns, rows: { base: "auto" }, gap })}>

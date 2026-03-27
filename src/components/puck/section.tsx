@@ -1,4 +1,4 @@
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ import {
 } from "@/lib/puck/tokens";
 
 type SectionProps = {
-  content: any;
+  content: Slot;
   anchorId: string;
   paddingX: ResponsiveValue<Spacing>;
   paddingY: ResponsiveValue<Spacing>;
@@ -27,8 +27,8 @@ type SectionProps = {
 };
 
 const props = defineProps({
-  content: field.raw({ type: "slot" } as const),
-  anchorId: field.raw({ type: "text", label: "Anchor ID" } as const, ""),
+  content: field.slot(),
+  anchorId: field.raw({ type: "text", label: "Anchor ID" }, ""),
   paddingX: responsive.token(paddingX, { label: "Horizontal padding", default: "md" }),
   paddingY: responsive.token(paddingY, { label: "Vertical padding", default: "lg" }),
   gap: responsive.token(gapToken, { label: "Gap", default: "md" }),

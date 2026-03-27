@@ -29,8 +29,8 @@ type MediaProps = {
 };
 
 const props = defineProps({
-  url: field.raw({ type: "text", label: "URL" } as const, ""),
-  alt: field.raw({ type: "text", label: "Alt text" } as const, ""),
+  url: field.raw({ type: "text", label: "URL" }, ""),
+  alt: field.raw({ type: "text", label: "Alt text" }, ""),
   objectFit: field.select(objectFit, { label: "Object fit" }),
   aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
   radius: field.select(radius, { label: "Corners" }),

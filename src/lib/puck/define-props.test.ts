@@ -44,7 +44,7 @@ describe("prop builders", () => {
 describe("defineProps", () => {
   it("splits mixed prop specs into fields and defaultProps", () => {
     const props = defineProps({
-      content: field.raw({ type: "slot" }),
+      content: field.slot(),
       size: field.select(size, { label: "Size", default: "md" }),
       gap: responsive.token(size, {
         label: "Gap",
@@ -60,7 +60,7 @@ describe("defineProps", () => {
       color: { type: "radio", label: "Color", options: colorToken.options },
     });
     expect(props.defaultProps).toEqual({
-      content: undefined,
+      content: [],
       size: "md",
       gap: { base: "sm", md: "lg" },
       color: "red",
