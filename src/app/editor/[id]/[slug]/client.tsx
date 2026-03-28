@@ -45,13 +45,12 @@ export function Client({
 }: {
   documentId: number;
   documentName: string;
-  data: Partial<Data>;
+  data: Data;
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
   isArchived: boolean;
 }) {
-  const [currentData, setCurrentData] = useState<Data>(data as Data);
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
@@ -67,7 +66,7 @@ export function Client({
     >
       <Puck
         config={config}
-        data={currentData}
+        data={data}
         ui={{plugin: {current: "version-plugin"}}}
         plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
         permissions={isArchived
@@ -77,9 +76,6 @@ export function Client({
         overrides={{
           actionBar: ActionBarOverride,
           headerActions: SaveButton
-        }}
-        onChange={(data) => {
-          setCurrentData(data);
         }}
       />
     </DocumentContext.Provider>
