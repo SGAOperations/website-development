@@ -1,9 +1,8 @@
 import "@puckeditor/core/puck.css";
-import type { Data } from "@puckeditor/core";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Client } from "./client";
-import { getDocumentById } from "../../../../lib/documents/queries";
+import { getDocumentById, getVersionContent } from "../../../../lib/documents/queries";
 import { getEditorSlug, getEditorUrl } from "../../../../lib/editor-url";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
 
@@ -27,7 +26,14 @@ export default async function EditorPage({
     redirect(getEditorUrl(documentId, document.name, versionId));
   }
 
-  const resolved = resolveVersion(versionId, document.versions);
+  const targetVersionId =
+    versionId !== undefined && !isNaN(versionId)
+      ? document.versions.find((v) => v.id === versionId)?.id
+      : document.versions[0]?.id;
+
+  const data = targetVersionId
+    ? (await getVersionContent(targetVersionId)) ?? createEmptyPuckData()
+    : createEmptyPuckData();
 
   const versions = document.versions.map((v) => ({
     id: v.id,
@@ -37,32 +43,14 @@ export default async function EditorPage({
 
   return (
     <Client
-      key={`${documentId}-${resolved.versionId || "no-version"}`}
+      key={`${documentId}-${targetVersionId || "no-version"}`}
       documentId={documentId}
       documentName={document.name}
-      data={resolved.data}
-      versionId={resolved.versionId}
+      data={data}
+      versionId={targetVersionId}
       publishedVersionId={document.publishedVersionId || undefined}
       versions={versions}
       isArchived={document.archivedAt !== null}
     />
   );
-}
-
-function resolveVersion(
-  versionId: number | undefined,
-  versions: { id: number; documentId: number; content: unknown }[],
-): { data: Data; versionId?: number } {
-  if (versionId !== undefined && !isNaN(versionId)) {
-    const match = versions.find((v) => v.id === versionId);
-    if (match) {
-      return { data: match.content as Data, versionId: match.id };
-    }
-  }
-
-  if (versions.length > 0) {
-    return { data: versions[0].content as Data, versionId: versions[0].id };
-  }
-
-  return { data: createEmptyPuckData() };
 }

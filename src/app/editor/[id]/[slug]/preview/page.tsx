@@ -1,20 +1,20 @@
 import { notFound } from "next/navigation";
-import EditorPage from "./EditorPage";
-import { parseDocumentId, generateDocumentMetadata } from "./params";
+import PreviewPage from "../PreviewPage";
+import { parseDocumentId, generateDocumentMetadata } from "../params";
 
 interface PageProps {
   params: Promise<{ id: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  return generateDocumentMetadata((await params).id, "Edit");
+  return generateDocumentMetadata((await params).id, "Preview");
 }
 
 export default async function Page({ params }: PageProps) {
   const { id, slug } = await params;
   const documentId = parseDocumentId(id);
   if (!documentId) notFound();
-  return <EditorPage documentId={documentId} slug={slug} />;
+  return <PreviewPage documentId={documentId} slug={slug} />;
 }
 
 export const dynamic = "force-dynamic";
