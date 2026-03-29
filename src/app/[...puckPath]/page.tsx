@@ -11,8 +11,6 @@ export async function generateMetadata({
   const { puckPath = [] } = await params;
   const path = `/${puckPath.join("/")}`;
 
-  console.log("Generating metadata for path:", path);
-
   return {
     title: (await getDocumentByPath(path))?.root.props?.title,
   };

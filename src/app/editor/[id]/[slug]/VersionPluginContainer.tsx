@@ -43,6 +43,7 @@ export function VersionPluginContainer() {
         publishedVersionId={publishedVersionId}
         onLoadVersion={handleLoadVersion}
         onPublishVersion={handlePublishVersion}
+        previewBaseUrl={getEditorUrl(documentId, documentName)}
         isPublishing={isPublishing}
         isPublishDisabled={isArchived}
       />
