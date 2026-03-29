@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { PuckRender } from "@/components/puck/puck-render.server";
+import { Client } from "../../../[...puckPath]/client";
 import { loadDocument } from "../../../../lib/documents/editor-route";
 import { getVersionContent } from "../../../../lib/documents/queries";
 import { resolvePreviewVersionId } from "../../../../lib/documents/version-selection";
+import { getMediaFilesByIds } from "../../../../lib/media/queries";
+import { collectMediaIds } from "../../../../lib/puck/media";
 
 export default async function PreviewPage({
   documentId,
@@ -29,5 +31,7 @@ export default async function PreviewPage({
   const data = await getVersionContent(targetVersionId);
   if (!data) notFound();
 
-  return <PuckRender data={data} />;
+  const media = await getMediaFilesByIds(collectMediaIds(data));
+
+  return <Client data={data} media={media} />;
 }

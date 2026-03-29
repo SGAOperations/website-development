@@ -1,0 +1,41 @@
+import { Client } from "./client";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { getDocumentByPath } from "../../lib/documents/queries";
+import { getMediaFilesByIds } from "../../lib/media/queries";
+import { collectMediaIds } from "../../lib/puck/media";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ puckPath: string[] }>;
+}): Promise<Metadata> {
+  const { puckPath = [] } = await params;
+  const path = `/${puckPath.join("/")}`;
+
+  return {
+    title: (await getDocumentByPath(path))?.root.props?.title,
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ puckPath: string[] }>;
+}) {
+  const { puckPath = [] } = await params;
+  const path = `/${puckPath.join("/")}`;
+  const data = await getDocumentByPath(path);
+
+  if (!data) {
+    return notFound();
+  }
+
+  const media = await getMediaFilesByIds(collectMediaIds(data));
+
+  return <Client data={data} media={media} />;
+}
+
+// Force Next.js to produce static pages: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic
+// Delete this if you need dynamic rendering, such as access to headers or cookies
+export const dynamic = "force-static";

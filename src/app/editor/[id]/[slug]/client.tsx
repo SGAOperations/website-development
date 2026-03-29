@@ -8,6 +8,7 @@ import { VersionPlugin } from "./VersionPlugin";
 import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
+import { MediaProvider, type MediaWithUrl } from "@/components/puck/media-context";
 import type { Version } from "../../../../lib/types";
 
 type DocumentContextType = {
@@ -38,6 +39,7 @@ export function Client({
   documentId,
   documentName,
   data,
+  media,
   versionId: initialVersionId,
   publishedVersionId: initialPublishedVersionId,
   versions: initialVersions,
@@ -46,6 +48,7 @@ export function Client({
   documentId: number;
   documentName: string;
   data: Data;
+  media: MediaWithUrl[];
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
@@ -61,6 +64,7 @@ export function Client({
   }, []);
 
   return (
+    <MediaProvider media={media}>
     <DocumentContext.Provider
       value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
     >
@@ -79,5 +83,6 @@ export function Client({
         }}
       />
     </DocumentContext.Provider>
+    </MediaProvider>
   );
 }
