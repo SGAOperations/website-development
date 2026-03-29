@@ -5,6 +5,7 @@ import { Client } from "./client";
 import { getDocumentById, getVersionContent } from "../../../../lib/documents/queries";
 import { getEditorSlug, getEditorUrl } from "../../../../lib/editor-url";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
+import { resolveEditorVersionId } from "./version-selection";
 
 export default async function EditorPage({
   documentId,
@@ -26,10 +27,11 @@ export default async function EditorPage({
     redirect(getEditorUrl(documentId, document.name, versionId));
   }
 
-  const targetVersionId =
-    versionId !== undefined && !isNaN(versionId)
-      ? document.versions.find((v) => v.id === versionId)?.id
-      : document.versions[0]?.id;
+  const targetVersionId = resolveEditorVersionId(document.versions, versionId);
+
+  if (versionId !== undefined && targetVersionId === undefined) {
+    notFound();
+  }
 
   const data = targetVersionId
     ? (await getVersionContent(targetVersionId)) ?? createEmptyPuckData()

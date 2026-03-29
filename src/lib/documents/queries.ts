@@ -59,21 +59,6 @@ export const getDocumentName = async (id: number) => {
   return doc?.name;
 };
 
-export const getDocumentPreviewMeta = async (id: number) => {
-  return await prisma.document.findUnique({
-    where: { id },
-    select: {
-      name: true,
-      publishedVersionId: true,
-      versions: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-        select: { id: true },
-      },
-    },
-  });
-};
-
 export const getVersionContent = async (versionId: number) => {
   const version = await prisma.version.findUnique({
     where: { id: versionId },

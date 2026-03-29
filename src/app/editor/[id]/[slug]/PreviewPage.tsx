@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Client } from "../../../[...puckPath]/client";
-import {
-  getDocumentPreviewMeta,
-  getVersionContent,
-} from "../../../../lib/documents/queries";
+import { getDocumentById, getVersionContent } from "../../../../lib/documents/queries";
 import { getEditorSlug, getEditorUrl } from "../../../../lib/editor-url";
+import { resolvePreviewVersionId } from "./version-selection";
 
 export default async function PreviewPage({
   documentId,
@@ -16,7 +14,7 @@ export default async function PreviewPage({
   slug: string;
   versionId?: number;
 }) {
-  const document = await getDocumentPreviewMeta(documentId);
+  const document = await getDocumentById(documentId);
 
   if (!document) {
     notFound();
@@ -27,8 +25,11 @@ export default async function PreviewPage({
     redirect(`${getEditorUrl(documentId, document.name, versionId)}/preview`);
   }
 
-  const targetVersionId =
-    versionId ?? document.publishedVersionId ?? document.versions[0]?.id;
+  const targetVersionId = resolvePreviewVersionId({
+    versions: document.versions,
+    publishedVersionId: document.publishedVersionId,
+    requestedVersionId: versionId,
+  });
 
   if (!targetVersionId) {
     notFound();
