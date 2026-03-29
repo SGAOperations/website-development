@@ -34,6 +34,13 @@ export function VersionPluginContainer() {
     router.replace(getEditorUrl(documentId, documentName, versionIdToLoad));
   };
 
+  const handlePreviewVersion = (versionIdToPreview: number) => {
+    window.open(
+      `${getEditorUrl(documentId, documentName, versionIdToPreview)}/preview`,
+      "_blank",
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 p-4 text-sm">
       <VersionListPanel
@@ -43,6 +50,7 @@ export function VersionPluginContainer() {
         publishedVersionId={publishedVersionId}
         onLoadVersion={handleLoadVersion}
         onPublishVersion={handlePublishVersion}
+        onPreviewVersion={handlePreviewVersion}
         isPublishing={isPublishing}
         isPublishDisabled={isArchived}
       />

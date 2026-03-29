@@ -1,3 +1,4 @@
+import { Eye } from "lucide-react";
 import type { Version } from "../../../../lib/types";
 
 export interface VersionListPanelProps {
@@ -7,6 +8,7 @@ export interface VersionListPanelProps {
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
+  onPreviewVersion: (versionId: number) => void;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
 }
@@ -25,6 +27,7 @@ export function VersionListPanel({
   publishedVersionId,
   onLoadVersion,
   onPublishVersion,
+  onPreviewVersion,
   isPublishing,
   isPublishDisabled,
 }: VersionListPanelProps) {
@@ -71,22 +74,34 @@ export function VersionListPanel({
                     </div>
                   </div>
 
-                  {isPublished ? (
-                    <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs shrink-0">
-                      Published
-                    </span>
-                  ) : (
+                  <div className="flex items-center gap-1 shrink-0">
+                    {isPublished ? (
+                      <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">
+                        Published
+                      </span>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onPublishVersion(version.id);
+                        }}
+                        disabled={isPublishing || isPublishDisabled}
+                        className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      >
+                        Publish
+                      </button>
+                    )}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onPublishVersion(version.id);
+                        onPreviewVersion(version.id);
                       }}
-                      disabled={isPublishing || isPublishDisabled}
-                      className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shrink-0"
+                      className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 transition"
+                      title="Preview"
                     >
-                      Publish
+                      <Eye size={14} />
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             );
