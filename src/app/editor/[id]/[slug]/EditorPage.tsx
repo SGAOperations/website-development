@@ -1,11 +1,10 @@
 import "@puckeditor/core/puck.css";
-import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Client } from "./client";
-import { getDocumentById, getVersionContent } from "../../../../lib/documents/queries";
-import { getEditorSlug, getEditorUrl } from "../../../../lib/editor-url";
+import { getVersionContent } from "../../../../lib/documents/queries";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
 import { resolveEditorVersionId } from "./version-selection";
+import { loadDocument } from "./params";
 
 export default async function EditorPage({
   documentId,
@@ -16,16 +15,7 @@ export default async function EditorPage({
   slug: string;
   versionId?: number;
 }) {
-  const document = await getDocumentById(documentId);
-
-  if (!document) {
-    notFound();
-  }
-
-  const expectedSlug = getEditorSlug(document.name);
-  if (slug !== expectedSlug) {
-    redirect(getEditorUrl(documentId, document.name, versionId));
-  }
+  const document = await loadDocument(documentId, slug, { versionId });
 
   const targetVersionId = resolveEditorVersionId(document.versions, versionId);
 
