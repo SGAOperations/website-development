@@ -1,23 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { hasOverride, map, resolveAt, setAt } from "./responsive";
+import { setAt } from "./responsive";
 
 describe("responsive helpers", () => {
-  it("resolves breakpoints by cascading from the nearest smaller value", () => {
-    expect(resolveAt({ base: "sm" }, "lg")).toBe("sm");
-    expect(resolveAt({ base: "sm", lg: "xl" }, "md")).toBe("sm");
-    expect(resolveAt({ base: "sm", md: "lg" }, "lg")).toBe("lg");
-    expect(resolveAt({ base: "sm", md: "lg", lg: "xl" }, "lg")).toBe("xl");
-  });
-
-  it("treats non-base and falsy values as defined overrides", () => {
-    expect(hasOverride({ base: "md" })).toBe(false);
-    expect(hasOverride({ base: false, md: false })).toBe(true);
-    expect(map({ base: 0, lg: 3 }, (value, bp) => `${bp}:${value}`)).toEqual({
-      base: "base:0",
-      lg: "lg:3",
-    });
-  });
-
   it("adds and removes overrides without mutating the original value", () => {
     const value = { base: "sm", md: "lg" };
     const withLg = setAt(value, "lg", "xl");

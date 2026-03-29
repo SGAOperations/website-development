@@ -8,53 +8,6 @@ export type ResponsiveValue<T> = {
   base: T;
 } & Partial<Record<ResponsiveOverrideBreakpoint, T>>;
 
-// Returns the effective value at a breakpoint, falling back to the nearest smaller breakpoint.
-export function resolveAt<T>(
-  value: ResponsiveValue<T>,
-  breakpoint: ResponsiveBreakpoint,
-): T {
-  const start = responsiveBreakpoints.indexOf(breakpoint);
-
-  for (let index = start; index >= 0; index -= 1) {
-    const breakpointValue = value[responsiveBreakpoints[index]];
-
-    if (breakpointValue !== undefined) {
-      return breakpointValue;
-    }
-  }
-
-  return value.base;
-}
-
-export function hasOverride<T>(value: ResponsiveValue<T>): boolean {
-  return responsiveBreakpoints.some(
-    (bp) => bp !== "base" && value[bp] !== undefined,
-  );
-}
-
-export function map<T, U>(
-  value: ResponsiveValue<T>,
-  fn: (value: T, breakpoint: ResponsiveBreakpoint) => U,
-): ResponsiveValue<U> {
-  const mapped: ResponsiveValue<U> = {
-    base: fn(value.base, "base"),
-  };
-
-  for (const bp of responsiveBreakpoints) {
-    if (bp === "base") {
-      continue;
-    }
-
-    const breakpointValue = value[bp];
-
-    if (breakpointValue !== undefined) {
-      mapped[bp] = fn(breakpointValue, bp);
-    }
-  }
-
-  return mapped;
-}
-
 export function setAt<T>(
   value: ResponsiveValue<T>,
   breakpoint: ResponsiveBreakpoint,
