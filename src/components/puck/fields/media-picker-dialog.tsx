@@ -47,12 +47,12 @@ export function MediaPickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Choose image</DialogTitle>
         </DialogHeader>
 
-        <div className="flex max-h-72 flex-wrap gap-2 overflow-y-auto p-0.5">
+        <div className="grid max-h-96 grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2 overflow-y-auto p-0.5">
           <NewResourceCard
             label="Upload File"
             loadingLabel="Uploading..."

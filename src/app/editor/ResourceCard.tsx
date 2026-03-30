@@ -63,7 +63,7 @@ export function ResourceCard({
   );
 
   return (
-    <Card className="h-48 w-32 shrink-0 gap-0 py-0">
+    <Card className="h-48 min-w-0 gap-0 py-0">
       {href ? (
         <Link href={href} className="block" {...linkProps}>
           {previewContent}
@@ -115,7 +115,7 @@ export function NewResourceCard({
   return (
     <Card
       className={cn(
-        "h-48 w-32 shrink-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
+        "h-48 min-w-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
         disabled && "cursor-not-allowed opacity-60",
       )}
       role="button"
