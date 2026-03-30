@@ -1,10 +1,7 @@
-"use client";
-
 import type { ComponentConfig } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
 import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
-import { useMedia } from "@/components/puck/media-context";
 import { ImageIcon } from "lucide-react";
 import { mediaField } from "@/components/puck/fields/media-field";
 
@@ -25,7 +22,7 @@ const objectFit = defineToken({
 type ObjectFit = TokenValue<typeof objectFit>;
 
 type MediaProps = {
-  mediaId: number | null;
+  image: { mediaId: number; url: string } | null;
   alt: string;
   objectFit: ObjectFit;
   aspectRatio: AspectRatio;
@@ -33,7 +30,7 @@ type MediaProps = {
 };
 
 const props = defineProps({
-  mediaId: field.raw(mediaField("Image"), null),
+  image: field.raw(mediaField("Image"), null),
   alt: field.raw({ type: "text", label: "Alt text" }, ""),
   objectFit: field.select(objectFit, { label: "Object fit" }),
   aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
@@ -41,14 +38,13 @@ const props = defineProps({
 });
 
 function MediaRenderer({
-  mediaId,
+  image,
   alt,
   objectFit: fit,
   aspectRatio: ratio,
   radius: r,
 }: MediaProps) {
-  const { getUrl } = useMedia();
-  const url = mediaId !== null ? getUrl(mediaId) : undefined;
+  const { url, mediaId } = image ?? {};
 
   const wrapperClass = cn(
     "relative h-full w-full overflow-hidden",

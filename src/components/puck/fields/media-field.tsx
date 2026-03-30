@@ -21,6 +21,8 @@ import {
 } from "@/app/editor/ResourceCard";
 import { cn } from "@/lib/utils";
 
+type ImageValue = { mediaId: number; url: string } | null;
+
 function MediaPickerDialog({
   open,
   onSelect,
@@ -112,15 +114,15 @@ function MediaFieldRender({
   readOnly,
 }: {
   label: string;
-  value: number | null;
-  onChange: (value: number | null) => void;
+  value: ImageValue;
+  onChange: (value: ImageValue) => void;
   readOnly?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const { getMedia, getUrl } = useMedia();
+  const { getMedia } = useMedia();
+  const { mediaId, url } = value ?? {};
   const hasValue = value !== null;
-  const url = hasValue ? getUrl(value) : undefined;
-  const media = hasValue ? getMedia(value) : undefined;
+  const media = mediaId !== undefined ? getMedia(mediaId) : undefined;
   const unresolved = hasValue && !media;
   const displayName = media?.name ?? (unresolved ? "Unknown image" : "Choose image…");
 
@@ -165,7 +167,7 @@ function MediaFieldRender({
       <MediaPickerDialog
         open={open}
         onSelect={(media) => {
-          onChange(media.id);
+          onChange({ mediaId: media.id, url: media.url });
           setOpen(false);
         }}
         onClose={() => setOpen(false)}
@@ -174,7 +176,7 @@ function MediaFieldRender({
   );
 }
 
-export function mediaField(label: string): CustomField<number | null> {
+export function mediaField(label: string): CustomField<ImageValue> {
   return {
     type: "custom",
     label,

@@ -2,8 +2,6 @@ import { Client } from "./client";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getDocumentByPath } from "../../lib/documents/queries";
-import { getMediaFilesByIds } from "../../lib/media/queries";
-import { collectMediaIds } from "../../lib/puck/media";
 
 export async function generateMetadata({
   params,
@@ -31,9 +29,7 @@ export default async function Page({
     return notFound();
   }
 
-  const media = await getMediaFilesByIds(collectMediaIds(data));
-
-  return <Client data={data} media={media} />;
+  return <Client data={data} />;
 }
 
 // Force Next.js to produce static pages: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic

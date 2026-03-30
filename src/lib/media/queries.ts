@@ -9,19 +9,3 @@ export async function getMediaFiles() {
   }));
 }
 
-export async function getMediaFilesByIds(ids: Iterable<number>) {
-  const mediaIds = [...new Set(ids)];
-
-  if (mediaIds.length === 0) {
-    return [];
-  }
-
-  const media = await prisma.media.findMany({
-    where: { id: { in: mediaIds } },
-  });
-
-  return media.map((item) => ({
-    ...item,
-    url: getMediaUrl(item.storagePath),
-  }));
-}
