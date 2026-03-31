@@ -1,6 +1,6 @@
 import { AutoField } from "@puckeditor/core";
 import type { TokenOption } from "@/lib/puck/tokens";
-import type { ResponsiveFieldControlProps } from "./responsive-field-frame";
+import type { ResponsiveFieldControlProps } from "./frame";
 
 // Non-base breakpoints can clear their override and inherit from the smaller breakpoint.
 const inheritOption: TokenOption<""> = { label: "–", value: "" };

@@ -132,19 +132,19 @@ The same token definition works for both static and responsive use. Numeric resp
 
 Responsive field descriptors are built on the server and rendered on the client, so the implementation is split intentionally:
 
-- Shared kind definitions live in `src/components/puck/fields/responsive-kinds/*/shared.ts`.
-- Client renderers live in `src/components/puck/fields/responsive-kinds/*/client.tsx`.
-- `src/components/puck/fields/responsive-field.tsx` is the server-safe wrapper that turns a serializable descriptor into a Puck custom field.
-- `src/components/puck/fields/responsive-field-client.tsx` is the client-only registry that maps `descriptor.kind` to the right renderer.
-- `src/components/puck/fields/responsive-field-frame.tsx` owns the shared breakpoint UI; kind-specific controls only deal with their own value format.
+- Shared kind definitions live in `src/lib/puck/fields/responsive/kinds/*/shared.ts`.
+- Client renderers live in `src/lib/puck/fields/responsive/kinds/*/client.tsx`.
+- `src/lib/puck/fields/responsive/index.tsx` is the server-safe wrapper that turns a serializable descriptor into a Puck custom field.
+- `src/lib/puck/fields/responsive/client.tsx` is the client-only registry that maps `descriptor.kind` to the right renderer.
+- `src/lib/puck/fields/responsive/frame.tsx` owns the shared breakpoint UI; kind-specific controls only deal with their own value format.
 
 This keeps the descriptor shape and the renderer associated by kind without pushing client code across the server boundary.
 
 To add a new responsive field kind:
 
-1. Add `shared.ts` and `client.tsx` under `src/components/puck/fields/responsive-kinds/<kind>/`.
-2. Export the descriptor factory and type from `src/components/puck/fields/responsive-kinds/index.ts`.
-3. Register the client component in `src/components/puck/fields/responsive-kinds/client-registry.tsx`.
+1. Add `shared.ts` and `client.tsx` under `src/lib/puck/fields/responsive/kinds/<kind>/`.
+2. Export the descriptor factory and type from `src/lib/puck/fields/responsive/kinds/index.ts`.
+3. Register the client component in `src/lib/puck/fields/responsive/kinds/registry.tsx`.
 4. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
 
 ### 4. Rendering

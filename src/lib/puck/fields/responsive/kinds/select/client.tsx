@@ -1,8 +1,8 @@
 "use client";
 
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { ResponsiveFieldFrame } from "../../responsive-field-frame";
-import { ResponsiveSelectControl } from "../../responsive-select-control";
+import { ResponsiveFieldFrame } from "../../frame";
+import { ResponsiveSelectControl } from "../../select-control";
 import type { ResponsiveSelectFieldDescriptor } from "./shared";
 
 export type ResponsiveSelectFieldProps<T extends string> = {

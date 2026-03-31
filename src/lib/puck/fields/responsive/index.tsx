@@ -1,16 +1,16 @@
 import type { CustomField } from "@puckeditor/core";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { ResponsiveFieldClient } from "./responsive-field-client";
+import { ResponsiveFieldClient } from "./client";
 import {
   type ResponsiveNumberFieldDescriptor,
   type ResponsiveSelectFieldDescriptor,
-} from "./responsive-kinds";
+} from "./kinds";
 
-export { responsiveFieldDescriptor } from "./responsive-kinds";
+export { responsiveFieldDescriptor } from "./kinds";
 export type {
   ResponsiveNumberFieldDescriptor,
   ResponsiveSelectFieldDescriptor,
-} from "./responsive-kinds";
+} from "./kinds";
 
 export function responsiveField<T extends string>(
   descriptor: ResponsiveSelectFieldDescriptor<T>,

@@ -6,7 +6,7 @@ import {
   responsiveFieldDescriptor,
   type ResponsiveNumberFieldDescriptor,
   type ResponsiveSelectFieldDescriptor,
-} from "@/components/puck/fields/responsive-field";
+} from "@/lib/puck/fields/responsive";
 
 // -- Prop spec shape ----------------------------------------------------------
 

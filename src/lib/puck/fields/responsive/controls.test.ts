@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   fromResponsiveSelectValue,
   toResponsiveSelectValue,
-} from "./responsive-select-control";
+} from "./select-control";
 import {
   formatResponsiveNumberValue,
   getResponsiveNumberChange,
-} from "./responsive-number-control";
+} from "./number-control";
 
 describe("responsive select control helpers", () => {
   it("translates inherited select values at the UI boundary", () => {

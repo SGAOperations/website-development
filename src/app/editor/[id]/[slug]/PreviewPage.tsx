@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { PuckRender } from "@/components/puck/render";
+import { PuckRender } from "@/components/puck/puck-render.server";
 import { loadDocument } from "../../../../lib/documents/editor-route";
 import { getVersionContent } from "../../../../lib/documents/queries";
 import { resolvePreviewVersionId } from "../../../../lib/documents/version-selection";

@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import type { ResponsiveFieldControlProps } from "./responsive-field-frame";
+import type { ResponsiveFieldControlProps } from "./frame";
 
 export type ResponsiveNumberChange =
   | { kind: "ignore" }
