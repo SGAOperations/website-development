@@ -27,8 +27,8 @@ const columnSlotDefaults = Object.fromEntries(
 ) as Record<SlotKey, Slot>;
 
 const props = defineProps({
-  columns: responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  columns: responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
 });
 
 export const Columns: ComponentConfig<ColumnsProps> = {

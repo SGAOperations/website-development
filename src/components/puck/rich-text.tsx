@@ -33,8 +33,8 @@ const props = defineProps({
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
-  columns: responsive.token(textColumns, { label: "Columns", default: "1" }),
-  columnGap: responsive.token(columnGap, { label: "Column gap", default: "md" }),
+  columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
+  columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
 });
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {

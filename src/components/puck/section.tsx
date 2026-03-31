@@ -29,9 +29,9 @@ type SectionProps = {
 const props = defineProps({
   content: field.slot(),
   anchorId: field.raw({ type: "text", label: "Anchor ID" }, ""),
-  paddingX: responsive.token(paddingX, { label: "Horizontal padding", default: "md" }),
-  paddingY: responsive.token(paddingY, { label: "Vertical padding", default: "lg" }),
-  gap: responsive.token(gapToken, { label: "Gap", default: "md" }),
+  paddingX: responsive.select(paddingX, { label: "Horizontal padding", default: "md" }),
+  paddingY: responsive.select(paddingY, { label: "Vertical padding", default: "lg" }),
+  gap: responsive.select(gapToken, { label: "Gap", default: "md" }),
   width: field.select(width, { label: "Max width", default: "screen-lg" }),
   bgColor: field.select(bgColor, { label: "Background" }),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),

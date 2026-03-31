@@ -1,36 +1,30 @@
-import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getDocumentByPath } from "../../lib/documents/queries";
-import { Render } from "@puckeditor/core";
-import { config } from "@/puck.config";
+import { notFound } from "next/navigation";
+import { PuckRender } from "@/components/puck/render";
+import { getPublishedDocument } from "./published-document";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ puckPath: string[] }>;
+  params: Promise<{ puckPath?: string[] }>;
 }): Promise<Metadata> {
-  const { puckPath = [] } = await params;
-  const path = `/${puckPath.join("/")}`;
-
   return {
-    title: (await getDocumentByPath(path))?.root.props?.title,
+    title: (await getPublishedDocument(params))?.root.props?.title,
   };
 }
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ puckPath: string[] }>;
+  params: Promise<{ puckPath?: string[] }>;
 }) {
-  const { puckPath = [] } = await params;
-  const path = `/${puckPath.join("/")}`;
-  const data = await getDocumentByPath(path);
+  const data = await getPublishedDocument(params);
 
   if (!data) {
     return notFound();
   }
 
-  return <Render config={config} data={data} />;
+  return <PuckRender data={data} />;
 }
 
 export const dynamic = "force-static";

@@ -13,9 +13,9 @@ type GridProps = {
 
 const props = defineProps({
   content: field.slot(),
-  columns: responsive.token(columnCount, { label: "Columns", default: "3" }),
-  rows: responsive.token(gridRows, { label: "Rows", default: "auto" }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  columns: responsive.select(columnCount, { label: "Columns", default: "3" }),
+  rows: responsive.select(gridRows, { label: "Rows", default: "auto" }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
 });
 
 export const Grid: ComponentConfig<GridProps> = {
