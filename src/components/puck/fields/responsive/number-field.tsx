@@ -1,9 +1,9 @@
 "use client";
 
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { ResponsiveFieldFrame } from "../../frame";
-import { ResponsiveNumberControl } from "../../number-control";
-import type { ResponsiveNumberFieldDescriptor } from "./shared";
+import { ResponsiveFieldFrame } from "./frame";
+import { ResponsiveNumberControl } from "./number-control";
+import type { ResponsiveNumberFieldDescriptor } from "./kinds";
 
 export type ResponsiveNumberFieldProps = {
   label: string;
