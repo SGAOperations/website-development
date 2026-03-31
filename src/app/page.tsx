@@ -14,4 +14,6 @@ export default async function Page() {
   return <Client data={data} />;
 }
 
+// Enable ISR: statically generated, revalidated on-demand via revalidatePath()
 export const dynamic = "force-static";
+export const revalidate = false;

@@ -32,6 +32,6 @@ export default async function Page({
   return <Client data={data} />;
 }
 
-// Force Next.js to produce static pages: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic
-// Delete this if you need dynamic rendering, such as access to headers or cookies
+// Enable ISR: pages are statically generated and revalidated on-demand via revalidatePath()
 export const dynamic = "force-static";
+export const revalidate = false;
