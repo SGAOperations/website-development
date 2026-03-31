@@ -1,10 +1,10 @@
 import "@puckeditor/core/puck.css";
 import { notFound } from "next/navigation";
 import { Client } from "./client";
+import { loadDocument } from "../../../../lib/documents/editor-route";
 import { getVersionContent } from "../../../../lib/documents/queries";
+import { resolveEditorVersionId } from "../../../../lib/documents/version-selection";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
-import { resolveEditorVersionId } from "./version-selection";
-import { loadDocument } from "./params";
 
 export default async function EditorPage({
   documentId,

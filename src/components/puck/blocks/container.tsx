@@ -28,8 +28,8 @@ type ContainerProps = ContainerStyle & {
 const props = defineProps({
   content: field.slot(),
   layout: field.radio(layout, { label: "Layout" }),
-  padding: responsive.token(padding, { label: "Padding", default: "md" }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  padding: responsive.select(padding, { label: "Padding", default: "md" }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
   align: field.radio(crossAxisAlign, { label: "Align items" }),
   justify: field.radio(justify, { label: "Justify" }),
   width: field.select(width, { label: "Max width" }),

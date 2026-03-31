@@ -1,8 +1,12 @@
 import type { CustomField, Slot } from "@puckeditor/core";
 import type { Token, TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { responsiveField } from "@/components/puck/fields/responsive-field";
-import { selectAdapter } from "@/components/puck/fields/responsive-token-field";
+import {
+  responsiveField,
+  responsiveFieldDescriptor,
+  type ResponsiveNumberFieldDescriptor,
+  type ResponsiveSelectFieldDescriptor,
+} from "@/lib/puck/fields/responsive";
 
 // -- Prop spec shape ----------------------------------------------------------
 
@@ -11,24 +15,62 @@ type PropSpec<F, V> = { field: F; defaultValue: V };
 type FieldsOf<S> = { [K in keyof S]: S[K] extends PropSpec<infer F, any> ? F : never };
 type DefaultsOf<S> = { [K in keyof S]: S[K] extends PropSpec<any, infer V> ? V : never };
 
-// -- Builder: responsive tokens -----------------------------------------------
+// -- Builder: responsive fields -----------------------------------------------
 
 export const responsive = {
-  token<T extends string>(
+  select<T extends string>(
     token: Token<T>,
     opts: { label: string; default?: NoInfer<T | ResponsiveValue<T>> },
   ): PropSpec<CustomField<ResponsiveValue<T>>, ResponsiveValue<T>> {
-    const defaultValue: ResponsiveValue<T> =
-      opts.default !== undefined && typeof opts.default === "object"
-        ? opts.default as ResponsiveValue<T>
-        : { base: (opts.default ?? token.defaultValue) } as ResponsiveValue<T>;
+    return buildResponsiveFieldProp(
+      responsiveFieldDescriptor.select(token.options),
+      opts.label,
+      opts.default ?? token.defaultValue,
+    );
+  },
 
-    return {
-      field: responsiveField(selectAdapter<T>(token.options), opts.label),
-      defaultValue,
-    };
+  number(
+    opts: {
+      label: string;
+      default: NoInfer<number | ResponsiveValue<number>>;
+    } & Omit<ResponsiveNumberFieldDescriptor, "kind">,
+  ): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>> {
+    return buildResponsiveFieldProp(
+      responsiveFieldDescriptor.number({ min: opts.min, max: opts.max, step: opts.step }),
+      opts.label,
+      opts.default,
+    );
   },
 };
+
+function buildResponsiveFieldProp<T extends string>(
+  descriptor: ResponsiveSelectFieldDescriptor<T>,
+  label: string,
+  defaultValue: NoInfer<T | ResponsiveValue<T>>,
+): PropSpec<CustomField<ResponsiveValue<T>>, ResponsiveValue<T>>;
+function buildResponsiveFieldProp(
+  descriptor: ResponsiveNumberFieldDescriptor,
+  label: string,
+  defaultValue: NoInfer<number | ResponsiveValue<number>>,
+): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>>;
+function buildResponsiveFieldProp<T extends string>(
+  descriptor: ResponsiveSelectFieldDescriptor<T> | ResponsiveNumberFieldDescriptor,
+  label: string,
+  defaultValue: NoInfer<T | ResponsiveValue<T>> | NoInfer<number | ResponsiveValue<number>>,
+): PropSpec<any, any> {
+  return {
+    field: responsiveField(descriptor as any, label),
+    defaultValue: resolveResponsiveDefaultValue(defaultValue as any),
+  };
+}
+
+function resolveResponsiveDefaultValue<T extends string | number>(
+  value: NoInfer<T | ResponsiveValue<T>>,
+): ResponsiveValue<T> {
+  return value !== undefined && typeof value === "object"
+    ? value as ResponsiveValue<T>
+    : { base: value } as ResponsiveValue<T>;
+}
 
 // -- Builder: static fields ---------------------------------------------------
 

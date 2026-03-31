@@ -82,7 +82,7 @@ These helpers are for component logic — see [Rendering](#4-rendering) for how 
 
 `defineProps` wires tokens to Puck editor fields (`src/lib/puck/define-props.ts`). It returns `{ fields, defaultProps }` to spread onto a `ComponentConfig`.
 
-There are four field builders:
+There are two builder namespaces:
 
 ```ts
 const props = defineProps({
@@ -94,7 +94,16 @@ const props = defineProps({
   layout:  field.radio(layout, { label: "Layout" }),
 
   // Responsive — per-breakpoint picker, also token-backed
-  padding: responsive.token(padding, { label: "Padding" }),
+  padding: responsive.select(padding, { label: "Padding" }),
+
+  // Responsive number — per-breakpoint numeric input
+  columns: responsive.number({
+    label: "Columns",
+    default: { base: 1, md: 2 },
+    min: 1,
+    max: 6,
+    step: 1,
+  }),
 
   // Raw — any Puck field descriptor, for things tokens don't cover
   url:     field.raw({ type: "text", label: "URL" }, ""),
@@ -104,8 +113,10 @@ const props = defineProps({
 **Defaults.** Every builder falls back to the token's first key if no `default` is given. You can override with a scalar or a full responsive object:
 
 ```ts
-responsive.token(columnCount, { label: "Columns", default: "3" })
-responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.select(columnCount, { label: "Columns", default: "3" })
+responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
+responsive.number({ label: "Rows", default: { base: 1, md: 3 } })
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
@@ -115,7 +126,26 @@ field.slot({ allow: ["Card", "Button"] })
 field.slot({ disallow: ["Section"] })
 ```
 
-The same token definition works for both static and responsive use — only the field builder differs.
+The same token definition works for both static and responsive use. Numeric responsive fields do not need a token.
+
+### Responsive field architecture
+
+Responsive field descriptors are built on the server and rendered on the client, so the implementation is split intentionally:
+
+- Shared kind definitions live in `src/lib/puck/fields/responsive/kinds/*/shared.ts`.
+- Client renderers live in `src/lib/puck/fields/responsive/kinds/*/client.tsx`.
+- `src/lib/puck/fields/responsive/index.tsx` is the server-safe wrapper that turns a serializable descriptor into a Puck custom field.
+- `src/lib/puck/fields/responsive/client.tsx` is the client-only registry that maps `descriptor.kind` to the right renderer.
+- `src/lib/puck/fields/responsive/frame.tsx` owns the shared breakpoint UI; kind-specific controls only deal with their own value format.
+
+This keeps the descriptor shape and the renderer associated by kind without pushing client code across the server boundary.
+
+To add a new responsive field kind:
+
+1. Add `shared.ts` and `client.tsx` under `src/lib/puck/fields/responsive/kinds/<kind>/`.
+2. Export the descriptor factory and type from `src/lib/puck/fields/responsive/kinds/index.ts`.
+3. Register the client component in `src/lib/puck/fields/responsive/kinds/registry.tsx`.
+4. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
 
 ### 4. Rendering
 
@@ -142,6 +172,8 @@ const classes = cn(
   resolveResponsive(py, paddingY.classes),  // responsive
 );
 ```
+
+Responsive numeric props stay as data. Use `resolveAt(...)` or your own component logic when they need to influence layout or behavior; they do not go through `resolveResponsive(...)`.
 
 ## Tailwind source hints
 
@@ -187,13 +219,15 @@ import { padding, bgColor, type Spacing, type Color } from "@/lib/puck/tokens";
 type CardProps = {
   content: Slot;
   padding: ResponsiveValue<Spacing>;
+  columns: ResponsiveValue<number>;
   bgColor: Color;
   title: string;
 };
 
 const props = defineProps({
   content: field.slot(),
-  padding: responsive.token(padding, { label: "Padding", default: "md" }),
+  padding: responsive.select(padding, { label: "Padding", default: "md" }),
+  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2 }, min: 1, max: 4, step: 1 }),
   bgColor: field.select(bgColor, { label: "Background" }),
   title: field.raw({ type: "text", label: "Title" }, ""),
 });
@@ -201,17 +235,21 @@ const props = defineProps({
 
 ### Step 3 — Export the component config
 
-Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive props and direct `token.classes[value]` lookups for static ones:
+Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive token props, `resolveAt` or component logic for responsive numeric props, and direct `token.classes[value]` lookups for static ones:
 
 ```ts
+import { resolveAt } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import { cn } from "@/lib/utils";
 
 export const Card: ComponentConfig<CardProps> = {
   label: "Card",
   ...props,
-  render: ({ content: Content, padding: pad, bgColor: bg, title }) => (
-    <div className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}>
+  render: ({ content: Content, padding: pad, columns, bgColor: bg, title }) => (
+    <div
+      className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}
+      style={{ columns: resolveAt(columns, "base") }}
+    >
       {title && <h3>{title}</h3>}
       {Content && <Content />}
     </div>
