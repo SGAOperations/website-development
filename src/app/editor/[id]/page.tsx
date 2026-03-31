@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
+import { parseDocumentId } from "../../../lib/documents/editor-route";
 import { getDocumentName } from "../../../lib/documents/queries";
 import { getEditorUrl } from "../../../lib/editor-url";
-import { parseDocumentId } from "./[slug]/params";
 
 interface PageProps {
   params: Promise<{ id: string }>;

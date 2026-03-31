@@ -1,7 +1,8 @@
+import { cache } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PuckRender } from "@/components/puck/render";
-import { getPublishedDocument } from "./published-document";
+import { getDocumentByPath } from "../../lib/documents/queries";
 
 export async function generateMetadata({
   params,
@@ -28,3 +29,13 @@ export default async function Page({
 }
 
 export const dynamic = "force-static";
+
+async function getPublishedDocument(params: Promise<{ puckPath?: string[] }>) {
+  return getPublishedDocumentByPath(getPublishedPath(await params));
+}
+
+function getPublishedPath({ puckPath = [] }: { puckPath?: string[] }) {
+  return `/${puckPath.join("/")}`;
+}
+
+const getPublishedDocumentByPath = cache(getDocumentByPath);

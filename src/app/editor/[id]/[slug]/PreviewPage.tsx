@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { PuckRender } from "@/components/puck/render";
+import { loadDocument } from "../../../../lib/documents/editor-route";
 import { getVersionContent } from "../../../../lib/documents/queries";
-import { resolvePreviewVersionId } from "./version-selection";
-import { loadDocument } from "./params";
+import { resolvePreviewVersionId } from "../../../../lib/documents/version-selection";
 
 export default async function PreviewPage({
   documentId,
