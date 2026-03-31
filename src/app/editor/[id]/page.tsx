@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
-import { getDocumentById } from "../../../lib/documents/queries";
+import { parseDocumentId } from "../../../lib/documents/editor-route";
+import { getDocumentName } from "../../../lib/documents/queries";
 import { getEditorUrl } from "../../../lib/editor-url";
 
 interface PageProps {
@@ -9,19 +10,19 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  const documentId = parseInt(id, 10);
+  const documentId = parseDocumentId(id);
 
-  if (isNaN(documentId)) {
+  if (!documentId) {
     notFound();
   }
 
-  const document = await getDocumentById(documentId);
+  const name = await getDocumentName(documentId);
 
-  if (!document) {
+  if (name === undefined) {
     notFound();
   }
 
-  redirect(getEditorUrl(documentId, document.name));
+  redirect(getEditorUrl(documentId, name));
 }
 
 export const dynamic = "force-dynamic";

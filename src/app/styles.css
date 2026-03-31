@@ -2,6 +2,15 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@source inline("{md:,lg:,}{p,px,py}-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}gap-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}grid-cols-{1,2,3,4,5,6}");
+@source inline("{md:,lg:,}grid-rows-{none,1,2,3,4,5,6}");
+@source inline("{md:,lg:,}auto-rows-{auto,[0]}");
+@source inline("{md:,lg:,}overflow-{visible,hidden}");
+@source inline("{md:,lg:,}columns-{1,2,3,4}");
+@source inline("{md:,lg:,}gap-x-{0,1,2,4,6,8,12}");
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -10,10 +19,11 @@
   --color-solid-black: #000000;
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
   --color-sga-red-alt: #dc2626;
+  --font-display: var(--font-bebas-neue), sans-serif;
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -70,4 +80,39 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .resource-card-grid {
+    @apply grid-cols-[repeat(auto-fill,minmax(8rem,1fr))];
+  }
+}
+
+.prose h1 {
+  @apply font-display text-5xl;
+}
+
+.prose h2 {
+  @apply font-display text-4xl text-sga-red;
+}
+
+.prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-display;
+}
+
+.prose ul {
+  @apply list-disc pl-6;
+}
+
+.prose ol {
+  @apply list-decimal pl-6;
+}
+
+.prose p:has(br:only-child),
+.prose p:empty {
+  @apply block min-h-lh;
+}
+
+.rich-text-line-spacing .rich-text * {
+  line-height: inherit;
 }

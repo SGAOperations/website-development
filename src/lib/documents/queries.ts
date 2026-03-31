@@ -5,9 +5,9 @@ export const getDocumentById = async (id: number) => {
   return await prisma.document.findUnique({
     where: { id },
     include: {
-      publishedVersion: true,
       versions: {
         orderBy: { createdAt: "desc" },
+        select: { id: true, documentId: true, createdAt: true },
       },
     },
   });
@@ -30,34 +30,6 @@ export const getDocumentByPath = async (path: string): Promise<Data | null> => {
   return route.document.publishedVersion.content as Data;
 };
 
-export const getAllRoutes = async (): Promise<Record<string, Data> | null> => {
-  const routes = await prisma.route.findMany({
-    include: {
-      document: {
-        include: { publishedVersion: true },
-      },
-    },
-  });
-
-  if (routes.length === 0) {
-    return null;
-  }
-
-  return routes.reduce((acc, route) => {
-    if (route.document.publishedVersion) {
-      acc[route.path] = route.document.publishedVersion.content as Data;
-    }
-    return acc;
-  }, {} as Record<string, Data>);
-};
-
-export const getVersions = async (documentId: number) => {
-  return await prisma.version.findMany({
-    where: { documentId },
-    orderBy: { createdAt: "desc" },
-  });
-};
-
 export const getDocumentName = async (id: number) => {
   const doc = await prisma.document.findUnique({
     where: { id },
@@ -66,11 +38,12 @@ export const getDocumentName = async (id: number) => {
   return doc?.name;
 };
 
-export const getVersionById = async (versionId: number) => {
-  return await prisma.version.findUnique({
+export const getVersionContent = async (versionId: number) => {
+  const version = await prisma.version.findUnique({
     where: { id: versionId },
-    include: { document: true },
+    select: { content: true },
   });
+  return version?.content as Data | null;
 };
 
 export async function getDocumentSummaries() {

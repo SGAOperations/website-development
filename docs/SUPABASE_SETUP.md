@@ -47,13 +47,23 @@ These credentials are also accessible again via `npx supabase status` if you nee
 
 ### 2. Configure environment variables
 
-In your `.env` copy the "Project URL" to `SUPABASE_URL`, and the "Secret" to `SUPABASE_SERVICE_ROLE_KEY`.
+Copy `.env.example` to `.env` and fill in the credentials from the output above:
 
-For `DATABASE_URL`, you may use a locally managed instance, or use the Database "URL". Append `?schema=public` to ensure Prisma uses the public schema.
+| Variable | Source |
+| --- | --- |
+| `DATABASE_URL` | Database "URL" — used by the application layer (configure connection pooling via pgbouncer in prod) |
+| `DIRECT_URL` | Database "URL" — used by Prisma for migrations (direct connection, no pooling) |
+| `SUPABASE_URL` | "Project URL" |
+| `SUPABASE_ANON_KEY` | "Publishable" key |
+| `SUPABASE_SERVICE_ROLE_KEY` | "Secret" key (**never expose to the client**) |
+
+> Locally there is no connection pooling, so `DATABASE_URL` and `DIRECT_URL` will be the same.
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+DIRECT_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 SUPABASE_URL="http://127.0.0.1:54321"
+SUPABASE_ANON_KEY="sb_publishable_XXXXXXXXX"
 SUPABASE_SERVICE_ROLE_KEY="sb_secret_XXXXXXXXX"
 ```
 

@@ -8,6 +8,7 @@ import { VersionPlugin } from "./VersionPlugin";
 import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
+import { MediaProvider, type MediaWithUrl } from "@/components/puck/media-context";
 import type { Version } from "../../../../lib/types";
 
 type DocumentContextType = {
@@ -42,6 +43,7 @@ export function Client({
   documentId,
   documentName,
   data,
+  media,
   versionId: initialVersionId,
   publishedVersionId: initialPublishedVersionId,
   versions: initialVersions,
@@ -49,13 +51,13 @@ export function Client({
 }: {
   documentId: number;
   documentName: string;
-  data: Partial<Data>;
+  data: Data;
+  media: MediaWithUrl[];
   versionId?: number;
   publishedVersionId?: number;
   versions: Version[];
   isArchived: boolean;
 }) {
-  const [currentData, setCurrentData] = useState<Data>(data as Data);
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
@@ -80,12 +82,13 @@ window.addEventListener("visibilitychange", () => showSaveModal )
   }, []);
 
   return (
+    <MediaProvider media={media}>
     <DocumentContext.Provider
       value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId, setIsDirty }}
     >
       <Puck
         config={config}
-        data={currentData}
+        data={data}
         ui={{plugin: {current: "version-plugin"}}}
         plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
         permissions={isArchived
@@ -102,5 +105,6 @@ window.addEventListener("visibilitychange", () => showSaveModal )
         }}
       />
     </DocumentContext.Provider>
+    </MediaProvider>
   );
 }

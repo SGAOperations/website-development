@@ -7,6 +7,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  oxc: {
+    jsx: "automatic",
+  },
   test: {
     include: ["src/**/*.test.{ts,tsx}"],
   },

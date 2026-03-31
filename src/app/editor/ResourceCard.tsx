@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export function formatRelativeTime(date: Date): string {
   const now = Date.now();
@@ -58,7 +63,7 @@ export function ResourceCard({
   );
 
   return (
-    <Card className="h-48 w-32 shrink-0 gap-0 py-0">
+    <Card className="h-48 min-w-0 gap-0 py-0">
       {href ? (
         <Link href={href} className="block" {...linkProps}>
           {previewContent}
@@ -110,7 +115,7 @@ export function NewResourceCard({
   return (
     <Card
       className={cn(
-        "h-48 w-32 shrink-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
+        "h-48 min-w-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
         disabled && "cursor-not-allowed opacity-60",
       )}
       role="button"
