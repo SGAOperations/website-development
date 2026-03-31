@@ -136,7 +136,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Media</h1>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2">
+      <div className="resource-card-grid grid gap-2">
         <UploadCard onFileSelected={handleUpload} disabled={isPending} />
 
         {files.map((file) => (

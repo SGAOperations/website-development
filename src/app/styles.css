@@ -82,6 +82,12 @@ body {
   }
 }
 
+@layer utilities {
+  .resource-card-grid {
+    @apply grid-cols-[repeat(auto-fill,minmax(8rem,1fr))];
+  }
+}
+
 .prose h1 {
   @apply font-display text-5xl;
 }

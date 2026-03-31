@@ -56,7 +56,7 @@ function MediaPickerDialog({
           <DialogTitle>Choose image</DialogTitle>
         </DialogHeader>
 
-        <div className="grid max-h-96 grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2 overflow-y-auto p-0.5">
+        <div className="resource-card-grid grid max-h-96 gap-2 overflow-y-auto p-0.5">
           <NewResourceCard
             label="Upload File"
             loadingLabel="Uploading..."
