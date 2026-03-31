@@ -6,22 +6,36 @@ import {
   type ResponsiveNumberFieldProps,
 } from "./number-field";
 import {
+  ResponsiveRatioField,
+  type ResponsiveRatioFieldProps,
+} from "./ratio-field";
+import {
   ResponsiveSelectField,
   type ResponsiveSelectFieldProps,
 } from "./select-field";
 import {
+  ResponsiveSizeField,
+  type ResponsiveSizeFieldProps,
+} from "./size-field";
+import {
   responsiveNumberFieldKind,
+  responsiveRatioFieldKind,
   responsiveSelectFieldKind,
+  responsiveSizeFieldKind,
   type ResponsiveFieldKind,
 } from "./kinds";
 
 export type ResponsiveFieldClientProps =
   | ResponsiveSelectFieldProps<string>
-  | ResponsiveNumberFieldProps;
+  | ResponsiveNumberFieldProps
+  | ResponsiveSizeFieldProps
+  | ResponsiveRatioFieldProps;
 
 const responsiveFieldClientRegistry = {
   [responsiveSelectFieldKind]: ResponsiveSelectField,
   [responsiveNumberFieldKind]: ResponsiveNumberField,
+  [responsiveSizeFieldKind]: ResponsiveSizeField,
+  [responsiveRatioFieldKind]: ResponsiveRatioField,
 } satisfies Record<ResponsiveFieldKind, ComponentType<any>>;
 
 export function ResponsiveFieldClient(props: ResponsiveFieldClientProps) {

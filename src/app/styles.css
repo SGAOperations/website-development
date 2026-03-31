@@ -83,6 +83,106 @@ body {
 }
 
 @layer utilities {
+  .puck-width {
+    width: var(--puck-width-base);
+  }
+
+  .puck-min-width {
+    min-width: var(--puck-min-width-base);
+  }
+
+  .puck-max-width {
+    max-width: var(--puck-max-width-base);
+  }
+
+  .puck-height {
+    height: var(--puck-height-base);
+  }
+
+  .puck-min-height {
+    min-height: var(--puck-min-height-base);
+  }
+
+  .puck-max-height {
+    max-height: var(--puck-max-height-base);
+  }
+
+  .puck-aspect-ratio {
+    aspect-ratio: var(--puck-aspect-ratio-base);
+  }
+
+  .puck-grid-template-columns {
+    grid-template-columns: var(--puck-grid-template-columns-base);
+  }
+
+  @media (min-width: 768px) {
+    .puck-width {
+      width: var(--puck-width-md, var(--puck-width-base));
+    }
+
+    .puck-min-width {
+      min-width: var(--puck-min-width-md, var(--puck-min-width-base));
+    }
+
+    .puck-max-width {
+      max-width: var(--puck-max-width-md, var(--puck-max-width-base));
+    }
+
+    .puck-height {
+      height: var(--puck-height-md, var(--puck-height-base));
+    }
+
+    .puck-min-height {
+      min-height: var(--puck-min-height-md, var(--puck-min-height-base));
+    }
+
+    .puck-max-height {
+      max-height: var(--puck-max-height-md, var(--puck-max-height-base));
+    }
+
+    .puck-aspect-ratio {
+      aspect-ratio: var(--puck-aspect-ratio-md, var(--puck-aspect-ratio-base));
+    }
+
+    .puck-grid-template-columns {
+      grid-template-columns: var(--puck-grid-template-columns-md, var(--puck-grid-template-columns-base));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .puck-width {
+      width: var(--puck-width-lg, var(--puck-width-md, var(--puck-width-base)));
+    }
+
+    .puck-min-width {
+      min-width: var(--puck-min-width-lg, var(--puck-min-width-md, var(--puck-min-width-base)));
+    }
+
+    .puck-max-width {
+      max-width: var(--puck-max-width-lg, var(--puck-max-width-md, var(--puck-max-width-base)));
+    }
+
+    .puck-height {
+      height: var(--puck-height-lg, var(--puck-height-md, var(--puck-height-base)));
+    }
+
+    .puck-min-height {
+      min-height: var(--puck-min-height-lg, var(--puck-min-height-md, var(--puck-min-height-base)));
+    }
+
+    .puck-max-height {
+      max-height: var(--puck-max-height-lg, var(--puck-max-height-md, var(--puck-max-height-base)));
+    }
+
+    .puck-aspect-ratio {
+      aspect-ratio: var(--puck-aspect-ratio-lg, var(--puck-aspect-ratio-md, var(--puck-aspect-ratio-base)));
+    }
+
+    .puck-grid-template-columns {
+      grid-template-columns: var(--puck-grid-template-columns-lg, var(--puck-grid-template-columns-md, var(--puck-grid-template-columns-base)));
+    }
+  }
+
   .resource-card-grid {
     @apply grid-cols-[repeat(auto-fill,minmax(8rem,1fr))];
   }

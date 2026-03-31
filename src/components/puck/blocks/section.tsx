@@ -2,17 +2,20 @@ import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import { cn } from "@/lib/utils";
+import { getSectionContent, getSectionOuter } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
+import { widthPresetOptions, type SizeValue } from "@/lib/puck/style-values";
 import {
   paddingX,
   paddingY,
   gap as gapToken,
   bgColor,
   textColor,
-  width,
+  verticalAlign,
   type Color,
   type Spacing,
-  type Width,
+  type VerticalAlign,
+  type WidthPreset,
 } from "@/lib/puck/tokens";
 
 type SectionProps = {
@@ -21,7 +24,9 @@ type SectionProps = {
   paddingX: ResponsiveValue<Spacing>;
   paddingY: ResponsiveValue<Spacing>;
   gap: ResponsiveValue<Spacing>;
-  width: Width;
+  width: ResponsiveValue<SizeValue<WidthPreset>>;
+  minHeight: ResponsiveValue<SizeValue>;
+  verticalContentAlign: VerticalAlign;
   bgColor: Color;
   textColor: Color;
 };
@@ -32,7 +37,16 @@ const props = defineProps({
   paddingX: responsive.select(paddingX, { label: "Horizontal padding", default: "md" }),
   paddingY: responsive.select(paddingY, { label: "Vertical padding", default: "lg" }),
   gap: responsive.select(gapToken, { label: "Gap", default: "md" }),
-  width: field.select(width, { label: "Max width", default: "screen-lg" }),
+  width: responsive.size({
+    label: "Content max width",
+    presets: widthPresetOptions,
+    default: { mode: "preset", preset: "screen-lg" },
+  }),
+  minHeight: responsive.size({
+    label: "Min height",
+    default: { mode: "none" },
+  }),
+  verticalContentAlign: field.radio(verticalAlign, { label: "Vertical align", default: "start" }),
   bgColor: field.select(bgColor, { label: "Background" }),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
 });
@@ -47,21 +61,20 @@ export const Section: ComponentConfig<SectionProps> = {
     paddingY: py,
     gap: g,
     width: w,
+    minHeight,
+    verticalContentAlign,
     bgColor: bg,
     textColor: text,
   }) => {
-    const outerClasses = cn(
-      "w-full",
-      bgColor.classes[bg],
-      textColor.classes[text],
-      resolveResponsive(py, paddingY.classes),
-      resolveResponsive(px, paddingX.classes),
-    );
-
-    const innerClasses = cn(
-      "mx-auto",
-      width.classes[w],
-    );
+    const outer = getSectionOuter({
+      paddingX: px,
+      paddingY: py,
+      bgColor: bg,
+      textColor: text,
+      minHeight,
+      verticalContentAlign,
+    });
+    const inner = getSectionContent({ width: w });
 
     const slotClasses = cn(
       "flex flex-col w-full",
@@ -69,8 +82,8 @@ export const Section: ComponentConfig<SectionProps> = {
     );
 
     return (
-      <section id={anchorId || undefined} className={outerClasses}>
-        <div className={innerClasses}>
+      <section id={anchorId || undefined} className={outer.className} style={outer.style}>
+        <div className={inner.className} style={inner.style}>
           {Content && (
             <Content className={slotClasses} minEmptyHeight="200px" />
           )}

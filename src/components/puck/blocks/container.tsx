@@ -1,12 +1,29 @@
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ElementType } from "react";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
 import {
   getContainerSlotClassName,
-  getContainerSurfaceClassName,
+  getContainerSurface,
   type ContainerStyle,
 } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
-import { defineToken, type TokenValue, padding, gap, bgColor, textColor, radius, shadow, crossAxisAlign, layout, justify, width } from "@/lib/puck/tokens";
+import { widthPresetOptions, type SizeValue } from "@/lib/puck/style-values";
+import {
+  defineToken,
+  type TokenValue,
+  padding,
+  gap,
+  bgColor,
+  textColor,
+  radius,
+  shadow,
+  crossAxisAlign,
+  layout,
+  justify,
+  overflowX,
+  overflowY,
+  type WidthPreset,
+} from "@/lib/puck/tokens";
 
 const tag = defineToken({
   div:     "<div>",
@@ -20,9 +37,10 @@ const tag = defineToken({
 });
 type Tag = TokenValue<typeof tag>;
 
-type ContainerProps = ContainerStyle & {
+type ContainerProps = Omit<ContainerStyle, "width"> & {
   content: Slot;
   tag: Tag;
+  width: ResponsiveValue<SizeValue<WidthPreset>>;
 };
 
 const props = defineProps({
@@ -32,7 +50,39 @@ const props = defineProps({
   gap: responsive.select(gap, { label: "Gap", default: "md" }),
   align: field.radio(crossAxisAlign, { label: "Align items" }),
   justify: field.radio(justify, { label: "Justify" }),
-  width: field.select(width, { label: "Max width" }),
+  boxWidth: responsive.size({
+    label: "Width",
+    presets: widthPresetOptions,
+    default: { mode: "full" },
+  }),
+  width: responsive.size({
+    label: "Max width",
+    presets: widthPresetOptions,
+    default: { mode: "none" },
+  }),
+  minWidth: responsive.size({
+    label: "Min width",
+    presets: widthPresetOptions,
+    default: { mode: "none" },
+  }),
+  height: responsive.size({
+    label: "Height",
+    default: { mode: "none" },
+  }),
+  minHeight: responsive.size({
+    label: "Min height",
+    default: { mode: "none" },
+  }),
+  maxHeight: responsive.size({
+    label: "Max height",
+    default: { mode: "none" },
+  }),
+  aspectRatio: responsive.ratio({
+    label: "Aspect ratio",
+    default: { mode: "none" },
+  }),
+  overflowX: field.select(overflowX, { label: "Overflow X", default: "visible" }),
+  overflowY: field.select(overflowY, { label: "Overflow Y", default: "visible" }),
   bgColor: field.select(bgColor, { label: "Background" }),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   radius: field.select(radius, { label: "Corners" }),
@@ -45,9 +95,10 @@ export const Container: ComponentConfig<ContainerProps> = {
   ...props,
   render: ({ content: Content, tag: t, ...style }) => {
     const Tag = t as ElementType;
+    const surface = getContainerSurface(style);
 
     return (
-      <Tag className={getContainerSurfaceClassName(style)}>
+      <Tag className={surface.className} style={surface.style}>
         {Content && (
           <Content
             className={getContainerSlotClassName(style)}

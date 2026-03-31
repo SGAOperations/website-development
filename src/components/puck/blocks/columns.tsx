@@ -1,15 +1,17 @@
 import type { ComponentConfig, Slot, SlotComponent } from "@puckeditor/core";
+import { cn } from "@/lib/utils";
 import { defineProps, responsive } from "@/lib/puck/define-props";
-import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tokens";
+import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
+import { columnCount, columnTemplate, gap as gapToken, type ColumnCount, type ColumnTemplate, type Spacing } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { getGridClassName, getMaxCols } from "@/lib/puck/layout";
+import { getColumnTemplateStyles, getMaxCols } from "@/lib/puck/layout";
 
 type SlotKey = `column${ColumnCount}`;
 
 type ColumnsProps = {
   [K in SlotKey]: Slot;
 } & {
-  columns: ResponsiveValue<ColumnCount>;
+  columns: ResponsiveValue<ColumnTemplate>;
   gap: ResponsiveValue<Spacing>;
 };
 
@@ -27,8 +29,8 @@ const columnSlotDefaults = Object.fromEntries(
 ) as Record<SlotKey, Slot>;
 
 const props = defineProps({
-  columns: responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
-  gap: responsive.select(gap, { label: "Gap", default: "md" }),
+  columns: responsive.select(columnTemplate, { label: "Template", default: { base: "1", md: "2" } }),
+  gap: responsive.select(gapToken, { label: "Gap", default: "md" }),
 });
 
 export const Columns: ComponentConfig<ColumnsProps> = {
@@ -51,9 +53,13 @@ export const Columns: ComponentConfig<ColumnsProps> = {
   render: ({ columns, gap, ...slots }) => {
     const maxCols = getMaxCols(columns);
     const slotMap = slots as Record<SlotKey, SlotComponent>;
+    const templateStyles = getColumnTemplateStyles(columns);
 
     return (
-      <div className={getGridClassName({ columns, rows: { base: "auto" }, gap })}>
+      <div
+        className={cn("grid w-full", resolveResponsive(gap, gapToken.classes), templateStyles.className)}
+        style={templateStyles.style}
+      >
         {columnSlotKeys.slice(0, maxCols).map((key) => {
           const Col = slotMap[key];
           return Col && <Col key={key} />;

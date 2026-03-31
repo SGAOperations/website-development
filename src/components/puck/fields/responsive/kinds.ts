@@ -1,4 +1,5 @@
 import type { TokenOption } from "@/lib/puck/tokens";
+import type { SizeUnit } from "@/lib/puck/style-values";
 
 /**
  * Number
@@ -35,12 +36,49 @@ export function createResponsiveSelectFieldDescriptor<T extends string>(
   return { kind: responsiveSelectFieldKind, options };
 }
 
+/**
+ * Size
+ */
+export const responsiveSizeFieldKind = "size";
+
+export type ResponsiveSizeFieldDescriptor<P extends string = string> = {
+  kind: typeof responsiveSizeFieldKind;
+  presets?: TokenOption<P>[];
+  units?: SizeUnit[];
+  allowAuto?: boolean;
+  allowFull?: boolean;
+  allowFit?: boolean;
+};
+
+export function createResponsiveSizeFieldDescriptor<P extends string>(
+  options: Omit<ResponsiveSizeFieldDescriptor<P>, "kind"> = {},
+): ResponsiveSizeFieldDescriptor<P> {
+  return { kind: responsiveSizeFieldKind, ...options };
+}
+
+/**
+ * Ratio
+ */
+export const responsiveRatioFieldKind = "ratio";
+
+export type ResponsiveRatioFieldDescriptor = {
+  kind: typeof responsiveRatioFieldKind;
+};
+
+export function createResponsiveRatioFieldDescriptor(): ResponsiveRatioFieldDescriptor {
+  return { kind: responsiveRatioFieldKind };
+}
+
 // Aggregate
 export type ResponsiveFieldKind =
   | typeof responsiveSelectFieldKind
-  | typeof responsiveNumberFieldKind;
+  | typeof responsiveNumberFieldKind
+  | typeof responsiveSizeFieldKind
+  | typeof responsiveRatioFieldKind;
 
 export const responsiveFieldDescriptor = {
   select: createResponsiveSelectFieldDescriptor,
   number: createResponsiveNumberFieldDescriptor,
+  size: createResponsiveSizeFieldDescriptor,
+  ratio: createResponsiveRatioFieldDescriptor,
 };

@@ -234,14 +234,47 @@ export const justify = defineToken({
 export type Justify = TokenValue<typeof justify>;
 
 export const width = defineToken({
-  full:        { label: "Full",     classes: "w-full" },
-  prose:       { label: "Prose",    classes: "w-full max-w-prose" },
-  "screen-sm": { label: "Small",   classes: "w-full max-w-screen-sm" },
-  "screen-md": { label: "Medium",  classes: "w-full max-w-screen-md" },
-  "screen-lg": { label: "Large",   classes: "w-full max-w-screen-lg" },
-  "screen-xl": { label: "X-Large", classes: "w-full max-w-screen-xl" },
+  full:        { label: "Full",     classes: "w-full",                 cssValue: "100%" },
+  prose:       { label: "Prose",    classes: "w-full max-w-prose",     cssValue: "65ch" },
+  "screen-sm": { label: "Small",    classes: "w-full max-w-screen-sm", cssValue: "640px" },
+  "screen-md": { label: "Medium",   classes: "w-full max-w-screen-md", cssValue: "768px" },
+  "screen-lg": { label: "Large",    classes: "w-full max-w-screen-lg", cssValue: "1024px" },
+  "screen-xl": { label: "X-Large",  classes: "w-full max-w-screen-xl", cssValue: "1280px" },
 });
 export type Width = TokenValue<typeof width>;
+
+export type WidthPreset = Exclude<Width, "full">;
+
+export const overflow = defineToken({
+  visible: { label: "Visible", classes: "overflow-visible" },
+  hidden:  { label: "Hidden",  classes: "overflow-hidden" },
+  clip:    { label: "Clip",    classes: "overflow-clip" },
+  auto:    { label: "Auto",    classes: "overflow-auto" },
+});
+export type Overflow = TokenValue<typeof overflow>;
+
+export const overflowX = defineToken({
+  visible: { label: "Visible", classes: "overflow-x-visible" },
+  hidden:  { label: "Hidden",  classes: "overflow-x-hidden" },
+  clip:    { label: "Clip",    classes: "overflow-x-clip" },
+  auto:    { label: "Auto",    classes: "overflow-x-auto" },
+});
+export type OverflowX = TokenValue<typeof overflowX>;
+
+export const overflowY = defineToken({
+  visible: { label: "Visible", classes: "overflow-y-visible" },
+  hidden:  { label: "Hidden",  classes: "overflow-y-hidden" },
+  clip:    { label: "Clip",    classes: "overflow-y-clip" },
+  auto:    { label: "Auto",    classes: "overflow-y-auto" },
+});
+export type OverflowY = TokenValue<typeof overflowY>;
+
+export const verticalAlign = defineToken({
+  start:  { label: "Start",  classes: "justify-start" },
+  center: { label: "Center", classes: "justify-center" },
+  end:    { label: "End",    classes: "justify-end" },
+});
+export type VerticalAlign = TokenValue<typeof verticalAlign>;
 
 // Fixed row counts use auto-rows-[0] + overflow-hidden to collapse excess items,
 // so a grid with more children than rows hides the overflow rather than expanding.
@@ -255,3 +288,18 @@ export const gridRows = defineToken({
   "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
 });
 export type GridRows = TokenValue<typeof gridRows>;
+
+export const columnTemplate = defineToken({
+  "1":     { label: "1",         template: "minmax(0, 1fr)", count: 1 },
+  "2":     { label: "1 / 1",     template: "repeat(2, minmax(0, 1fr))", count: 2 },
+  "3":     { label: "1 / 1 / 1", template: "repeat(3, minmax(0, 1fr))", count: 3 },
+  "4":     { label: "1 / 1 / 1 / 1", template: "repeat(4, minmax(0, 1fr))", count: 4 },
+  "5":     { label: "5 Equal",   template: "repeat(5, minmax(0, 1fr))", count: 5 },
+  "6":     { label: "6 Equal",   template: "repeat(6, minmax(0, 1fr))", count: 6 },
+  "1-2":   { label: "1 / 2",     template: "minmax(0, 1fr) minmax(0, 2fr)", count: 2 },
+  "2-1":   { label: "2 / 1",     template: "minmax(0, 2fr) minmax(0, 1fr)", count: 2 },
+  "1-3":   { label: "1 / 3",     template: "minmax(0, 1fr) minmax(0, 3fr)", count: 2 },
+  "3-1":   { label: "3 / 1",     template: "minmax(0, 3fr) minmax(0, 1fr)", count: 2 },
+  "1-2-1": { label: "1 / 2 / 1", template: "minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr)", count: 3 },
+});
+export type ColumnTemplate = TokenValue<typeof columnTemplate>;

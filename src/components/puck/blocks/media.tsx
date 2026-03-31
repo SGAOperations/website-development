@@ -1,18 +1,18 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
-import { defineProps, field } from "@/lib/puck/define-props";
+import { defineProps, field, responsive } from "@/lib/puck/define-props";
+import {
+  createResponsiveStyle,
+  mapResponsiveValue,
+  mergeResponsiveStyles,
+  normalizeLegacyRatioValue,
+  ratioValueToCss,
+  type RatioValue,
+} from "@/lib/puck/style-values";
+import { type ResponsiveValue } from "@/lib/puck/responsive";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 import { mediaField } from "@/components/puck/fields/media-field";
-
-const aspectRatio = defineToken({
-  auto:   { label: "Auto", classes: "" },
-  square: { label: "Square (1:1)", classes: "aspect-square" },
-  photo:  { label: "Photo (4:3)", classes: "aspect-[4/3]" },
-  video:  { label: "Video (16:9)", classes: "aspect-video" },
-  wide:   { label: "Wide (21:9)", classes: "aspect-[21/9]" },
-});
-type AspectRatio = TokenValue<typeof aspectRatio>;
 
 const objectFit = defineToken({
   cover:   { label: "Cover", classes: "object-cover" },
@@ -25,7 +25,7 @@ type MediaProps = {
   image: { mediaId: number; url: string } | null;
   alt: string;
   objectFit: ObjectFit;
-  aspectRatio: AspectRatio;
+  aspectRatio: ResponsiveValue<RatioValue>;
   radius: Radius;
 };
 
@@ -33,7 +33,7 @@ const props = defineProps({
   image: field.raw(mediaField("Image"), null),
   alt: field.raw({ type: "text", label: "Alt text" }, ""),
   objectFit: field.select(objectFit, { label: "Object fit" }),
-  aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
+  aspectRatio: responsive.ratio({ label: "Aspect ratio", default: { mode: "none" } }),
   radius: field.select(radius, { label: "Corners" }),
 });
 
@@ -45,10 +45,17 @@ function MediaRenderer({
   radius: r,
 }: MediaProps) {
   const { url, mediaId } = image ?? {};
+  const aspectRatioStyles = mergeResponsiveStyles(
+    createResponsiveStyle(
+      "puck-aspect-ratio",
+      "puck-aspect-ratio",
+      mapResponsiveValue(normalizeLegacyRatioValue(ratio), ratioValueToCss),
+    ),
+  );
 
   const wrapperClass = cn(
     "relative h-full w-full overflow-hidden",
-    aspectRatio.classes[ratio],
+    aspectRatioStyles.className,
     radius.classes[r],
   );
 
@@ -59,6 +66,7 @@ function MediaRenderer({
           wrapperClass,
           "flex min-h-32 items-center justify-center bg-muted",
         )}
+        style={aspectRatioStyles.style}
       >
         <ImageIcon className="size-8 text-muted-foreground" />
       </div>
@@ -66,7 +74,7 @@ function MediaRenderer({
   }
 
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClass} style={aspectRatioStyles.style}>
       <img
         src={url}
         alt={alt}

@@ -1,11 +1,14 @@
 import type { CustomField, Slot } from "@puckeditor/core";
 import type { Token, TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
+import type { RatioValue, SizeUnit, SizeValue } from "@/lib/puck/style-values";
 import {
   responsiveField,
   responsiveFieldDescriptor,
   type ResponsiveNumberFieldDescriptor,
+  type ResponsiveRatioFieldDescriptor,
   type ResponsiveSelectFieldDescriptor,
+  type ResponsiveSizeFieldDescriptor,
 } from "@/components/puck/fields/responsive";
 
 // -- Prop spec shape ----------------------------------------------------------
@@ -41,6 +44,41 @@ export const responsive = {
       opts.default,
     );
   },
+
+  size<P extends string>(
+    opts: {
+      label: string;
+      default: NoInfer<SizeValue<P> | ResponsiveValue<SizeValue<P>>>;
+      presets?: TokenOption<P>[];
+      units?: SizeUnit[];
+      allowAuto?: boolean;
+      allowFit?: boolean;
+    },
+  ): PropSpec<CustomField<ResponsiveValue<SizeValue<P>>>, ResponsiveValue<SizeValue<P>>> {
+    return buildResponsiveFieldProp(
+      responsiveFieldDescriptor.size({
+        presets: opts.presets,
+        units: opts.units,
+        allowAuto: opts.allowAuto,
+        allowFit: opts.allowFit,
+      }),
+      opts.label,
+      opts.default,
+    );
+  },
+
+  ratio(
+    opts: {
+      label: string;
+      default: NoInfer<RatioValue | ResponsiveValue<RatioValue>>;
+    },
+  ): PropSpec<CustomField<ResponsiveValue<RatioValue>>, ResponsiveValue<RatioValue>> {
+    return buildResponsiveFieldProp(
+      responsiveFieldDescriptor.ratio(),
+      opts.label,
+      opts.default,
+    );
+  },
 };
 
 function buildResponsiveFieldProp<T extends string>(
@@ -53,10 +91,28 @@ function buildResponsiveFieldProp(
   label: string,
   defaultValue: NoInfer<number | ResponsiveValue<number>>,
 ): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>>;
-function buildResponsiveFieldProp<T extends string>(
-  descriptor: ResponsiveSelectFieldDescriptor<T> | ResponsiveNumberFieldDescriptor,
+function buildResponsiveFieldProp<P extends string>(
+  descriptor: ResponsiveSizeFieldDescriptor<P>,
   label: string,
-  defaultValue: NoInfer<T | ResponsiveValue<T>> | NoInfer<number | ResponsiveValue<number>>,
+  defaultValue: NoInfer<SizeValue<P> | ResponsiveValue<SizeValue<P>>>,
+): PropSpec<CustomField<ResponsiveValue<SizeValue<P>>>, ResponsiveValue<SizeValue<P>>>;
+function buildResponsiveFieldProp(
+  descriptor: ResponsiveRatioFieldDescriptor,
+  label: string,
+  defaultValue: NoInfer<RatioValue | ResponsiveValue<RatioValue>>,
+): PropSpec<CustomField<ResponsiveValue<RatioValue>>, ResponsiveValue<RatioValue>>;
+function buildResponsiveFieldProp<T extends string>(
+  descriptor:
+    | ResponsiveSelectFieldDescriptor<T>
+    | ResponsiveNumberFieldDescriptor
+    | ResponsiveSizeFieldDescriptor<string>
+    | ResponsiveRatioFieldDescriptor,
+  label: string,
+  defaultValue:
+    | NoInfer<T | ResponsiveValue<T>>
+    | NoInfer<number | ResponsiveValue<number>>
+    | NoInfer<SizeValue<string> | ResponsiveValue<SizeValue<string>>>
+    | NoInfer<RatioValue | ResponsiveValue<RatioValue>>,
 ): PropSpec<any, any> {
   return {
     field: responsiveField(descriptor as any, label),
@@ -64,7 +120,7 @@ function buildResponsiveFieldProp<T extends string>(
   };
 }
 
-function resolveResponsiveDefaultValue<T extends string | number>(
+function resolveResponsiveDefaultValue<T>(
   value: NoInfer<T | ResponsiveValue<T>>,
 ): ResponsiveValue<T> {
   return value !== undefined && typeof value === "object"

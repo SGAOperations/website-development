@@ -13,7 +13,7 @@ const breakpointLabels: Record<ResponsiveBreakpoint, string> = {
   lg: "Desktop",
 };
 
-export type ResponsiveFieldControlProps<T extends string | number> = {
+export type ResponsiveFieldControlProps<T> = {
   breakpoint: ResponsiveBreakpoint;
   isBase: boolean;
   value: T | undefined;
@@ -21,7 +21,7 @@ export type ResponsiveFieldControlProps<T extends string | number> = {
   readOnly?: boolean;
 };
 
-export function ResponsiveFieldFrame<T extends string | number>({
+export function ResponsiveFieldFrame<T>({
   label,
   value,
   onChange,
