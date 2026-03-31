@@ -2,7 +2,6 @@ import type { CustomField, Slot } from "@puckeditor/core";
 import type { Token, TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { responsiveField } from "@/components/puck/fields/responsive-field";
-import { selectAdapter } from "@/components/puck/fields/responsive-token-field";
 
 // -- Prop spec shape ----------------------------------------------------------
 
@@ -24,7 +23,7 @@ export const responsive = {
         : { base: (opts.default ?? token.defaultValue) } as ResponsiveValue<T>;
 
     return {
-      field: responsiveField(selectAdapter<T>(token.options), opts.label),
+      field: responsiveField<T>({ kind: "select", options: token.options }, opts.label),
       defaultValue,
     };
   },

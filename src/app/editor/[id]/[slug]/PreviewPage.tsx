@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
-import { Client } from "../../../[...puckPath]/client";
 import { getVersionContent } from "../../../../lib/documents/queries";
 import { resolvePreviewVersionId } from "./version-selection";
 import { loadDocument } from "./params";
+import { Render } from "@puckeditor/core";
+import { config } from "@/puck.config";
 
 export default async function PreviewPage({
   documentId,
@@ -29,5 +30,5 @@ export default async function PreviewPage({
   const data = await getVersionContent(targetVersionId);
   if (!data) notFound();
 
-  return <Client data={data} />;
+  return <Render config={config} data={data} />;
 }

@@ -1,7 +1,7 @@
-import { Client } from "./[...puckPath]/client";
 import { notFound } from "next/navigation";
 import { getDocumentByPath } from "../lib/documents/queries";
-
+import { Render } from "@puckeditor/core";
+import { config } from "@/puck.config";
 
 export default async function Page() {
   const path = "/";
@@ -11,7 +11,7 @@ export default async function Page() {
     return notFound();
   }
 
-  return <Client data={data} />;
+  return <Render config={config} data={data} />;
 }
 
 export const dynamic = "force-static";

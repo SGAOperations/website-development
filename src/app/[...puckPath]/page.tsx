@@ -1,7 +1,8 @@
-import { Client } from "./client";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getDocumentByPath } from "../../lib/documents/queries";
+import { Render } from "@puckeditor/core";
+import { config } from "@/puck.config";
 
 export async function generateMetadata({
   params,
@@ -29,9 +30,7 @@ export default async function Page({
     return notFound();
   }
 
-  return <Client data={data} />;
+  return <Render config={config} data={data} />;
 }
 
-// Force Next.js to produce static pages: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic
-// Delete this if you need dynamic rendering, such as access to headers or cookies
 export const dynamic = "force-static";
