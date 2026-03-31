@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import { defineProps, field, responsive } from "./define-props";
 import { defineToken } from "@/lib/puck/tokens";
-import { responsiveFieldDescriptor } from "@/lib/puck/fields/responsive";
+import { responsiveFieldDescriptor } from "@/components/puck/fields/responsive";
 
 const size = defineToken({ sm: "Small", md: "Medium", lg: "Large" });
 const colorToken = defineToken({

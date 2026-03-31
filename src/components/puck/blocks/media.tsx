@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
+import { mediaField } from "@/components/puck/fields/media-field";
 
 const aspectRatio = defineToken({
   auto:   { label: "Auto", classes: "" },
@@ -21,7 +22,7 @@ const objectFit = defineToken({
 type ObjectFit = TokenValue<typeof objectFit>;
 
 type MediaProps = {
-  url: string;
+  image: { mediaId: number; url: string } | null;
   alt: string;
   objectFit: ObjectFit;
   aspectRatio: AspectRatio;
@@ -29,44 +30,54 @@ type MediaProps = {
 };
 
 const props = defineProps({
-  url: field.raw({ type: "text", label: "URL" }, ""),
+  image: field.raw(mediaField("Image"), null),
   alt: field.raw({ type: "text", label: "Alt text" }, ""),
   objectFit: field.select(objectFit, { label: "Object fit" }),
   aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
   radius: field.select(radius, { label: "Corners" }),
 });
 
+function MediaRenderer({
+  image,
+  alt,
+  objectFit: fit,
+  aspectRatio: ratio,
+  radius: r,
+}: MediaProps) {
+  const { url, mediaId } = image ?? {};
+
+  const wrapperClass = cn(
+    "relative h-full w-full overflow-hidden",
+    aspectRatio.classes[ratio],
+    radius.classes[r],
+  );
+
+  if (!url) {
+    return (
+      <div
+        className={cn(
+          wrapperClass,
+          "flex min-h-32 items-center justify-center bg-muted",
+        )}
+      >
+        <ImageIcon className="size-8 text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className={wrapperClass}>
+      <img
+        src={url}
+        alt={alt}
+        className={cn("h-full w-full", objectFit.classes[fit])}
+      />
+    </div>
+  );
+}
+
 export const Media: ComponentConfig<MediaProps> = {
   label: "Image",
   ...props,
-  render: ({ url, alt, objectFit: fit, aspectRatio: ratio, radius: r }) => {
-    const wrapperClass = cn(
-      "relative h-full w-full overflow-hidden",
-      aspectRatio.classes[ratio],
-      radius.classes[r],
-    );
-
-    if (!url) {
-      return (
-        <div
-          className={cn(
-            wrapperClass,
-            "flex min-h-32 items-center justify-center bg-muted",
-          )}
-        >
-          <ImageIcon className="size-8 text-muted-foreground" />
-        </div>
-      );
-    }
-
-    return (
-      <div className={wrapperClass}>
-        <img
-          src={url}
-          alt={alt}
-          className={cn("h-full w-full", objectFit.classes[fit])}
-        />
-      </div>
-    );
-  },
+  render: (props) => <MediaRenderer {...props} />,
 };

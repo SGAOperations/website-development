@@ -132,19 +132,19 @@ The same token definition works for both static and responsive use. Numeric resp
 
 Responsive field descriptors are built on the server and rendered on the client, so the implementation is split intentionally:
 
-- Shared kind definitions live in `src/lib/puck/fields/responsive/kinds/*/shared.ts`.
-- Client renderers live in `src/lib/puck/fields/responsive/kinds/*/client.tsx`.
-- `src/lib/puck/fields/responsive/index.tsx` is the server-safe wrapper that turns a serializable descriptor into a Puck custom field.
-- `src/lib/puck/fields/responsive/client.tsx` is the client-only registry that maps `descriptor.kind` to the right renderer.
-- `src/lib/puck/fields/responsive/frame.tsx` owns the shared breakpoint UI; kind-specific controls only deal with their own value format.
+Everything lives in `src/components/puck/fields/responsive/`:
 
-This keeps the descriptor shape and the renderer associated by kind without pushing client code across the server boundary.
+- `kinds.ts` — descriptor types, factories, and the `responsiveFieldDescriptor` barrel (plain TS, no React).
+- `client.tsx` — client-only dispatcher + registry that maps `descriptor.kind` to the right renderer.
+- `index.tsx` — server-safe wrapper that turns a serializable descriptor into a Puck custom field.
+- `frame.tsx` — shared breakpoint UI; kind-specific controls only deal with their own value format.
+- `number-field.tsx`, `select-field.tsx` — kind renderers.
+- `number-control.tsx`, `select-control.tsx` — low-level input controls.
 
 To add a new responsive field kind:
 
-1. Add `shared.ts` and `client.tsx` under `src/lib/puck/fields/responsive/kinds/<kind>/`.
-2. Export the descriptor factory and type from `src/lib/puck/fields/responsive/kinds/index.ts`.
-3. Register the client component in `src/lib/puck/fields/responsive/kinds/registry.tsx`.
+1. Add the descriptor type and factory to `kinds.ts`.
+2. Add a `<kind>-field.tsx` renderer and register it in `client.tsx`.
 4. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
 
 ### 4. Rendering

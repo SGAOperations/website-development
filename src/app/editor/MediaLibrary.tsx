@@ -4,19 +4,11 @@ import { useRef, useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/media/actions";
-import type { Media } from "../../generated/prisma/client";
+import type { MediaWithUrl } from "@/components/puck/media-context";
 import { runAction } from "./runAction";
-import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard, formatRelativeTime, formatFileSize } from "./ResourceCard";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
-
-type MediaWithUrl = Media & { url: string };
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 function UploadCard({
   onFileSelected,
@@ -144,7 +136,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Media</h1>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="resource-card-grid grid gap-2">
         <UploadCard onFileSelected={handleUpload} disabled={isPending} />
 
         {files.map((file) => (

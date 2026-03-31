@@ -6,7 +6,7 @@ import {
   responsiveFieldDescriptor,
   type ResponsiveNumberFieldDescriptor,
   type ResponsiveSelectFieldDescriptor,
-} from "@/lib/puck/fields/responsive";
+} from "@/components/puck/fields/responsive";
 
 // -- Prop spec shape ----------------------------------------------------------
 
@@ -103,7 +103,7 @@ export const field = {
       defaultValue: (opts.default ?? token.defaultValue) as K,
     };
   },
-
+  
   raw: fieldRaw,
 };
 
