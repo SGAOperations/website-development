@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Render, type Data } from "@puckeditor/core";
 import { config } from "@/puck.config";
 

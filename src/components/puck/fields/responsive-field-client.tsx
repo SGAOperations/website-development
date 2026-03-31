@@ -9,7 +9,11 @@ import {
 export type { ResponsiveFieldClientProps } from "./responsive-kinds/client-registry";
 
 export function ResponsiveFieldClient(props: ResponsiveFieldClientProps) {
-  const FieldComponent = responsiveFieldClientRegistry[props.descriptor.kind] as ComponentType<any>;
+  const FieldComponent = responsiveFieldClientRegistry[props.descriptor.kind];
+
+  if (!FieldComponent) {
+    throw new Error(`Unknown responsive field kind: ${props.descriptor.kind}`);
+  }
 
   return <FieldComponent {...props} />;
 }
