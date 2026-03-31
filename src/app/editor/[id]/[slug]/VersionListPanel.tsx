@@ -12,6 +12,7 @@ export interface VersionListPanelProps {
   previewBaseUrl: string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
+  isDirty?: boolean;
 }
 
 function formatVersionLabel(version: Version) {
@@ -30,6 +31,7 @@ function VersionEntry({
   previewBaseUrl,
   isPublishing,
   isPublishDisabled,
+  isDirty
 }: {
   version: Version;
   isCurrent: boolean;
@@ -39,6 +41,7 @@ function VersionEntry({
   previewBaseUrl: string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
+  isDirty?: boolean;
 }) {
   const { label, time } = formatVersionLabel(version);
 
@@ -104,6 +107,7 @@ export function VersionListPanel({
   previewBaseUrl,
   isPublishing,
   isPublishDisabled,
+  isDirty,
 }: VersionListPanelProps) {
 
   return (
@@ -130,11 +134,16 @@ export function VersionListPanel({
               version={version}
               isCurrent={version.id === currentVersionId}
               isPublished={version.id === publishedVersionId}
-              onLoad={() => onLoadVersion(version.id)}
+              onLoad={() => {
+                if(!isDirty || window.confirm("You have unsaved changes. Are you sure you want to continue?")) {
+                  onLoadVersion(version.id)
+                }
+              }}
               onPublish={() => onPublishVersion(version.id)}
               previewBaseUrl={previewBaseUrl}
               isPublishing={isPublishing}
               isPublishDisabled={isPublishDisabled}
+              isDirty={isDirty}
             />
           ))}
         </div>

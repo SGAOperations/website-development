@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
+  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId, isDirty } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
@@ -46,6 +46,7 @@ export function VersionPluginContainer() {
         previewBaseUrl={getEditorUrl(documentId, documentName)}
         isPublishing={isPublishing}
         isPublishDisabled={isArchived}
+        isDirty={isDirty}
       />
     </div>
   );

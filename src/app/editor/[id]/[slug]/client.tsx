@@ -3,7 +3,7 @@
 import type { Data } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
 import config from "../../../../puck.config";
-import { useState, createContext, useContext, useCallback } from "react";
+import { useState, createContext, useContext, useCallback, useEffect } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
@@ -21,6 +21,7 @@ type DocumentContextType = {
   addVersion: (version: Version) => void;
   setPublishedVersionId: (id: number) => void;
   setIsDirty: (value: boolean) => void;
+  isDirty: boolean;
 };
 
 const DocumentContext = createContext<DocumentContextType>({
@@ -33,6 +34,7 @@ const DocumentContext = createContext<DocumentContextType>({
   setIsDirty: (boolean) => {
     //empty function, will pass state change in later
   },
+  isDirty: false
 });
 
 export function useDocumentContext() {
@@ -62,19 +64,21 @@ export function Client({
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
   const [isDirty, setIsDirty ] = useState<boolean>(false);
-
-  const showSaveModal = (event: Event) => {
-  if ("hidden" == window.document.visibilityState && isDirty) {
-    if (window.confirm("You have unsaved changes. Continue?")) {
-      //continue
-    } else {
-      event.preventDefault()
+  useEffect(() => {
+    if (!isDirty) {
+      return;
     }
-  }
-}
 
+    const showSaveModal = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
 
-window.addEventListener("visibilitychange", () => showSaveModal )
+    window.addEventListener("beforeunload", showSaveModal);
+
+    return () => {
+      window.removeEventListener("beforeunload", showSaveModal);
+    };
+  }, [isDirty]);
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
@@ -84,7 +88,7 @@ window.addEventListener("visibilitychange", () => showSaveModal )
   return (
     <MediaProvider media={media}>
     <DocumentContext.Provider
-      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId, setIsDirty }}
+      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId, setIsDirty, isDirty }}
     >
       <Puck
         config={config}
@@ -99,10 +103,7 @@ window.addEventListener("visibilitychange", () => showSaveModal )
           actionBar: ActionBarOverride,
           headerActions: SaveButton
         }}
-        onChange={(data) => {
-          setCurrentData(data);
-          setIsDirty(true);
-        }}
+        onChange={(data) => setIsDirty(true)}
       />
     </DocumentContext.Provider>
     </MediaProvider>
