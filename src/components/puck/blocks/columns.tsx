@@ -4,7 +4,9 @@ import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tok
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { getGridClassName, getMaxCols } from "@/lib/puck/layout";
 
-type SlotKey = `column${ColumnCount}`;
+const columnSlotNumbers = [1, 2, 3, 4, 5, 6] as const;
+type ColumnSlotNumber = (typeof columnSlotNumbers)[number];
+type SlotKey = `column${ColumnSlotNumber}`;
 
 type ColumnsProps = {
   [K in SlotKey]: Slot;
@@ -14,8 +16,8 @@ type ColumnsProps = {
 };
 
 const slotField = { type: "slot" } as const;
-const columnSlotKeys = columnCount.options.map(
-  ({ value }) => `column${value}` as SlotKey,
+const columnSlotKeys = columnSlotNumbers.map(
+  (value) => `column${value}` as SlotKey,
 );
 
 const columnSlotFields = Object.fromEntries(
