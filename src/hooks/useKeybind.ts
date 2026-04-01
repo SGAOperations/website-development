@@ -13,6 +13,16 @@ export type Keybind = {
 type KeybindTarget = Document | HTMLElement | Window | null | undefined;
 type KeybindCallback = (event: KeyboardEvent, keybind: Keybind) => void;
 
+function useStableTargetList<T>(values: readonly T[]) {
+  const ref = useRef(values);
+
+  if (ref.current.length !== values.length || ref.current.some((value, index) => value !== values[index])) {
+    ref.current = values;
+  }
+
+  return ref.current;
+}
+
 function matchesKeybind(event: KeyboardEvent, keybind: Keybind) {
   return (
     event.key.toLowerCase() === keybind.key.toLowerCase() &&
@@ -30,20 +40,26 @@ export function useKeybind(
   { capture = false, enabled = true }: { capture?: boolean; enabled?: boolean } = {},
 ) {
   const callbackRef = useRef(callback);
+  const keybindsRef = useRef(keybinds);
+  const stableTargets = useStableTargetList(targets);
 
   useLayoutEffect(() => {
     callbackRef.current = callback;
   }, [callback]);
 
+  useLayoutEffect(() => {
+    keybindsRef.current = keybinds;
+  }, [keybinds]);
+
   const handleKeydown = useCallback((event: KeyboardEvent) => {
-    const matchedKeybind = keybinds.find((keybind) => matchesKeybind(event, keybind));
+    const matchedKeybind = keybindsRef.current.find((keybind) => matchesKeybind(event, keybind));
 
     if (!matchedKeybind) {
       return;
     }
 
     callbackRef.current(event, matchedKeybind);
-  }, [keybinds]);
+  }, []);
 
   useEffect(() => {
     if (!enabled) {
@@ -51,7 +67,7 @@ export function useKeybind(
     }
 
     const fallbackTarget = typeof document === "undefined" ? null : document;
-    const resolved = [...new Set(targets.map((node) => node ?? fallbackTarget).filter(Boolean))] as EventTarget[];
+    const resolved = [...new Set(stableTargets.map((node) => node ?? fallbackTarget).filter(Boolean))] as EventTarget[];
 
     if (resolved.length === 0) {
       return;
@@ -66,5 +82,5 @@ export function useKeybind(
         node.removeEventListener("keydown", handleKeydown as EventListener, capture);
       });
     };
-  }, [capture, enabled, handleKeydown, targets]);
+  }, [capture, enabled, handleKeydown, stableTargets]);
 }

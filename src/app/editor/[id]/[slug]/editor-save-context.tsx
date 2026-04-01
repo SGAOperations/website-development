@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useTransition, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useRef, useTransition, type ReactNode } from "react";
 import { createUsePuck } from "@puckeditor/core";
 import { toast } from "sonner";
 import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
@@ -46,14 +46,35 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
   const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
   const { alert } = useDialogs();
   const [isSaving, startTransition] = useTransition();
+  const canSave = !isArchived && !isSaving && isDirty;
+  const saveStateRef = useRef({
+    canSave,
+    isArchived,
+    isSaving,
+    isDirty,
+    data,
+    documentId,
+    documentName,
+  });
+
+  saveStateRef.current = {
+    canSave,
+    isArchived,
+    isSaving,
+    isDirty,
+    data,
+    documentId,
+    documentName,
+  };
 
   const save = useCallback(() => {
-    if (isArchived || isSaving) {
-      return;
-    }
+    const { canSave, isArchived, isSaving, isDirty, data, documentId, documentName } = saveStateRef.current;
 
-    if (!isDirty) {
-      toast.info("No changes to save", { id: "editor-no-changes-to-save" });
+    if (!canSave) {
+      if (!isArchived && !isSaving && !isDirty) {
+        toast.info("No changes to save", { id: "editor-no-changes-to-save" });
+      }
+
       return;
     }
 
@@ -78,12 +99,12 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
         },
       });
     });
-  }, [addVersion, alert, data, documentId, documentName, isArchived, isDirty, isSaving]);
+  }, [addVersion, alert, startTransition]);
 
   useSaveHotkey(save);
 
   return (
-    <EditorSaveContext.Provider value={{ canSave: !isArchived && !isSaving && isDirty, isSaving, save }}>
+    <EditorSaveContext.Provider value={{ canSave, isSaving, save }}>
       {children}
     </EditorSaveContext.Provider>
   );
