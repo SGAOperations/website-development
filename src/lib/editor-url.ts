@@ -31,3 +31,11 @@ export function getEditorUrl(
   const base = `/editor/${documentId}/${slug}`;
   return versionId !== undefined ? `${base}/${versionId}` : base;
 }
+
+export function getPreviewUrl(
+  documentId: number,
+  documentName: string | null,
+  versionId?: number,
+): string {
+  return `${getEditorUrl(documentId, documentName, versionId)}/preview`;
+}

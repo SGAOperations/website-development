@@ -9,7 +9,7 @@ export interface VersionListPanelProps {
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
-  previewBaseUrl: string;
+  getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
 }
@@ -27,7 +27,7 @@ function VersionEntry({
   isPublished,
   onLoad,
   onPublish,
-  previewBaseUrl,
+  getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
 }: {
@@ -36,7 +36,7 @@ function VersionEntry({
   isPublished: boolean;
   onLoad: () => void;
   onPublish: () => void;
-  previewBaseUrl: string;
+  getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
 }) {
@@ -79,7 +79,7 @@ function VersionEntry({
             </button>
           )}
           <a
-            href={`${previewBaseUrl}/${version.id}/preview`}
+            href={getPreviewUrlForVersion(version.id)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
@@ -101,7 +101,7 @@ export function VersionListPanel({
   publishedVersionId,
   onLoadVersion,
   onPublishVersion,
-  previewBaseUrl,
+  getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
 }: VersionListPanelProps) {
@@ -132,7 +132,7 @@ export function VersionListPanel({
               isPublished={version.id === publishedVersionId}
               onLoad={() => onLoadVersion(version.id)}
               onPublish={() => onPublishVersion(version.id)}
-              previewBaseUrl={previewBaseUrl}
+              getPreviewUrlForVersion={getPreviewUrlForVersion}
               isPublishing={isPublishing}
               isPublishDisabled={isPublishDisabled}
             />

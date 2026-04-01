@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./client";
 import { publishVersionAction } from "../../../../lib/documents/actions";
-import { getEditorUrl } from "../../../../lib/editor-url";
+import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
 import { runAction } from "../../runAction";
 import { VersionListPanel } from "./VersionListPanel";
 import { useDialogs } from "@/components/ui/dialog-provider";
@@ -43,7 +43,9 @@ export function VersionPluginContainer() {
         publishedVersionId={publishedVersionId}
         onLoadVersion={handleLoadVersion}
         onPublishVersion={handlePublishVersion}
-        previewBaseUrl={getEditorUrl(documentId, documentName)}
+        getPreviewUrlForVersion={(targetVersionId) =>
+          getPreviewUrl(documentId, documentName, targetVersionId)
+        }
         isPublishing={isPublishing}
         isPublishDisabled={isArchived}
       />

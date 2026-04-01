@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { useDocumentContext } from "./client";
 import { saveVersionAction } from "../../../../lib/documents/actions";
-import { getEditorUrl } from "../../../../lib/editor-url";
+import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
 import { runAction } from "../../runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
@@ -29,7 +29,17 @@ export function SaveButton() {
 
       addVersion(result.data.version);
       window.history.replaceState(null, "", getEditorUrl(documentId, documentName, result.data.version.id));
-      toast.success("Saved");
+
+      const previewUrl = getPreviewUrl(documentId, documentName, result.data.version.id);
+      toast.success("Saved", {
+        action: {
+          label: "Preview",
+
+          onClick: () => {
+            window.open(previewUrl, "_blank");
+          },
+        },
+      });
     });
   };
 
