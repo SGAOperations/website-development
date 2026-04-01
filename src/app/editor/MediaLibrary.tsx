@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/media/actions";
 import type { MediaWithUrl } from "@/components/puck/media-context";
 import { runAction } from "./runAction";
-import { ResourceCard, NewResourceCard, formatRelativeTime, formatFileSize } from "./ResourceCard";
+import { ResourceCard, NewResourceCard } from "./ResourceCard";
+import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 

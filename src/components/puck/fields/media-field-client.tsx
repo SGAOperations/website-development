@@ -16,9 +16,8 @@ import { toast } from "sonner";
 import {
   ResourceCard,
   NewResourceCard,
-  formatRelativeTime,
-  formatFileSize,
 } from "@/app/editor/ResourceCard";
+import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ImageValue } from "./media-field";
 
