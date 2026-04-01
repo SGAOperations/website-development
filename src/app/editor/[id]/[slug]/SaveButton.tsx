@@ -3,7 +3,8 @@
 import { createUsePuck } from "@puckeditor/core";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { useDocumentContext } from "./client";
+import { useDocumentContext } from "./document-context";
+import { useUnsavedChangesContext } from "./unsaved-changes-context";
 import { saveVersionAction } from "../../../../lib/documents/actions";
 import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
 import { runAction } from "../../runAction";
@@ -13,7 +14,8 @@ const usePuck = createUsePuck();
 
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
-  const { documentId, documentName, isArchived, isDirty, addVersion, clearUnsavedChangesGuard } = useDocumentContext();
+  const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
+  const { clearUnsavedChangesGuard } = useUnsavedChangesContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();

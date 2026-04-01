@@ -3,14 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDialogs } from "@/components/ui/dialog-provider";
 
-export type ConfirmDiscardChangesOptions = {
-  message?: string;
-  actionLabel?: string;
-  destructive?: boolean;
-};
-
-const DEFAULT_LEAVE_MESSAGE = "You have unsaved changes. Leave this page without saving?";
-const DEFAULT_LEAVE_ACTION_LABEL = "Leave";
+const LEAVE_MESSAGE = "You have unsaved changes. Leave this page without saving?";
 
 export function useUnsavedChangesGuard(isDirty: boolean) {
   const { confirm } = useDialogs();
@@ -32,15 +25,15 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
     });
   }, []);
 
-  const confirmDiscardChanges = useCallback(async (options: ConfirmDiscardChangesOptions = {}) => {
+  const confirmDiscardChanges = useCallback(async () => {
     if (!isDirty) {
       return true;
     }
 
     const shouldLeave = await confirm({
-      message: options.message ?? DEFAULT_LEAVE_MESSAGE,
-      actionLabel: options.actionLabel ?? DEFAULT_LEAVE_ACTION_LABEL,
-      destructive: options.destructive ?? true,
+      message: LEAVE_MESSAGE,
+      actionLabel: "Leave",
+      destructive: true,
     });
 
     if (!shouldLeave) {
@@ -74,7 +67,7 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
         return;
       }
 
-      const shouldLeave = window.confirm(DEFAULT_LEAVE_MESSAGE);
+      const shouldLeave = window.confirm(LEAVE_MESSAGE);
 
       if (!shouldLeave) {
         window.history.pushState(window.history.state, "", window.location.href);

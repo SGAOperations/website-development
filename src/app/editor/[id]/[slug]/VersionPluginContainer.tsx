@@ -2,7 +2,8 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useDocumentContext } from "./client";
+import { useDocumentContext } from "./document-context";
+import { useUnsavedChangesContext } from "./unsaved-changes-context";
 import { publishVersionAction } from "../../../../lib/documents/actions";
 import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
 import { runAction } from "../../runAction";
@@ -12,7 +13,8 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, confirmDiscardChanges, setPublishedVersionId } = useDocumentContext();
+  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
+  const { confirmDiscardChanges } = useUnsavedChangesContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
@@ -35,11 +37,7 @@ export function VersionPluginContainer() {
       return;
     }
 
-    const shouldLeave = await confirmDiscardChanges({
-      message: "You have unsaved changes. Leave this version without saving?",
-      actionLabel: "Leave",
-      destructive: true,
-    });
+    const shouldLeave = await confirmDiscardChanges();
 
     if (!shouldLeave) {
       return;
