@@ -36,7 +36,7 @@ export function Client({
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
   const [isDirty, setIsDirty] = useState(false);
-  const { confirmDiscardChanges, clearUnsavedChangesGuard } = useUnsavedChangesGuard(isDirty);
+  const { confirmDiscardChanges } = useUnsavedChangesGuard(isDirty);
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
@@ -49,7 +49,7 @@ export function Client({
       <DocumentContext.Provider
         value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
       >
-        <UnsavedChangesContext.Provider value={{ confirmDiscardChanges, clearUnsavedChangesGuard }}>
+        <UnsavedChangesContext.Provider value={{ confirmDiscardChanges }}>
           <Puck
             config={config}
             data={data}

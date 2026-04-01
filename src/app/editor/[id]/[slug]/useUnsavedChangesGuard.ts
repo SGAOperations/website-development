@@ -5,25 +5,15 @@ import { useDialogs } from "@/components/ui/dialog-provider";
 
 const LEAVE_MESSAGE = "You have unsaved changes. Leave this page without saving?";
 
+function getCurrentHistoryIndex() {
+  const historyState = window.history.state as { idx?: number } | null;
+  return typeof historyState?.idx === "number" ? historyState.idx : null;
+}
+
 export function useUnsavedChangesGuard(isDirty: boolean) {
   const { confirm } = useDialogs();
-  const isHistoryGuardActiveRef = useRef(false);
-  const skipNextPopStateRef = useRef(false);
-  const pendingNavigationRef = useRef<(() => void) | null>(null);
-
-  const clearUnsavedChangesGuard = useCallback(() => {
-    if (!isHistoryGuardActiveRef.current) {
-      return Promise.resolve();
-    }
-
-    isHistoryGuardActiveRef.current = false;
-
-    return new Promise<void>((resolve) => {
-      pendingNavigationRef.current = resolve;
-      skipNextPopStateRef.current = true;
-      window.history.back();
-    });
-  }, []);
+  const historyIndexRef = useRef<number | null>(null);
+  const isRevertingNavigationRef = useRef(false);
 
   const confirmDiscardChanges = useCallback(async () => {
     if (!isDirty) {
@@ -40,14 +30,16 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
       return false;
     }
 
-    await clearUnsavedChangesGuard();
     return true;
-  }, [clearUnsavedChangesGuard, confirm, isDirty]);
+  }, [confirm, isDirty]);
 
   useEffect(() => {
     if (!isDirty) {
       return;
     }
+
+    historyIndexRef.current = getCurrentHistoryIndex();
+    isRevertingNavigationRef.current = false;
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
@@ -56,47 +48,41 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
     };
 
     const handlePopState = () => {
-      if (skipNextPopStateRef.current) {
-        skipNextPopStateRef.current = false;
-        pendingNavigationRef.current?.();
-        pendingNavigationRef.current = null;
-        return;
+      const nextHistoryIndex = getCurrentHistoryIndex();
+
+      if (!isRevertingNavigationRef.current) {
+        const shouldLeave = window.confirm(LEAVE_MESSAGE);
+
+        if (!shouldLeave) {
+          if (
+            historyIndexRef.current !== null &&
+            nextHistoryIndex !== null &&
+            historyIndexRef.current !== nextHistoryIndex
+          ) {
+            isRevertingNavigationRef.current = true;
+            window.history.go(historyIndexRef.current > nextHistoryIndex ? 1 : -1);
+            return;
+          }
+
+          console.warn("Unable to determine history direction for unsaved-changes guard");
+        }
       }
 
-      if (!isHistoryGuardActiveRef.current) {
-        return;
-      }
-
-      const shouldLeave = window.confirm(LEAVE_MESSAGE);
-
-      if (!shouldLeave) {
-        window.history.pushState(window.history.state, "", window.location.href);
-        isHistoryGuardActiveRef.current = true;
-        return;
-      }
-
-      isHistoryGuardActiveRef.current = false;
-      skipNextPopStateRef.current = true;
-      window.history.back();
+      isRevertingNavigationRef.current = false;
+      historyIndexRef.current = nextHistoryIndex;
     };
-
-    if (!isHistoryGuardActiveRef.current) {
-      window.history.pushState(window.history.state, "", window.location.href);
-      isHistoryGuardActiveRef.current = true;
-    }
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     window.addEventListener("popstate", handlePopState);
 
     return () => {
-      isHistoryGuardActiveRef.current = false;
+      isRevertingNavigationRef.current = false;
       window.removeEventListener("beforeunload", handleBeforeUnload);
       window.removeEventListener("popstate", handlePopState);
     };
   }, [isDirty]);
 
   return {
-    clearUnsavedChangesGuard,
     confirmDiscardChanges,
   };
 }

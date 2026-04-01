@@ -4,7 +4,6 @@ import { createUsePuck } from "@puckeditor/core";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { useDocumentContext } from "./document-context";
-import { useUnsavedChangesContext } from "./unsaved-changes-context";
 import { saveVersionAction } from "../../../../lib/documents/actions";
 import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
 import { runAction } from "../../runAction";
@@ -15,7 +14,6 @@ const usePuck = createUsePuck();
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
   const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
-  const { clearUnsavedChangesGuard } = useUnsavedChangesContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
@@ -29,9 +27,8 @@ export function SaveButton() {
         return;
       }
 
-      await clearUnsavedChangesGuard();
       addVersion(result.data.version);
-      window.history.replaceState(null, "", getEditorUrl(documentId, documentName, result.data.version.id));
+      window.history.replaceState(window.history.state, "", getEditorUrl(documentId, documentName, result.data.version.id));
 
       const previewUrl = getPreviewUrl(documentId, documentName, result.data.version.id);
       toast.success("Saved", {
