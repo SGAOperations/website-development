@@ -12,9 +12,9 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, setPublishedVersionId } = useDocumentContext();
+  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, confirmDiscardChanges, setPublishedVersionId } = useDocumentContext();
   const [isPublishing, startTransition] = useTransition();
-  const { alert, confirm } = useDialogs();
+  const { alert } = useDialogs();
 
   const handlePublishVersion = (targetVersionId: number) => {
     startTransition(async () => {
@@ -35,16 +35,14 @@ export function VersionPluginContainer() {
       return;
     }
 
-    if (isDirty) {
-      const shouldLeave = await confirm({
-        message: "You have unsaved changes. Leave this version without saving?",
-        actionLabel: "Leave",
-        destructive: true,
-      });
+    const shouldLeave = await confirmDiscardChanges({
+      message: "You have unsaved changes. Leave this version without saving?",
+      actionLabel: "Leave",
+      destructive: true,
+    });
 
-      if (!shouldLeave) {
-        return;
-      }
+    if (!shouldLeave) {
+      return;
     }
 
     router.replace(getEditorUrl(documentId, documentName, versionIdToLoad));

@@ -3,13 +3,14 @@
 import type { Data } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
 import config from "../../../../puck.config";
-import { useState, createContext, useContext, useCallback, useEffect } from "react";
+import { useState, createContext, useContext, useCallback } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
 import { MediaProvider, type MediaWithUrl } from "@/components/puck/media-context";
 import type { Version } from "../../../../lib/types";
+import { useUnsavedChangesGuard, type ConfirmDiscardChangesOptions } from "./useUnsavedChangesGuard";
 
 type DocumentContextType = {
   documentId: number;
@@ -20,6 +21,8 @@ type DocumentContextType = {
   isArchived: boolean;
   isDirty: boolean;
   addVersion: (version: Version) => void;
+  confirmDiscardChanges: (options?: ConfirmDiscardChangesOptions) => Promise<boolean>;
+  clearUnsavedChangesGuard: () => Promise<void>;
   setPublishedVersionId: (id: number) => void;
 };
 
@@ -30,6 +33,8 @@ const DocumentContext = createContext<DocumentContextType>({
   isArchived: false,
   isDirty: false,
   addVersion: () => {},
+  confirmDiscardChanges: async () => true,
+  clearUnsavedChangesGuard: async () => {},
   setPublishedVersionId: () => {},
 });
 
@@ -60,6 +65,7 @@ export function Client({
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
   const [isDirty, setIsDirty] = useState(false);
+  const { confirmDiscardChanges, clearUnsavedChangesGuard } = useUnsavedChangesGuard(isDirty);
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
@@ -67,28 +73,10 @@ export function Client({
     setIsDirty(false);
   }, []);
 
-  useEffect(() => {
-    if (!isDirty) {
-      return;
-    }
-
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      // Needed for Chrome version <=119 to show the confirmation dialog
-      event.returnValue = true;
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [isDirty]);
-
   return (
     <MediaProvider media={media}>
     <DocumentContext.Provider
-      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
+      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, confirmDiscardChanges, clearUnsavedChangesGuard, setPublishedVersionId }}
     >
       <Puck
         config={config}
