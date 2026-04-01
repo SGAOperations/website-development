@@ -1,39 +1,17 @@
 "use client";
 
 import type { Data } from "@puckeditor/core";
-import { Puck } from "@puckeditor/core";
+import { Puck, blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import config from "../../../../puck.config";
-import { useState, createContext, useContext, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { VersionPlugin } from "./VersionPlugin";
-import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
 import { MediaProvider, type MediaWithUrl } from "@/components/puck/media-context";
 import type { Version } from "../../../../lib/types";
-
-type DocumentContextType = {
-  documentId: number;
-  documentName: string;
-  versionId?: number;
-  publishedVersionId?: number;
-  versions: Version[];
-  isArchived: boolean;
-  addVersion: (version: Version) => void;
-  setPublishedVersionId: (id: number) => void;
-};
-
-const DocumentContext = createContext<DocumentContextType>({
-  documentId: 0,
-  documentName: "",
-  versions: [],
-  isArchived: false,
-  addVersion: () => {},
-  setPublishedVersionId: () => {},
-});
-
-export function useDocumentContext() {
-  return useContext(DocumentContext);
-}
+import { useUnsavedChangesGuard } from "./useUnsavedChangesGuard";
+import { DocumentContext } from "./document-context";
+import { UnsavedChangesContext } from "./unsaved-changes-context";
 
 export function Client({
   documentId,
@@ -57,32 +35,38 @@ export function Client({
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
+  const [isDirty, setIsDirty] = useState(false);
+  const { confirmDiscardChanges } = useUnsavedChangesGuard(isDirty);
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
     setVersionId(version.id);
+    setIsDirty(false);
   }, []);
 
   return (
     <MediaProvider media={media}>
-    <DocumentContext.Provider
-      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
-    >
-      <Puck
-        config={config}
-        data={data}
-        ui={{plugin: {current: "version-plugin"}}}
-        plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
-        permissions={isArchived
-          ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
-          : { duplicate: false } // We replace this with our own, to avoid an icon collision
-        }
-        overrides={{
-          actionBar: ActionBarOverride,
-          headerActions: SaveButton
-        }}
-      />
-    </DocumentContext.Provider>
+      <DocumentContext.Provider
+        value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
+      >
+        <UnsavedChangesContext.Provider value={{ confirmDiscardChanges }}>
+          <Puck
+            config={config}
+            data={data}
+            onChange={() => setIsDirty(true)}
+            ui={{ plugin: { current: "version-plugin" } }}
+            plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
+            permissions={isArchived
+              ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
+              : { duplicate: false } // We replace this with our own, to avoid an icon collision
+            }
+            overrides={{
+              actionBar: ActionBarOverride,
+              headerActions: SaveButton
+            }}
+          />
+        </UnsavedChangesContext.Provider>
+      </DocumentContext.Provider>
     </MediaProvider>
   );
 }
