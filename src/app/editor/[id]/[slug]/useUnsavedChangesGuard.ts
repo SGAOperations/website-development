@@ -5,6 +5,12 @@ import { useDialogs } from "@/components/ui/dialog-provider";
 
 const LEAVE_MESSAGE = "You have unsaved changes. Leave this page without saving?";
 
+// Next.js internally sets an auto-incrementing `idx` on history.state to track
+// navigation position. This is an undocumented internal — not a public API — so
+// it may disappear or change in any Next.js release. We use it to determine
+// whether the user navigated forward or back so we can revert the navigation
+// when they cancel. If `idx` is absent we degrade gracefully (warn, but can't
+// revert). See: https://github.com/vercel/next.js/discussions/34980
 function getCurrentHistoryIndex() {
   const historyState = window.history.state as { idx?: number } | null;
   return typeof historyState?.idx === "number" ? historyState.idx : null;
@@ -20,17 +26,11 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
       return true;
     }
 
-    const shouldLeave = await confirm({
+    return await confirm({
       message: LEAVE_MESSAGE,
       actionLabel: "Leave",
       destructive: true,
     });
-
-    if (!shouldLeave) {
-      return false;
-    }
-
-    return true;
   }, [confirm, isDirty]);
 
   useEffect(() => {
