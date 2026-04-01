@@ -3,10 +3,11 @@
 import type { Data } from "@puckeditor/core";
 import { Puck, blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import config from "../../../../puck.config";
-import { useState, useCallback } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { ActionBarOverride } from "./ActionBarOverride";
 import { SaveButton } from "./SaveButton";
+import { EditorSaveProvider, useEditorSaveHotkey } from "./editor-save-context";
 import { MediaProvider, type MediaWithUrl } from "@/components/puck/media-context";
 import type { Version } from "../../../../lib/types";
 import { useUnsavedChangesGuard } from "./useUnsavedChangesGuard";
@@ -62,11 +63,29 @@ export function Client({
             }
             overrides={{
               actionBar: ActionBarOverride,
-              headerActions: SaveButton
+              headerActions: SaveButton,
+              puck: EditorPuckOverride,
+              iframe: EditorIframeOverride,
             }}
           />
         </UnsavedChangesContext.Provider>
       </DocumentContext.Provider>
     </MediaProvider>
   );
+}
+
+function EditorPuckOverride({ children }: { children: ReactNode }) {
+  return <EditorSaveProvider>{children}</EditorSaveProvider>;
+}
+
+function EditorIframeOverride({
+  children,
+  document,
+}: {
+  children: ReactNode;
+  document?: Document;
+}) {
+  useEditorSaveHotkey(document, Boolean(document));
+
+  return <>{children}</>;
 }
