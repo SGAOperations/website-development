@@ -33,6 +33,7 @@ const props = defineProps({
 
 export const Columns: ComponentConfig<ColumnsProps> = {
   label: "Columns",
+  inline: true,
   fields: { ...columnSlotFields, ...props.fields },
   defaultProps: { ...columnSlotDefaults, ...props.defaultProps },
   // Hide column slot fields that exceed the selected column count,
@@ -48,12 +49,15 @@ export const Columns: ComponentConfig<ColumnsProps> = {
 
     return f;
   },
-  render: ({ columns, gap, ...slots }) => {
+  render: ({ columns, gap, puck, ...slots }) => {
     const maxCols = getMaxCols(columns);
     const slotMap = slots as Record<SlotKey, SlotComponent>;
 
     return (
-      <div className={getGridClassName({ columns, rows: { base: "auto" }, gap })}>
+      <div
+        ref={puck.dragRef}
+        className={getGridClassName({ columns, rows: { base: "auto" }, gap })}
+      >
         {columnSlotKeys.slice(0, maxCols).map((key) => {
           const Col = slotMap[key];
           return Col && <Col key={key} />;

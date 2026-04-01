@@ -42,12 +42,16 @@ const props = defineProps({
 
 export const Container: ComponentConfig<ContainerProps> = {
   label: "Container",
+  inline: true,
   ...props,
-  render: ({ content: Content, tag: t, ...style }) => {
+  render: ({ content: Content, tag: t, puck, ...style }) => {
     const Tag = t as ElementType;
 
     return (
-      <Tag className={getContainerSurfaceClassName(style)}>
+      <Tag
+        ref={puck.dragRef}
+        className={getContainerSurfaceClassName(style)}
+      >
         {Content && (
           <Content
             className={getContainerSlotClassName(style)}

@@ -20,11 +20,13 @@ const props = defineProps({
 
 export const Grid: ComponentConfig<GridProps> = {
   label: "Grid",
+  inline: true,
   ...props,
-  render: ({ content: Content, columns, rows: r, gap }) => {
+  render: ({ content: Content, columns, rows: r, gap, puck }) => {
     if (!Content) {
       return (
         <div
+          ref={puck.dragRef}
           className={getGridClassName({
             columns,
             rows: r,
@@ -37,6 +39,7 @@ export const Grid: ComponentConfig<GridProps> = {
 
     return (
       <Content
+        ref={puck.dragRef}
         className={getGridClassName({ columns, rows: r, gap })}
         minEmptyHeight="200px"
       />
