@@ -14,7 +14,8 @@ import {
 import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents/utils";
 import { getEditorUrl } from "../../lib/editor-url";
-import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard } from "./ResourceCard";
+import { formatRelativeTime } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 import {
