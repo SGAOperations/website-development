@@ -18,6 +18,7 @@ type DocumentContextType = {
   publishedVersionId?: number;
   versions: Version[];
   isArchived: boolean;
+  isDirty: boolean;
   addVersion: (version: Version) => void;
   setPublishedVersionId: (id: number) => void;
 };
@@ -27,6 +28,7 @@ const DocumentContext = createContext<DocumentContextType>({
   documentName: "",
   versions: [],
   isArchived: false,
+  isDirty: false,
   addVersion: () => {},
   setPublishedVersionId: () => {},
 });
@@ -57,20 +59,23 @@ export function Client({
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
   const [publishedVersionId, setPublishedVersionId] = useState(initialPublishedVersionId);
+  const [isDirty, setIsDirty] = useState(false);
 
   const addVersion = useCallback((version: Version) => {
     setVersions(prev => [version, ...prev]);
     setVersionId(version.id);
+    setIsDirty(false);
   }, []);
 
   return (
     <MediaProvider media={media}>
     <DocumentContext.Provider
-      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, addVersion, setPublishedVersionId }}
+      value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
     >
       <Puck
         config={config}
         data={data}
+        onChange={() => setIsDirty(true)}
         ui={{plugin: {current: "version-plugin"}}}
         plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
         permissions={isArchived

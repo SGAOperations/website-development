@@ -13,7 +13,7 @@ const usePuck = createUsePuck();
 
 export function SaveButton() {
   const data = usePuck((s) => s.appState.data);
-  const { documentId, documentName, isArchived, addVersion } = useDocumentContext();
+  const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
   const { alert } = useDialogs();
 
   const [isSaving, startTransition] = useTransition();
@@ -46,7 +46,7 @@ export function SaveButton() {
   return (
     <button
       onClick={handleSave}
-      disabled={isSaving || isArchived}
+      disabled={isSaving || isArchived || !isDirty}
       className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
     >
       {isArchived ? "Archived" : isSaving ? "Saving..." : "Save"}
