@@ -3,7 +3,7 @@
 import type { Data } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
 import config from "../../../../puck.config";
-import { useState, createContext, useContext, useCallback } from "react";
+import { useState, createContext, useContext, useCallback, useEffect } from "react";
 import { VersionPlugin } from "./VersionPlugin";
 import { blocksPlugin, outlinePlugin } from "@puckeditor/core";
 import { ActionBarOverride } from "./ActionBarOverride";
@@ -66,6 +66,24 @@ export function Client({
     setVersionId(version.id);
     setIsDirty(false);
   }, []);
+
+  useEffect(() => {
+    if (!isDirty) {
+      return;
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      // Needed for Chrome version <=119 to show the confirmation dialog
+      event.returnValue = true;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]);
 
   return (
     <MediaProvider media={media}>
