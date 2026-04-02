@@ -73,12 +73,12 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handlePopState, { capture: true });
 
     return () => {
       isRevertingNavigationRef.current = false;
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("popstate", handlePopState, { capture: true });
     };
   }, [isDirty]);
 
