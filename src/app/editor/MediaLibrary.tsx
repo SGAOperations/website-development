@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/media/actions";
@@ -10,6 +10,14 @@ import { ResourceCard, NewResourceCard } from "./ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 function UploadCard({
   onFileSelected,
@@ -90,10 +98,102 @@ function MediaCard({
   );
 }
 
+function RenameMediaDialog({
+  file,
+  open,
+  pending,
+  onClose,
+  onSubmit,
+}: {
+  file: MediaWithUrl | null;
+  open: boolean;
+  pending: boolean;
+  onClose: () => void;
+  onSubmit: (values: { name: string; fileName: string }) => void;
+}) {
+  const [name, setName] = useState("");
+  const [fileName, setFileName] = useState("");
+
+  useEffect(() => {
+    if (!file || !open) {
+      return;
+    }
+
+    setName(file.name);
+    setFileName(file.fileStem);
+  }, [file, open]);
+
+  const extensionLabel = file?.fileExtension ? `.${file.fileExtension}` : "";
+  const trimmedName = name.trim();
+  const trimmedFileName = fileName.trim();
+  const unchanged = file
+    ? trimmedName === file.name && trimmedFileName === file.fileStem
+    : true;
+
+  return (
+    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && !pending && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{file ? `Rename "${file.name}"` : "Rename media"}</DialogTitle>
+        </DialogHeader>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit({ name: trimmedName, fileName: trimmedFileName });
+          }}
+        >
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <label className="text-sm font-medium text-foreground">
+                Display name
+              </label>
+              <Input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                autoFocus
+                disabled={pending}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label className="text-sm font-medium text-foreground">
+                File name
+              </label>
+              <div className="relative">
+                <Input
+                  value={fileName}
+                  onChange={(event) => setFileName(event.target.value)}
+                  disabled={pending}
+                  className={extensionLabel ? "pr-16" : undefined}
+                />
+                {extensionLabel && (
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center rounded-r-md border-l bg-muted px-3 text-sm text-muted-foreground">
+                    {extensionLabel}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button type="button" variant="outline" onClick={onClose} disabled={pending}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending || unchanged}>
+              Save
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
   const [files, setFiles] = useState(initialFiles);
-  const { confirm, prompt, alert } = useDialogs();
+  const [fileToRename, setFileToRename] = useState<MediaWithUrl | null>(null);
+  const { confirm, alert } = useDialogs();
 
   function handleUpload(file: File) {
     const formData = new FormData();
@@ -108,13 +208,27 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
     });
   }
 
-  async function handleRename(file: MediaWithUrl) {
-    const newName = await prompt({ title: `Rename "${file.name}"`, label: "New name", defaultValue: file.name });
-    if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
+  function handleRename(file: MediaWithUrl) {
+    setFileToRename(file);
+  }
+
+  function submitRename(values: { name: string; fileName: string }) {
+    if (!fileToRename) {
+      return;
+    }
+
     startTransition(async () => {
-      const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
+      const result = await runAction(
+        renameMediaAction({
+          id: fileToRename.id,
+          name: values.name.trim(),
+          fileName: values.fileName.trim(),
+        }),
+      );
+
       if (result.success) {
-        setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, name: newName.trim() } : f)));
+        setFiles((prev) => prev.map((file) => (file.id === result.data.id ? result.data : file)));
+        setFileToRename(null);
       } else {
         await alert(result.error);
       }
@@ -150,6 +264,14 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
           />
         ))}
       </div>
+
+      <RenameMediaDialog
+        file={fileToRename}
+        open={fileToRename !== null}
+        pending={isPending}
+        onClose={() => setFileToRename(null)}
+        onSubmit={submitRename}
+      />
     </div>
   );
 }

@@ -1,17 +1,12 @@
-import "server-only";
-
 import type { Data } from "@puckeditor/core";
 import { transformProps } from "@puckeditor/core/rsc";
-import { prisma } from "../prisma";
-import { getMediaUrl } from "../supabase";
 import config from "@/puck.config";
 
 type ImageProp = { mediaId: number; url: string } | null;
 
-export async function resolveMediaUrls(data: Data): Promise<Data> {
+export function collectMediaIds(data: Data): number[] {
   const mediaIds = new Set<number>();
 
-  // Collect media IDs
   transformProps(
     data,
     {
@@ -25,22 +20,13 @@ export async function resolveMediaUrls(data: Data): Promise<Data> {
     config
   );
 
-  if (mediaIds.size === 0) {
-    return data;
-  }
+  return [...mediaIds];
+}
 
-  // Fetch media records in a single query
-  const mediaRecords = await prisma.media.findMany({
-    where: { id: { in: [...mediaIds] } },
-    select: { id: true, storagePath: true },
-  });
-
-  const urlMap = new Map<number, string>();
-  for (const record of mediaRecords) {
-    urlMap.set(record.id, getMediaUrl(record.storagePath));
-  }
-
-  // Update media URLs
+export function resolveMediaUrls(
+  data: Data,
+  urlMap: ReadonlyMap<number, string>
+): Data {
   return transformProps(
     data,
     {
@@ -50,7 +36,7 @@ export async function resolveMediaUrls(data: Data): Promise<Data> {
         }
         const url = urlMap.get(props.image.mediaId);
         if (!url) {
-          return { ...props, image: null };
+          return { ...props, image: { ...props.image, url: "" } };
         }
         return { ...props, image: { ...props.image, url } };
       },

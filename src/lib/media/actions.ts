@@ -3,11 +3,16 @@
 import { prisma } from "../prisma";
 import { supabase, MEDIA_BUCKET, getMediaUrl } from "../supabase";
 import { validateName } from "../utils";
+import {
+  getMediaStoragePath,
+  getUploadMediaDetails,
+  normalizeRequestedFileStem,
+} from "./utils";
 import type { Media } from "../../generated/prisma/client";
 import type {
   ActionResult,
   DeleteMediaInput,
-  RenameInput,
+  RenameMediaInput,
 } from "../types";
 import { wrapAction } from "../utils";
 
@@ -25,39 +30,76 @@ export async function uploadMediaAction(
       throw new Error("File is empty");
     }
 
-    const ext = file.name.includes(".") ? `.${file.name.split(".").pop()}` : "";
-    const storagePath = `${crypto.randomUUID()}${ext}`;
+    const { displayName, fileStem, fileExtension } = getUploadMediaDetails(file.name);
+    const media = await prisma.media.create({
+      data: {
+        name: displayName,
+        fileStem,
+        fileExtension,
+        storagePath: `pending/${crypto.randomUUID()}`,
+        size: file.size,
+        contentType: file.type || null,
+      },
+    });
+    const storagePath = getMediaStoragePath(media.id, media.fileStem, media.fileExtension);
 
     const { error } = await supabase.storage
       .from(MEDIA_BUCKET)
       .upload(storagePath, file, { contentType: file.type });
 
     if (error) {
+      await prisma.media.delete({ where: { id: media.id } });
       throw new Error(error.message);
     }
 
-    const media = await prisma.media.create({
+    const updatedMedia = await prisma.media.update({
+      where: { id: media.id },
       data: {
-        name: file.name,
         storagePath,
-        size: file.size,
-        contentType: file.type || null,
       },
     });
 
-    return { ...media, url: getMediaUrl(media.storagePath) };
+    return { ...updatedMedia, url: getMediaUrl(updatedMedia.storagePath) };
   });
 }
 
 export async function renameMediaAction(
-  input: RenameInput
-): Promise<ActionResult<void>> {
+  input: RenameMediaInput
+): Promise<ActionResult<Media & { url: string }>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
-    await prisma.media.update({
+    const media = await prisma.media.findUniqueOrThrow({
       where: { id: input.id },
-      data: { name },
     });
+
+    let nextFileStem = media.fileStem;
+    let nextStoragePath = media.storagePath;
+
+    if (input.fileName.trim() !== media.fileStem) {
+      nextFileStem = normalizeRequestedFileStem(input.fileName, media.fileExtension);
+      nextStoragePath = getMediaStoragePath(media.id, nextFileStem, media.fileExtension);
+
+      if (nextStoragePath !== media.storagePath) {
+        const { error } = await supabase.storage
+          .from(MEDIA_BUCKET)
+          .move(media.storagePath, nextStoragePath);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+      }
+    }
+
+    const updatedMedia = await prisma.media.update({
+      where: { id: input.id },
+      data: {
+        name,
+        fileStem: nextFileStem,
+        storagePath: nextStoragePath,
+      },
+    });
+
+    return { ...updatedMedia, url: getMediaUrl(updatedMedia.storagePath) };
   });
 }
 

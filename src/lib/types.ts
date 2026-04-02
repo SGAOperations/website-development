@@ -45,6 +45,12 @@ export type RenameInput = {
   name: string;
 };
 
+export type RenameMediaInput = {
+  id: number;
+  name: string;
+  fileName: string;
+};
+
 export type DeleteMediaInput = {
   id: number;
 };

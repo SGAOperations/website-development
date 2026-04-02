@@ -1,6 +1,29 @@
 import { Data } from "@puckeditor/core";
 import { prisma } from "../prisma";
-import { resolveMediaUrls } from "../puck/resolve-media-urls";
+import { getMediaUrl } from "../supabase";
+import { collectMediaIds, resolveMediaUrls } from "../puck/resolve-media-urls";
+
+async function getDocumentMediaUrlMap(
+  data: Data
+): Promise<ReadonlyMap<number, string>> {
+  const mediaIds = collectMediaIds(data);
+
+  if (mediaIds.length === 0) {
+    return new Map();
+  }
+
+  const mediaRecords = await prisma.media.findMany({
+    where: { id: { in: mediaIds } },
+    select: { id: true, storagePath: true },
+  });
+
+  const urlMap = new Map<number, string>();
+  for (const record of mediaRecords) {
+    urlMap.set(record.id, getMediaUrl(record.storagePath));
+  }
+
+  return urlMap;
+}
 
 export const getDocumentById = async (id: number) => {
   return await prisma.document.findUnique({
@@ -28,7 +51,8 @@ export const getDocumentByPath = async (path: string): Promise<Data | null> => {
     return null;
   }
 
-  return resolveMediaUrls(route.document.publishedVersion.content as Data);
+  const data = route.document.publishedVersion.content as Data;
+  return resolveMediaUrls(data, await getDocumentMediaUrlMap(data));
 };
 
 export const getDocumentName = async (id: number) => {
@@ -45,7 +69,8 @@ export const getVersionContent = async (versionId: number) => {
     select: { content: true },
   });
   if (!version) return null;
-  return resolveMediaUrls(version.content as Data);
+  const data = version.content as Data;
+  return resolveMediaUrls(data, await getDocumentMediaUrlMap(data));
 };
 
 export async function getDocumentSummaries() {
