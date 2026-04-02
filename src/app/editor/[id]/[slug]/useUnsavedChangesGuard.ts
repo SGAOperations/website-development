@@ -47,7 +47,7 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
       event.returnValue = true;
     };
 
-    const handlePopState = () => {
+    const handlePopState = (event: PopStateEvent) => {
       const nextHistoryIndex = getCurrentHistoryIndex();
 
       if (!isRevertingNavigationRef.current) {
@@ -59,6 +59,7 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
             nextHistoryIndex !== null &&
             historyIndexRef.current !== nextHistoryIndex
           ) {
+            event.stopImmediatePropagation();
             isRevertingNavigationRef.current = true;
             window.history.go(historyIndexRef.current > nextHistoryIndex ? 1 : -1);
             return;
