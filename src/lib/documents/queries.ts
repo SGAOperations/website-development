@@ -1,5 +1,6 @@
 import { Data } from "@puckeditor/core";
 import { prisma } from "../prisma";
+import { resolveMediaUrls } from "../puck/resolve-media-urls";
 
 export const getDocumentById = async (id: number) => {
   return await prisma.document.findUnique({
@@ -27,7 +28,7 @@ export const getDocumentByPath = async (path: string): Promise<Data | null> => {
     return null;
   }
 
-  return route.document.publishedVersion.content as Data;
+  return resolveMediaUrls(route.document.publishedVersion.content as Data);
 };
 
 export const getDocumentName = async (id: number) => {
@@ -43,7 +44,8 @@ export const getVersionContent = async (versionId: number) => {
     where: { id: versionId },
     select: { content: true },
   });
-  return version?.content as Data | null;
+  if (!version) return null;
+  return resolveMediaUrls(version.content as Data);
 };
 
 export async function getDocumentSummaries() {
