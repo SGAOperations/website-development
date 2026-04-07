@@ -13,8 +13,7 @@ import type { Version } from "../../../../lib/types";
 import { useUnsavedChangesGuard } from "./useUnsavedChangesGuard";
 import { DocumentContext } from "./document-context";
 import { UnsavedChangesContext } from "./unsaved-changes-context";
-import { House, Save } from "lucide-react";
-import { ChildProcess } from "child_process";
+import { House } from "lucide-react";
 
 export function Client({
   documentId,
