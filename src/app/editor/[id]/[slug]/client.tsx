@@ -13,6 +13,7 @@ import type { Version } from "../../../../lib/types";
 import { useUnsavedChangesGuard } from "./useUnsavedChangesGuard";
 import { DocumentContext } from "./document-context";
 import { UnsavedChangesContext } from "./unsaved-changes-context";
+import { House } from "lucide-react";
 
 export function Client({
   documentId,
@@ -63,7 +64,7 @@ export function Client({
             }
             overrides={{
               actionBar: ActionBarOverride,
-              headerActions: SaveButton,
+              headerActions: HeaderActionsOverride,
               puck: EditorPuckOverride,
               iframe: EditorIframeOverride,
             }}
@@ -72,6 +73,15 @@ export function Client({
       </DocumentContext.Provider>
     </MediaProvider>
   );
+}
+
+function HeaderActionsOverride() {
+  return <>
+      <a href="/editor">
+        <House />
+      </a>
+      <SaveButton />
+  </>
 }
 
 function EditorPuckOverride({ children }: { children: ReactNode }) {
