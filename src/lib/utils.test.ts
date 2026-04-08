@@ -1,5 +1,14 @@
 import { describe, it, expect } from "vitest";
+import { Prisma } from "../generated/prisma/client";
 import { validateName, wrapAction } from "./utils";
+
+function createKnownRequestError(code: string) {
+  const error = Object.create(
+    Prisma.PrismaClientKnownRequestError.prototype
+  ) as Prisma.PrismaClientKnownRequestError;
+  error.code = code;
+  return error;
+}
 
 describe("validateName", () => {
   it.each<[string, string]>([
@@ -18,21 +27,18 @@ describe("validateName", () => {
 describe("wrapAction", () => {
   it("maps Prisma unique constraint errors to user-friendly text", async () => {
     const result = await wrapAction(async () => {
-      throw {
-        code: "P2002",
-        meta: { target: ["name"] },
-      };
+      throw createKnownRequestError("P2002");
     });
 
     expect(result).toEqual({
       success: false,
-      error: "A record with this name already exists.",
+      error: "A record with these details already exists.",
     });
   });
 
   it("maps Prisma not found errors to user-friendly text", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2025" };
+      throw createKnownRequestError("P2025");
     });
 
     expect(result).toEqual({
@@ -43,7 +49,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma field too long errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2000" };
+      throw createKnownRequestError("P2000");
     });
 
     expect(result).toEqual({
@@ -54,7 +60,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma null constraint errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2011" };
+      throw createKnownRequestError("P2011");
     });
 
     expect(result).toEqual({
@@ -65,7 +71,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma relation violation on delete errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2014" };
+      throw createKnownRequestError("P2014");
     });
 
     expect(result).toEqual({
@@ -76,7 +82,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma related record not found errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2015" };
+      throw createKnownRequestError("P2015");
     });
 
     expect(result).toEqual({
@@ -87,7 +93,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma connection timeout errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2024" };
+      throw createKnownRequestError("P2024");
     });
 
     expect(result).toEqual({
@@ -98,7 +104,7 @@ describe("wrapAction", () => {
 
   it("maps Prisma multiple errors", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P2027" };
+      throw createKnownRequestError("P2027");
     });
 
     expect(result).toEqual({
@@ -109,7 +115,7 @@ describe("wrapAction", () => {
 
   it("falls back to generic error for unmapped Prisma codes", async () => {
     const result = await wrapAction(async () => {
-      throw { code: "P9999" };
+      throw createKnownRequestError("P9999");
     });
 
     expect(result).toEqual({
