@@ -62,5 +62,8 @@ describe("built-in tokens", () => {
     expect(
       resolveResponsive({ base: "1", lg: "4" }, columnCount.classes),
     ).toBe("grid-cols-1 lg:grid-cols-4");
+    expect(
+      resolveResponsive({ base: "1:2", md: "1:3:1" }, columnCount.classes),
+    ).toBe("grid-cols-[1fr_2fr] md:grid-cols-[1fr_3fr_1fr]");
   });
 });

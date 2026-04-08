@@ -92,6 +92,10 @@ export function getGridClassName({
   );
 }
 
+export function getColumnTrackCount(columns: ColumnCount): number {
+  return columns.includes(":") ? columns.split(":").length : Number(columns);
+}
+
 export function getMaxCols(columns: ResponsiveValue<ColumnCount>): number {
-  return Math.max(...Object.values(columns).map(Number));
+  return Math.max(...Object.values(columns).map(getColumnTrackCount));
 }
