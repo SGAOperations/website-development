@@ -13,6 +13,7 @@ export type ActionResult<T = void> =
 export type CreateDocumentInput = {
   name: string;
   content?: Data;
+  folderId?: number | null;
 };
 
 export type SaveVersionInput = {
@@ -75,4 +76,9 @@ export type MoveFolderInput = {
 
 export type DeleteFolderInput = {
   id: number;
+};
+
+export type MoveDocumentInput = {
+  id: number;
+  folderId: number | null;
 };
