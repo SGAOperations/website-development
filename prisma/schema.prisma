@@ -17,6 +17,8 @@ model Document {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   archivedAt          DateTime?
+  folderId            Int?
+  folder              Folder?   @relation("FolderDocuments", fields: [folderId], references: [id])
 }
 
 model Version {
@@ -35,6 +37,8 @@ model Media {
   size        Int
   contentType String?
   createdAt   DateTime @default(now())
+  folderId    Int?
+  folder      Folder?  @relation("FolderMedia", fields: [folderId], references: [id])
 }
 
 model Route {
@@ -44,4 +48,16 @@ model Route {
   document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model Folder {
+  id         Int        @id @default(autoincrement())
+  name       String
+  parentId   Int?
+  parent     Folder?    @relation("FolderNesting", fields: [parentId], references: [id])
+  children   Folder[]   @relation("FolderNesting")
+  documents  Document[] @relation("FolderDocuments")
+  media      Media[]    @relation("FolderMedia")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
