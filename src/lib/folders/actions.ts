@@ -94,15 +94,15 @@ async function checkIsDescendant(
   candidateId: number,
   ancestorId: number
 ): Promise<boolean> {
-  let currentId: number | null = candidateId;
-  while (currentId !== null) {
-    if (currentId === ancestorId) return true;
-    const result: { parentId: number | null } | null =
-      await prisma.folder.findUnique({
-        where: { id: currentId },
-        select: { parentId: true },
-      });
-    currentId = result?.parentId ?? null;
-  }
-  return false;
+  const result = await prisma.$queryRaw<{ id: number }[]>`
+    WITH RECURSIVE ancestors AS (
+      SELECT "id", "parentId" FROM "Folder" WHERE "id" = ${candidateId}
+      UNION ALL
+      SELECT f."id", f."parentId"
+      FROM "Folder" f
+      INNER JOIN ancestors a ON a."parentId" = f."id"
+    )
+    SELECT "id" FROM ancestors WHERE "id" = ${ancestorId} LIMIT 1
+  `;
+  return result.length > 0;
 }
