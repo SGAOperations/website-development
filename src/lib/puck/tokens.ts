@@ -136,6 +136,19 @@ export const bgColor = defineToken({
   "sga-red":            { label: "SGA Red",             classes: "bg-sga-red" },
 });
 
+export const hexCodeColor = defineToken({
+  background:           { label: "Background",         classes: "#ffffff" },
+  foreground:           { label: "Foreground",          classes: "#0a0a0a" },
+  primary:              { label: "Primary",             classes: "#171717" },
+  "primary-foreground": { label: "Primary Foreground",  classes: "#fafafa" },
+  muted:                { label: "Muted",               classes: "#f5f5f5" },
+  "muted-foreground":   { label: "Muted Foreground",    classes: "#737373" },
+  accent:               { label: "Accent",              classes: "#f5f5f5" },
+  "accent-foreground":  { label: "Accent Foreground",   classes: "#171717" },
+  destructive:          { label: "Destructive",         classes: "#e7000b" },
+  "sga-red":            { label: "SGA Red",             classes: "#C8102E" },
+});
+
 export const textColor = defineToken({
   background:           { label: "Background",         classes: "text-background" },
   foreground:           { label: "Foreground",          classes: "text-foreground" },
