@@ -11,7 +11,7 @@ import { LinkButtonConfig } from "./components/puck/Button";
 import { MinimumColumnWidthGridConfig } from "./components/puck/MinimumColumnWidthGrid";
 import { RootContainerConfig } from "./components/puck/RootContainer";
 import { SplitPaneConfig  } from "./components/puck/SplitPane";
-import Marquee from "./components/puck/Marquee";
+import { MarqueeConfig } from "./components/puck/Marquee";
 
 export const config = {
   categories: {
