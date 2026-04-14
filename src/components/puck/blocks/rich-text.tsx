@@ -1,4 +1,6 @@
+"use client";
 import type { ComponentConfig, RichText } from "@puckeditor/core";
+import { RichTextMenu } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
 import { defineProps, field, responsive } from "@/lib/puck/define-props";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
@@ -27,7 +29,33 @@ type RichTextProps = {
 
 const props = defineProps({
   content: field.raw(
-    { type: "richtext", contentEditable: true },
+    { type: "richtext",
+      contentEditable: true,
+      tiptap: {
+        selector: ({ editor }: { editor?: any }) => ({
+          isLink: editor?.isActive("link"),
+        }),
+      },
+      renderMenu: ({ children, editor, editorState }: { children?: any; editor?: any; editorState?: any }) => (
+        <RichTextMenu>
+          {children}
+          <RichTextMenu.Group>
+            <button
+              onClick={() => {
+                if (editorState?.isLink) {
+                  editor?.chain().focus().unsetLink().run();
+                } else {
+                  const url = window.prompt("Enter URL");
+                  if (url) editor?.chain().focus().setLink({ href: url }).run();
+                }
+              }}
+            >
+              {editorState?.isLink ? "Unlink" : "Link"}
+            </button>
+          </RichTextMenu.Group>
+        </RichTextMenu>
+      ),
+    },
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   ),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
@@ -44,6 +72,7 @@ export const RichTextComponent: ComponentConfig<RichTextProps> = {
     return (
       <div className={cn(
         "prose max-w-none",
+        "[&_a]:text-sga-red [&_a]:underline",
         textColor.classes[tc],
         textAlign.classes[align],
         lineSpacing.classes[ls],
