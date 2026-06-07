@@ -95,3 +95,46 @@ export function getGridClassName({
 export function getMaxCols(columns: ResponsiveValue<ColumnCount>): number {
   return Math.max(...Object.values(columns).map(Number));
 }
+
+const responsiveViewportWidths = {
+  md: 768,
+  lg: 1024,
+} as const;
+
+function resolveResponsiveValue<T>(
+  value: ResponsiveValue<T>,
+  viewportWidth: number | "100%",
+): T {
+  const orderedBreakpoints = viewportWidth === "100%"
+    ? ["lg", "md", "base"] as const
+    : viewportWidth >= responsiveViewportWidths.lg
+      ? ["lg", "md", "base"] as const
+      : viewportWidth >= responsiveViewportWidths.md
+        ? ["md", "base"] as const
+        : ["base"] as const;
+
+  for (const breakpoint of orderedBreakpoints) {
+    const breakpointValue = value[breakpoint];
+
+    if (breakpointValue !== undefined) {
+      return breakpointValue;
+    }
+  }
+
+  return value.base;
+}
+
+export function getGridCapacity(
+  columns: ResponsiveValue<ColumnCount>,
+  rows: ResponsiveValue<GridRows>,
+  viewportWidth: number | "100%",
+): number | null {
+  const resolvedRows = resolveResponsiveValue(rows, viewportWidth);
+
+  if (resolvedRows === "auto") {
+    return null;
+  }
+
+  const resolvedColumns = Number(resolveResponsiveValue(columns, viewportWidth));
+  return resolvedColumns * Number(resolvedRows);
+}

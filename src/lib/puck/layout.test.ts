@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   getContainerSlotClassName,
   getContainerSurfaceClassName,
+  getGridCapacity,
   getGridClassName,
   getMaxCols,
 } from "./layout";
@@ -44,5 +45,23 @@ describe("layout helpers", () => {
 
   it("returns the largest configured breakpoint column count", () => {
     expect(getMaxCols({ base: "1", md: "3", lg: "2" })).toBe(3);
+  });
+
+  it("resolves grid capacity from the active responsive values", () => {
+    expect(
+      getGridCapacity(
+        { base: "1", md: "3" },
+        { base: "auto", md: "2" },
+        500,
+      ),
+    ).toBeNull();
+
+    expect(
+      getGridCapacity(
+        { base: "1", md: "3" },
+        { base: "auto", md: "2" },
+        1280,
+      ),
+    ).toBe(6);
   });
 });
