@@ -2,7 +2,7 @@
 
 Components in the Puck editor are styled through **design tokens** — named choices that map to arbitrary properties, but mostly Tailwind classes. Editors pick tokens from dropdowns; the system turns those choices into class names at render time.
 
-Any token can be made **responsive**, letting editors pick different values per breakpoint (base / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
+Any token can be made **responsive**, letting editors pick different values per breakpoint (phone / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
 
 ## Core concepts
 

@@ -8,7 +8,7 @@ import {
 import type { ReactNode } from "react";
 
 const breakpointLabels: Record<ResponsiveBreakpoint, string> = {
-  base: "Base",
+  base: "Phone",
   md: "Tablet",
   lg: "Desktop",
 };
