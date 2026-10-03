@@ -17,7 +17,7 @@ describe("responsive helpers", () => {
   it("updates the 'phone' value but refuses to clear it", () => {
     expect(setAt({ phone: 1, md: 2 }, "phone", 0)).toEqual({ phone: 0, md: 2 });
     expect(() => setAt({ phone: 1 }, "phone", undefined)).toThrow(
-      "Phonw value cannot be undefined",
+      "Phone value cannot be undefined",
     );
   });
 });
