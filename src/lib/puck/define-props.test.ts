@@ -37,11 +37,11 @@ describe("prop builders", () => {
       size: field.select(size, { label: "Size", default: "md" }),
       gap: responsive.select(size, {
         label: "Gap",
-        default: { base: "sm", md: "lg" },
+        default: { phone: "sm", md: "lg" },
       }),
       rows: responsive.number({
         label: "Rows",
-        default: { base: 1, md: 2 },
+        default: { phone: 1, md: 2 },
         min: 1,
         max: 6,
         step: 1,

@@ -1,11 +1,11 @@
-export const responsiveBreakpoints = ["base", "md", "lg"] as const;
+export const responsiveBreakpoints = ["phone", "md", "lg"] as const;
 
 export type ResponsiveBreakpoint = (typeof responsiveBreakpoints)[number];
 
-type ResponsiveOverrideBreakpoint = Exclude<ResponsiveBreakpoint, "base">;
+type ResponsiveOverrideBreakpoint = Exclude<ResponsiveBreakpoint, "phone">;
 
 export type ResponsiveValue<T> = {
-  base: T;
+  phone: T;
 } & Partial<Record<ResponsiveOverrideBreakpoint, T>>;
 
 export function setAt<T>(
@@ -13,14 +13,14 @@ export function setAt<T>(
   breakpoint: ResponsiveBreakpoint,
   newVal: T | undefined,
 ): ResponsiveValue<T> {
-  if (breakpoint === "base") {
+  if (breakpoint === "phone") {
     if (newVal === undefined) {
-      throw new Error("Base value cannot be undefined");
+      throw new Error("Phone value cannot be undefined");
     }
 
     return {
       ...value,
-      base: newVal,
+      phone: newVal,
     };
   }
 
@@ -38,7 +38,7 @@ function clearOverride<T>(
   value: ResponsiveValue<T>,
   breakpoint: ResponsiveBreakpoint,
 ): ResponsiveValue<T> {
-  if (breakpoint === "base" || value[breakpoint] === undefined) {
+  if (breakpoint === "phone" || value[breakpoint] === undefined) {
     return value;
   }
 
