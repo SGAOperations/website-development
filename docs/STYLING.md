@@ -157,7 +157,7 @@ radius.classes[r]             // → "rounded-md"
 
 // Responsive — produces prefixed classes for each set breakpoint
 resolveResponsive(padding, paddingToken.classes)
-// { phone: "sm", md: "lg" } → "p-2 md:p-6"
+// { base: "sm", md: "lg" } → "p-2 md:p-6"
 ```
 
 Multi-class values get each utility prefixed individually:
@@ -199,7 +199,7 @@ If you need a new token, add it to `tokens.ts` and export a type alias:
 ```ts
 export const fontSize = defineToken({
   sm:   { label: "Small",  classes: "text-sm" },
-  phone: { label: "Phone",   classes: "text-base" },
+  base: { label: "Base",   classes: "text-base" },
   lg:   { label: "Large",  classes: "text-lg" },
 });
 
