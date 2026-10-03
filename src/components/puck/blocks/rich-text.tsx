@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils";
 import { defineProps, field, responsive } from "@/lib/puck/define-props";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import {
+  defineToken,
   textColor,
   textAlign,
   lineSpacing,
   textColumns,
   columnGap,
+  type TokenValue,
   type Color,
   type LineSpacing,
   type TextAlign,
@@ -16,6 +18,12 @@ import {
 } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 
+const font = defineToken({
+  inter: {label: "Inter", classes: "font-text"},
+  bebasNeue: {label: "Bebas Neue", classes: "font-display"}
+});
+type FontFamily = TokenValue<typeof font>;
+
 type RichTextProps = {
   content: RichText;
   textColor: Color;
@@ -23,6 +31,7 @@ type RichTextProps = {
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
   columnGap: ResponsiveValue<Spacing>;
+  font: FontFamily;
 };
 
 const props = defineProps({
@@ -35,18 +44,21 @@ const props = defineProps({
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
   columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
+  font: field.select(font, { label: "Font", default: "inter" }),
 });
+
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
   ...props,
-  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg }) => {
+  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg, font: f}) => {
     return (
       <div className={cn(
         "prose max-w-none",
         textColor.classes[tc],
         textAlign.classes[align],
         lineSpacing.classes[ls],
+        font.classes[f],
         resolveResponsive(columns, textColumns.classes),
         resolveResponsive(cg, columnGap.classes),
       )}>
