@@ -51,12 +51,12 @@ describe("defineToken", () => {
 describe("built-in tokens", () => {
   it("expose the expected classes", () => {
     expect(radius.classes.full).toBe("rounded-full");
-    expect(padding.classes.md).toBe("p-4");
-    expect(gap.classes["2xl"]).toBe("gap-12");
+    expect(padding.classes["16"]).toBe("p-4");
+    expect(gap.classes["32"]).toBe("gap-8");
   });
 
   it("work with responsive resolution through their class maps", () => {
-    expect(resolveResponsive({ base: "sm", md: "lg" }, gap.classes)).toBe(
+    expect(resolveResponsive({ base: "8", md: "24" }, gap.classes)).toBe(
       "gap-2 md:gap-6",
     );
     expect(

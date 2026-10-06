@@ -73,55 +73,54 @@ export type TokenValue<T> = T extends Token<infer K> ? K : never;
 
 export const padding = defineToken({
   none:  { label: "None",   classes: "p-0" },
-  xs:    { label: "XS",     classes: "p-1" },
-  sm:    { label: "Small",  classes: "p-2" },
-  md:    { label: "Medium", classes: "p-4" },
-  lg:    { label: "Large",  classes: "p-6" },
-  xl:    { label: "XL",     classes: "p-8" },
-  "2xl": { label: "2XL",    classes: "p-12" },
+   8:    { label: "8px",  classes: "p-2" },
+  12:    { label: "12px",  classes: "p-3" },
+  16:    { label: "16px", classes: "p-4" },
+  24:    { label: "24px",  classes: "p-6" },
+  32:    { label: "32px",     classes: "p-8" },
 });
 
 export const paddingX = defineToken({
   none:  { label: "None",   classes: "px-0" },
-  xs:    { label: "XS",     classes: "px-1" },
-  sm:    { label: "Small",  classes: "px-2" },
-  md:    { label: "Medium", classes: "px-4" },
-  lg:    { label: "Large",  classes: "px-6" },
-  xl:    { label: "XL",     classes: "px-8" },
-  "2xl": { label: "2XL",    classes: "px-12" },
+   8:    { label: "8px",  classes: "px-2" },
+  12:    { label: "12px",  classes: "px-3" },
+  16:    { label: "16px", classes: "px-4" },
+  24:    { label: "24px",  classes: "px-6" },
+  32:    { label: "32px",     classes: "px-8" },
 });
 
 export const paddingY = defineToken({
   none:  { label: "None",   classes: "py-0" },
-  xs:    { label: "XS",     classes: "py-1" },
-  sm:    { label: "Small",  classes: "py-2" },
-  md:    { label: "Medium", classes: "py-4" },
-  lg:    { label: "Large",  classes: "py-6" },
-  xl:    { label: "XL",     classes: "py-8" },
-  "2xl": { label: "2XL",    classes: "py-12" },
+   8:    { label: "8px",  classes: "py-2" },
+  12:    { label: "12px",  classes: "py-3" },
+  16:    { label: "16px", classes: "py-4" },
+  24:    { label: "24px",  classes: "py-6" },
+  32:    { label: "32px",     classes: "py-8" },
 });
 
 export const gap = defineToken({
   none:  { label: "None",   classes: "gap-0" },
-  xs:    { label: "XS",     classes: "gap-1" },
-  sm:    { label: "Small",  classes: "gap-2" },
-  md:    { label: "Medium", classes: "gap-4" },
-  lg:    { label: "Large",  classes: "gap-6" },
-  xl:    { label: "XL",     classes: "gap-8" },
-  "2xl": { label: "2XL",    classes: "gap-12" },
+   8:    { label: "8px",  classes: "gap-2" },
+  12:    { label: "12px",  classes: "gap-3" },
+  16:    { label: "16px", classes: "gap-4" },
+  24:    { label: "24px",  classes: "gap-6" },
+  32:    { label: "32px",     classes: "gap-8" },
 });
 
 export const columnGap = defineToken({
   none:  { label: "None",   classes: "gap-x-0" },
-  xs:    { label: "XS",     classes: "gap-x-1" },
-  sm:    { label: "Small",  classes: "gap-x-2" },
-  md:    { label: "Medium", classes: "gap-x-4" },
-  lg:    { label: "Large",  classes: "gap-x-6" },
-  xl:    { label: "XL",     classes: "gap-x-8" },
-  "2xl": { label: "2XL",    classes: "gap-x-12" },
+   8:    { label: "8px",  classes: "gap-x-2" },
+  12:    { label: "12px",  classes: "gap-x-3" },
+  16:    { label: "16px", classes: "gap-x-4" },
+  24:    { label: "24px",  classes: "gap-x-6" },
+  32:    { label: "32px",     classes: "gap-x-8" },
 });
 
 export type Spacing = TokenValue<typeof padding>;
+export type PaddingX = TokenValue<typeof paddingX>;
+export type PaddingY = TokenValue<typeof paddingY>;
+export type Gap = TokenValue<typeof gap>;
+export type ColumnGap = TokenValue<typeof columnGap>;
 
 export const bgColor = defineToken({
   background:           { label: "Background",         classes: "bg-background" },
@@ -236,9 +235,9 @@ export type Justify = TokenValue<typeof justify>;
 export const width = defineToken({
   full:        { label: "Full",     classes: "w-full" },
   prose:       { label: "Prose",    classes: "w-full max-w-prose" },
-  "screen-sm": { label: "Small",   classes: "w-full max-w-screen-sm" },
-  "screen-md": { label: "Medium",  classes: "w-full max-w-screen-md" },
-  "screen-lg": { label: "Large",   classes: "w-full max-w-screen-lg" },
+  "screen-sm": { label: "640px",   classes: "w-full max-w-screen-sm" },
+  "screen-md": { label: "768px",   classes: "w-full max-w-screen-md" },
+  "screen-lg": { label: "1024px",  classes: "w-full max-w-screen-lg" },
   "screen-xl": { label: "X-Large", classes: "w-full max-w-screen-xl" },
 });
 export type Width = TokenValue<typeof width>;
