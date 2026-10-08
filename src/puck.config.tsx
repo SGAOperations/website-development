@@ -9,7 +9,7 @@ import { Section } from "@/components/puck/blocks/section";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Section", "Group", "Columns", "Grid"] },
+    layout: { title: "Layout", components: ["Section", "Container", "Columns", "Grid"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
