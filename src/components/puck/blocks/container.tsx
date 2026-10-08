@@ -41,7 +41,7 @@ const props = defineProps({
 });
 
 export const Container: ComponentConfig<ContainerProps> = {
-  label: "Container",
+  label: "Group",
   inline: true,
   ...props,
   render: ({ content: Content, tag: t, puck, ...style }) => {
