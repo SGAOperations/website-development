@@ -69,7 +69,7 @@ function resolveResponsiveDefaultValue<T extends string | number>(
 ): ResponsiveValue<T> {
   return value !== undefined && typeof value === "object"
     ? value as ResponsiveValue<T>
-    : { base: value } as ResponsiveValue<T>;
+    : { phone: value } as ResponsiveValue<T>;
 }
 
 // -- Builder: static fields ---------------------------------------------------

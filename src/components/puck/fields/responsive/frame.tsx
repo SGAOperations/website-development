@@ -8,14 +8,14 @@ import {
 import type { ReactNode } from "react";
 
 const breakpointLabels: Record<ResponsiveBreakpoint, string> = {
-  base: "Base",
+  phone: "Phone",
   md: "Tablet",
   lg: "Desktop",
 };
 
 export type ResponsiveFieldControlProps<T extends string | number> = {
   breakpoint: ResponsiveBreakpoint;
-  isBase: boolean;
+  isPhone: boolean;
   value: T | undefined;
   onChange: (value: T | undefined) => void;
   readOnly?: boolean;
@@ -38,7 +38,7 @@ export function ResponsiveFieldFrame<T extends string | number>({
     <FieldLabel label={label} el="div" readOnly={readOnly}>
       <div className="grid grid-cols-3 gap-1">
         {responsiveBreakpoints.map((bp) => {
-          const isBase = bp === "base";
+          const isPhone = bp === "phone";
           const currentValue = value[bp];
 
           return (
@@ -48,7 +48,7 @@ export function ResponsiveFieldFrame<T extends string | number>({
               </span>
               {renderControl({
                 breakpoint: bp,
-                isBase,
+                isPhone,
                 value: currentValue,
                 onChange: (nextValue) => {
                   onChange(setAt(value, bp, nextValue));

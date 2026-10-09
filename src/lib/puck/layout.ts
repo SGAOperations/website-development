@@ -26,7 +26,7 @@ import {
   type Width,
 } from "@/lib/puck/tokens";
 
-export type ContainerStyle = {
+export type GroupStyle = {
   layout: Layout;
   padding: ResponsiveValue<Spacing>;
   gap: ResponsiveValue<Spacing>;
@@ -39,14 +39,14 @@ export type ContainerStyle = {
   shadow: Shadow;
 };
 
-export function getContainerSurfaceClassName({
+export function getGroupSurfaceClassName({
   padding,
   width: w,
   bgColor: bg,
   textColor: text,
   radius: r,
   shadow: s,
-}: ContainerStyle) {
+}: GroupStyle) {
   return cn(
     width.classes[w],
     bgColor.classes[bg],
@@ -57,12 +57,12 @@ export function getContainerSurfaceClassName({
   );
 }
 
-export function getContainerSlotClassName({
+export function getGroupSlotClassName({
   layout: l,
   gap,
   align,
   justify: j,
-}: ContainerStyle) {
+}: GroupStyle) {
   return cn(
     "w-full",
     layoutToken.classes[l],

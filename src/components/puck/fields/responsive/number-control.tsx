@@ -12,17 +12,17 @@ export function formatResponsiveNumberValue(value: number | undefined): string {
 export function getResponsiveNumberChange(
   rawValue: string,
   {
-    isBase,
+    isPhone,
     min,
     max,
   }: {
-    isBase: boolean;
+    isPhone: boolean;
     min?: number;
     max?: number;
   },
 ): ResponsiveNumberChange {
   if (rawValue === "") {
-    return isBase ? { kind: "ignore" } : { kind: "set", value: undefined };
+    return isPhone ? { kind: "ignore" } : { kind: "set", value: undefined };
   }
 
   const nextValue = Number(rawValue);
@@ -42,7 +42,7 @@ export function getResponsiveNumberChange(
 }
 
 export function ResponsiveNumberControl({
-  isBase,
+  isPhone,
   value,
   onChange,
   readOnly,
@@ -54,7 +54,7 @@ export function ResponsiveNumberControl({
   max?: number;
   step?: number;
 }) {
-  const isInheriting = !isBase && value === undefined;
+  const isInheriting = !isPhone && value === undefined;
 
   return (
     <div className={isInheriting ? "opacity-40" : undefined}>
@@ -63,7 +63,7 @@ export function ResponsiveNumberControl({
         value={formatResponsiveNumberValue(value)}
         onChange={(event) => {
           const change = getResponsiveNumberChange(event.currentTarget.value, {
-            isBase,
+            isPhone,
             min,
             max,
           });
