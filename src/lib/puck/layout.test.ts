@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
-  getContainerSlotClassName,
-  getContainerSurfaceClassName,
+  getGroupSlotClassName,
+  getGroupSurfaceClassName,
   getGridClassName,
   getMaxCols,
 } from "./layout";
 
 describe("layout helpers", () => {
-  it("compose container surface and slot classes from token selections", () => {
+  it("compose group surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
       padding: { phone: "sm" as const, md: "lg" as const },
@@ -21,10 +21,10 @@ describe("layout helpers", () => {
       shadow: "sm" as const,
     };
 
-    expect(getContainerSurfaceClassName(style)).toBe(
+    expect(getGroupSurfaceClassName(style)).toBe(
       "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-6",
     );
-    expect(getContainerSlotClassName(style)).toBe(
+    expect(getGroupSlotClassName(style)).toBe(
       "w-full flex flex-row flex-wrap items-end justify-center gap-2 lg:gap-8",
     );
   });
