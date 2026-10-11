@@ -1,6 +1,6 @@
 import type { ComponentConfig, Slot, SlotComponent } from "@puckeditor/core";
 import { defineProps, responsive } from "@/lib/puck/define-props";
-import { columnCount, gap, type ColumnCount, type Spacing } from "@/lib/puck/tokens";
+import { columnCount, gap, type ColumnCount, type Gap } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import { getGridClassName, getMaxCols } from "@/lib/puck/layout";
 
@@ -10,7 +10,7 @@ type ColumnsProps = {
   [K in SlotKey]: Slot;
 } & {
   columns: ResponsiveValue<ColumnCount>;
-  gap: ResponsiveValue<Spacing>;
+  gap: ResponsiveValue<Gap>;
 };
 
 const slotField = { type: "slot" } as const;
@@ -28,7 +28,7 @@ const columnSlotDefaults = Object.fromEntries(
 
 const props = defineProps({
   columns: responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
-  gap: responsive.select(gap, { label: "Gap", default: "md" }),
+  gap: responsive.select(gap, { label: "Gap", default: "16" }),
 });
 
 export const Columns: ComponentConfig<ColumnsProps> = {

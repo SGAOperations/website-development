@@ -16,6 +16,7 @@ import {
   width,
   type Color,
   type ColumnCount,
+  type Gap,
   type CrossAxisAlign,
   type GridRows,
   type Justify,
@@ -29,7 +30,7 @@ import {
 export type ContainerStyle = {
   layout: Layout;
   padding: ResponsiveValue<Spacing>;
-  gap: ResponsiveValue<Spacing>;
+  gap: ResponsiveValue<Gap>;
   align: CrossAxisAlign;
   justify: Justify;
   width: Width;
@@ -80,7 +81,7 @@ export function getGridClassName({
 }: {
   columns: ResponsiveValue<ColumnCount>;
   rows: ResponsiveValue<GridRows>;
-  gap: ResponsiveValue<Spacing>;
+  gap: ResponsiveValue<Gap>;
   empty?: boolean;
 }) {
   return cn(
