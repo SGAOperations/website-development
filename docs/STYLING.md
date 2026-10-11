@@ -2,7 +2,7 @@
 
 Components in the Puck editor are styled through **design tokens** — named choices that map to arbitrary properties, but mostly Tailwind classes. Editors pick tokens from dropdowns; the system turns those choices into class names at render time.
 
-Any token can be made **responsive**, letting editors pick different values per breakpoint (base / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
+Any token can be made **responsive**, letting editors pick different values per breakpoint (phone / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
 
 ## Core concepts
 
@@ -57,22 +57,22 @@ type Spacing = TokenValue<typeof padding>; // "sm" | "md"
 
 ### 2. Responsive values
 
-A `ResponsiveValue<T>` has a required `base` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
+A `ResponsiveValue<T>` has a required `phone` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
 
 ```ts
-type ResponsiveValue<T> = { base: T } & Partial<Record<"md" | "lg", T>>;
+type ResponsiveValue<T> = { phone: T } & Partial<Record<"md" | "lg", T>>;
 
-{ base: "sm" }                        // same at all sizes
-{ base: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
-{ base: "sm", lg: "lg" }              // skip md — it inherits from base
+{ phone: "sm" }                        // same at all sizes
+{ phone: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
+{ phone: "sm", lg: "lg" }              // skip md — it inherits from phone
 ```
 
 **Helper functions** for working with responsive values:
 
 | Function | Purpose |
 |---|---|
-| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ base: "sm", lg: "lg" }, "md")` → `"sm"` |
-| `hasOverride(value)` | Returns `true` if any non-base overrides are set |
+| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ phone: "sm", lg: "lg" }, "md")` → `"sm"` |
+| `hasOverride(value)` | Returns `true` if any non-phone overrides are set |
 | `map(value, fn)` | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())` |
 | `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override |
 
@@ -99,7 +99,7 @@ const props = defineProps({
   // Responsive number — per-breakpoint numeric input
   columns: responsive.number({
     label: "Columns",
-    default: { base: 1, md: 2 },
+    default: { phone: 1, md: 2 },
     min: 1,
     max: 6,
     step: 1,
@@ -114,9 +114,9 @@ const props = defineProps({
 
 ```ts
 responsive.select(columnCount, { label: "Columns", default: "3" })
-responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "3" } })
 responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
-responsive.number({ label: "Rows", default: { base: 1, md: 3 } })
+responsive.number({ label: "Rows", default: { phone: 1, md: 3 } })
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
@@ -157,7 +157,7 @@ radius.classes[r]             // → "rounded-md"
 
 // Responsive — produces prefixed classes for each set breakpoint
 resolveResponsive(padding, paddingToken.classes)
-// { base: "sm", md: "lg" } → "p-2 md:p-6"
+// { phone: "sm", md: "lg" } → "p-2 md:p-6"
 ```
 
 Multi-class values get each utility prefixed individually:
@@ -199,7 +199,7 @@ If you need a new token, add it to `tokens.ts` and export a type alias:
 ```ts
 export const fontSize = defineToken({
   sm:   { label: "Small",  classes: "text-sm" },
-  base: { label: "Base",   classes: "text-base" },
+  phone: { label: "Phone",   classes: "text-phone" },
   lg:   { label: "Large",  classes: "text-lg" },
 });
 
@@ -227,7 +227,7 @@ type CardProps = {
 const props = defineProps({
   content: field.slot(),
   padding: responsive.select(padding, { label: "Padding", default: "md" }),
-  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2 }, min: 1, max: 4, step: 1 }),
+  columns: responsive.number({ label: "Columns", default: { phone: 1, md: 2 }, min: 1, max: 4, step: 1 }),
   bgColor: field.select(bgColor, { label: "Background" }),
   title: field.raw({ type: "text", label: "Title" }, ""),
 });
@@ -248,7 +248,7 @@ export const Card: ComponentConfig<CardProps> = {
   render: ({ content: Content, padding: pad, columns, bgColor: bg, title }) => (
     <div
       className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}
-      style={{ columns: resolveAt(columns, "base") }}
+      style={{ columns: resolveAt(columns, "phone") }}
     >
       {title && <h3>{title}</h3>}
       {Content && <Content />}
