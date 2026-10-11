@@ -10,8 +10,8 @@ describe("layout helpers", () => {
   it("compose container surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
-      padding: { base: "sm" as const, md: "lg" as const },
-      gap: { base: "sm" as const, lg: "xl" as const },
+      padding: { phone: "sm" as const, md: "lg" as const },
+      gap: { phone: "sm" as const, lg: "xl" as const },
       align: "end" as const,
       justify: "center" as const,
       width: "prose" as const,
@@ -22,27 +22,27 @@ describe("layout helpers", () => {
     };
 
     expect(getContainerSurfaceClassName(style)).toBe(
-      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-6",
+      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getContainerSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-2 lg:gap-8",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
     );
   });
 
   it("builds responsive grid classes for columns, rows, and gap", () => {
     expect(
       getGridClassName({
-        columns: { base: "1", md: "3" },
-        rows: { base: "auto", md: "2" },
-        gap: { base: "sm" },
+        columns: { phone: "1", md: "3" },
+        rows: { phone: "auto", md: "2" },
+        gap: { phone: "sm" },
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-4",
     );
   });
 
   it("returns the largest configured breakpoint column count", () => {
-    expect(getMaxCols({ base: "1", md: "3", lg: "2" })).toBe(3);
+    expect(getMaxCols({ phone: "1", md: "3", lg: "2" })).toBe(3);
   });
 });
