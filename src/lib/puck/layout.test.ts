@@ -25,7 +25,7 @@ describe("layout helpers", () => {
       "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getContainerSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-2 lg:gap-8",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
     );
   });
 
