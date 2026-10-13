@@ -1,6 +1,11 @@
 import type { CustomField, Slot } from "@puckeditor/core";
 import type { Token, TokenOption } from "@/lib/puck/tokens";
-import type { ResponsiveValue } from "@/lib/puck/responsive";
+import {
+  expandResponsiveValue,
+  fillResponsiveValue,
+  type PartialResponsiveValue,
+  type ResponsiveValue,
+} from "@/lib/puck/responsive";
 import {
   responsiveField,
   responsiveFieldDescriptor,
@@ -20,7 +25,7 @@ type DefaultsOf<S> = { [K in keyof S]: S[K] extends PropSpec<any, infer V> ? V :
 export const responsive = {
   select<T extends string>(
     token: Token<T>,
-    opts: { label: string; default?: NoInfer<T | ResponsiveValue<T>> },
+    opts: { label: string; default?: NoInfer<T | PartialResponsiveValue<T>> },
   ): PropSpec<CustomField<ResponsiveValue<T>>, ResponsiveValue<T>> {
     return buildResponsiveFieldProp(
       responsiveFieldDescriptor.select(token.options),
@@ -32,7 +37,7 @@ export const responsive = {
   number(
     opts: {
       label: string;
-      default: NoInfer<number | ResponsiveValue<number>>;
+      default: NoInfer<number | PartialResponsiveValue<number>>;
     } & Omit<ResponsiveNumberFieldDescriptor, "kind">,
   ): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>> {
     return buildResponsiveFieldProp(
@@ -46,17 +51,19 @@ export const responsive = {
 function buildResponsiveFieldProp<T extends string>(
   descriptor: ResponsiveSelectFieldDescriptor<T>,
   label: string,
-  defaultValue: NoInfer<T | ResponsiveValue<T>>,
+  defaultValue: NoInfer<T | PartialResponsiveValue<T>>,
 ): PropSpec<CustomField<ResponsiveValue<T>>, ResponsiveValue<T>>;
 function buildResponsiveFieldProp(
   descriptor: ResponsiveNumberFieldDescriptor,
   label: string,
-  defaultValue: NoInfer<number | ResponsiveValue<number>>,
+  defaultValue: NoInfer<number | PartialResponsiveValue<number>>,
 ): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>>;
 function buildResponsiveFieldProp<T extends string>(
   descriptor: ResponsiveSelectFieldDescriptor<T> | ResponsiveNumberFieldDescriptor,
   label: string,
-  defaultValue: NoInfer<T | ResponsiveValue<T>> | NoInfer<number | ResponsiveValue<number>>,
+  defaultValue:
+    | NoInfer<T | PartialResponsiveValue<T>>
+    | NoInfer<number | PartialResponsiveValue<number>>,
 ): PropSpec<any, any> {
   return {
     field: responsiveField(descriptor as any, label),
@@ -65,11 +72,13 @@ function buildResponsiveFieldProp<T extends string>(
 }
 
 function resolveResponsiveDefaultValue<T extends string | number>(
-  value: NoInfer<T | ResponsiveValue<T>>,
+  value: NoInfer<T | PartialResponsiveValue<T>>,
 ): ResponsiveValue<T> {
+  // A single default applies to every breakpoint; a partial one is completed
+  // from its base, so defaults always populate all three dropdowns.
   return value !== undefined && typeof value === "object"
-    ? value as ResponsiveValue<T>
-    : { base: value } as ResponsiveValue<T>;
+    ? fillResponsiveValue(value as PartialResponsiveValue<T>)
+    : expandResponsiveValue(value as T);
 }
 
 // -- Builder: static fields ---------------------------------------------------

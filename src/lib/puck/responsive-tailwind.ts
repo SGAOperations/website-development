@@ -1,4 +1,7 @@
-import { responsiveBreakpoints, type ResponsiveValue } from "./responsive";
+import {
+  responsiveBreakpoints,
+  type PartialResponsiveValue,
+} from "./responsive";
 
 function prefixResponsiveClassNames(prefix: string, className: string): string[] {
   if (!className) {
@@ -12,7 +15,7 @@ function prefixResponsiveClassNames(prefix: string, className: string): string[]
 }
 
 function resolveResponsiveClassNames<T>(
-  value: ResponsiveValue<T>,
+  value: PartialResponsiveValue<T>,
   classNameFor: (value: T) => string,
 ): string {
   const classes = responsiveBreakpoints.flatMap((bp) => {
@@ -33,7 +36,7 @@ function resolveResponsiveClassNames<T>(
 }
 
 export function resolveResponsive<const T extends string | number>(
-  value: ResponsiveValue<T>,
+  value: PartialResponsiveValue<T>,
   variantMap: Record<T, string>,
 ): string {
   return resolveResponsiveClassNames(value, (token) => variantMap[token]);

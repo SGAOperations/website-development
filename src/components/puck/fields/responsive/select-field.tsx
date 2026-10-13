@@ -1,6 +1,9 @@
 "use client";
 
-import type { ResponsiveValue } from "@/lib/puck/responsive";
+import type {
+  PartialResponsiveValue,
+  ResponsiveValue,
+} from "@/lib/puck/responsive";
 import { ResponsiveFieldFrame } from "./frame";
 import { ResponsiveSelectControl } from "./select-control";
 import type { ResponsiveSelectFieldDescriptor } from "./kinds";
@@ -8,7 +11,7 @@ import type { ResponsiveSelectFieldDescriptor } from "./kinds";
 export type ResponsiveSelectFieldProps<T extends string> = {
   label: string;
   descriptor: ResponsiveSelectFieldDescriptor<T>;
-  value: ResponsiveValue<T>;
+  value: PartialResponsiveValue<T>;
   onChange: (value: ResponsiveValue<T>) => void;
   readOnly?: boolean;
 };
