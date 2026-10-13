@@ -1,5 +1,6 @@
 import { getDocumentSummaries } from "../../lib/documents/queries";
 import { getDocumentName } from "../../lib/documents/utils";
+import { getAllFolders } from "../../lib/folders/queries";
 import { getMediaFiles } from "../../lib/media/queries";
 import { getRoutesWithDocuments } from "../../lib/routes/queries";
 import { DocumentList, ArchivedDocumentList } from "./DocumentList";
@@ -7,16 +8,18 @@ import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
 
 export default async function EditorIndexPage() {
-  const [routes, mediaFiles, documents] = await Promise.all([
+  const [routes, mediaFiles, documents, folders] = await Promise.all([
     getRoutesWithDocuments(),
     getMediaFiles(),
     getDocumentSummaries(),
+    getAllFolders(),
   ]);
 
   const toDocumentItem = (doc: (typeof documents)[number]) => ({
     id: doc.id,
     name: doc.name,
     lastModified: doc.versions[0]?.createdAt ?? null,
+    folderId: doc.folderId,
   });
 
   const activeDocuments = documents.filter((doc) => doc.archivedAt === null).map(toDocumentItem);
@@ -38,7 +41,7 @@ export default async function EditorIndexPage() {
         }))}
       />
 
-      <DocumentList documents={activeDocuments} />
+      <DocumentList documents={activeDocuments} folders={folders} />
 
       <ArchivedDocumentList documents={archivedDocuments} />
 
