@@ -1,5 +1,8 @@
 import type { CustomField } from "@puckeditor/core";
-import type { ResponsiveValue } from "@/lib/puck/responsive";
+import type {
+  PartialResponsiveValue,
+  ResponsiveValue,
+} from "@/lib/puck/responsive";
 import { ResponsiveFieldClient } from "./client";
 import {
   type ResponsiveNumberFieldDescriptor,
@@ -33,7 +36,7 @@ export function responsiveField(
       onChange,
       readOnly,
     }: {
-      value: ResponsiveValue<string> | ResponsiveValue<number>;
+      value: PartialResponsiveValue<string> | PartialResponsiveValue<number>;
       onChange:
         | ((value: ResponsiveValue<string>) => void)
         | ((value: ResponsiveValue<number>) => void);

@@ -2,7 +2,7 @@
 
 Components in the Puck editor are styled through **design tokens** — named choices that map to arbitrary properties, but mostly Tailwind classes. Editors pick tokens from dropdowns; the system turns those choices into class names at render time.
 
-Any token can be made **responsive**, letting editors pick different values per breakpoint (base / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
+Any token can be made **responsive**, letting editors pick a value per breakpoint (phone / tablet / desktop). Every breakpoint always carries its own value — nothing inherits or rolls up from a smaller breakpoint.
 
 ## Core concepts
 
@@ -57,24 +57,26 @@ type Spacing = TokenValue<typeof padding>; // "sm" | "md"
 
 ### 2. Responsive values
 
-A `ResponsiveValue<T>` has a required `base` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
+A `ResponsiveValue<T>` carries a value at every breakpoint — all three are required (`src/lib/puck/responsive.ts`):
 
 ```ts
-type ResponsiveValue<T> = { base: T } & Partial<Record<"md" | "lg", T>>;
+type ResponsiveValue<T> = Record<"base" | "md" | "lg", T>;
 
-{ base: "sm" }                        // same at all sizes
+{ base: "sm", md: "sm", lg: "sm" }    // same at all sizes
 { base: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
-{ base: "sm", lg: "lg" }              // skip md — it inherits from base
 ```
+
+`base` is the phone breakpoint. Content saved before breakpoints became mandatory
+may still omit `md` / `lg`; that shape is typed as `PartialResponsiveValue<T>` and
+is completed from `base` when it is edited or rendered.
 
 **Helper functions** for working with responsive values:
 
 | Function | Purpose |
 |---|---|
-| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ base: "sm", lg: "lg" }, "md")` → `"sm"` |
-| `hasOverride(value)` | Returns `true` if any non-base overrides are set |
-| `map(value, fn)` | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())` |
-| `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override |
+| `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Throws on `undefined` — no breakpoint can be cleared |
+| `expandResponsiveValue(value)` | Expands a single value into that value at every breakpoint. `expandResponsiveValue("sm")` → `{ base: "sm", md: "sm", lg: "sm" }` |
+| `fillResponsiveValue(value)` | Completes a `PartialResponsiveValue` from its base. `fillResponsiveValue({ base: "sm", lg: "lg" })` → `{ base: "sm", md: "sm", lg: "lg" }` |
 
 These helpers are for component logic — see [Rendering](#4-rendering) for how responsive values become Tailwind classes.
 
@@ -99,7 +101,7 @@ const props = defineProps({
   // Responsive number — per-breakpoint numeric input
   columns: responsive.number({
     label: "Columns",
-    default: { base: 1, md: 2 },
+    default: { base: 1, md: 2, lg: 3 },
     min: 1,
     max: 6,
     step: 1,
@@ -110,13 +112,13 @@ const props = defineProps({
 });
 ```
 
-**Defaults.** Every builder falls back to the token's first key if no `default` is given. You can override with a scalar or a full responsive object:
+**Defaults.** Every builder falls back to the token's first key if no `default` is given. Responsive defaults always populate all three breakpoints: a scalar applies everywhere, and a partial object is completed from its `base`.
 
 ```ts
 responsive.select(columnCount, { label: "Columns", default: "3" })
-responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "3", lg: "3" } })
 responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
-responsive.number({ label: "Rows", default: { base: 1, md: 3 } })
+responsive.number({ label: "Rows", default: { base: 1, md: 3, lg: 3 } })
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
@@ -155,9 +157,9 @@ Static tokens look up the class map directly. Responsive tokens go through `reso
 // Static — direct lookup
 radius.classes[r]             // → "rounded-md"
 
-// Responsive — produces prefixed classes for each set breakpoint
+// Responsive — produces prefixed classes for each breakpoint
 resolveResponsive(padding, paddingToken.classes)
-// { base: "sm", md: "lg" } → "p-2 md:p-6"
+// { base: "sm", md: "lg", lg: "xl" } → "p-2 md:p-6 lg:p-8"
 ```
 
 Multi-class values get each utility prefixed individually:
@@ -173,7 +175,7 @@ const classes = cn(
 );
 ```
 
-Responsive numeric props stay as data. Use `resolveAt(...)` or your own component logic when they need to influence layout or behavior; they do not go through `resolveResponsive(...)`.
+Responsive numeric props stay as data. Read the breakpoint you need directly (e.g. `columns.base`) or use your own component logic when they need to influence layout or behavior; they do not go through `resolveResponsive(...)`.
 
 ## Tailwind source hints
 
@@ -227,7 +229,7 @@ type CardProps = {
 const props = defineProps({
   content: field.slot(),
   padding: responsive.select(padding, { label: "Padding", default: "md" }),
-  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2 }, min: 1, max: 4, step: 1 }),
+  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2, lg: 3 }, min: 1, max: 4, step: 1 }),
   bgColor: field.select(bgColor, { label: "Background" }),
   title: field.raw({ type: "text", label: "Title" }, ""),
 });
@@ -235,10 +237,9 @@ const props = defineProps({
 
 ### Step 3 — Export the component config
 
-Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive token props, `resolveAt` or component logic for responsive numeric props, and direct `token.classes[value]` lookups for static ones:
+Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive token props, direct breakpoint access or component logic for responsive numeric props, and direct `token.classes[value]` lookups for static ones:
 
 ```ts
-import { resolveAt } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import { cn } from "@/lib/utils";
 
@@ -248,7 +249,7 @@ export const Card: ComponentConfig<CardProps> = {
   render: ({ content: Content, padding: pad, columns, bgColor: bg, title }) => (
     <div
       className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}
-      style={{ columns: resolveAt(columns, "base") }}
+      style={{ columns: columns.base }}
     >
       {title && <h3>{title}</h3>}
       {Content && <Content />}

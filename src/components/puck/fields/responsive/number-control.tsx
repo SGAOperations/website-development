@@ -3,26 +3,25 @@ import type { ResponsiveFieldControlProps } from "./frame";
 
 export type ResponsiveNumberChange =
   | { kind: "ignore" }
-  | { kind: "set"; value: number | undefined };
+  | { kind: "set"; value: number };
 
-export function formatResponsiveNumberValue(value: number | undefined): string {
-  return value === undefined ? "" : String(value);
+export function formatResponsiveNumberValue(value: number): string {
+  return String(value);
 }
 
 export function getResponsiveNumberChange(
   rawValue: string,
   {
-    isBase,
     min,
     max,
   }: {
-    isBase: boolean;
     min?: number;
     max?: number;
-  },
+  } = {},
 ): ResponsiveNumberChange {
+  // Every breakpoint must keep a value, so an empty input is never committed.
   if (rawValue === "") {
-    return isBase ? { kind: "ignore" } : { kind: "set", value: undefined };
+    return { kind: "ignore" };
   }
 
   const nextValue = Number(rawValue);
@@ -42,7 +41,6 @@ export function getResponsiveNumberChange(
 }
 
 export function ResponsiveNumberControl({
-  isBase,
   value,
   onChange,
   readOnly,
@@ -54,29 +52,24 @@ export function ResponsiveNumberControl({
   max?: number;
   step?: number;
 }) {
-  const isInheriting = !isBase && value === undefined;
-
   return (
-    <div className={isInheriting ? "opacity-40" : undefined}>
-      <Input
-        type="number"
-        value={formatResponsiveNumberValue(value)}
-        onChange={(event) => {
-          const change = getResponsiveNumberChange(event.currentTarget.value, {
-            isBase,
-            min,
-            max,
-          });
+    <Input
+      type="number"
+      value={formatResponsiveNumberValue(value)}
+      onChange={(event) => {
+        const change = getResponsiveNumberChange(event.currentTarget.value, {
+          min,
+          max,
+        });
 
-          if (change.kind === "set") {
-            onChange(change.value);
-          }
-        }}
-        readOnly={readOnly}
-        min={min}
-        max={max}
-        step={step}
-      />
-    </div>
+        if (change.kind === "set") {
+          onChange(change.value);
+        }
+      }}
+      readOnly={readOnly}
+      min={min}
+      max={max}
+      step={step}
+    />
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
-import type { ResponsiveValue } from "@/lib/puck/responsive";
+import type {
+  PartialResponsiveValue,
+  ResponsiveValue,
+} from "@/lib/puck/responsive";
 import { ResponsiveFieldFrame } from "./frame";
 import { ResponsiveNumberControl } from "./number-control";
 import type { ResponsiveNumberFieldDescriptor } from "./kinds";
@@ -8,7 +11,7 @@ import type { ResponsiveNumberFieldDescriptor } from "./kinds";
 export type ResponsiveNumberFieldProps = {
   label: string;
   descriptor: ResponsiveNumberFieldDescriptor;
-  value: ResponsiveValue<number>;
+  value: PartialResponsiveValue<number>;
   onChange: (value: ResponsiveValue<number>) => void;
   readOnly?: boolean;
 };
