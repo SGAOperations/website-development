@@ -24,6 +24,7 @@ export function Client({
   publishedVersionId: initialPublishedVersionId,
   versions: initialVersions,
   isArchived,
+  isVersionArchived,
 }: {
   documentId: number;
   documentName: string;
@@ -33,6 +34,7 @@ export function Client({
   publishedVersionId?: number;
   versions: Version[];
   isArchived: boolean;
+  isVersionArchived: boolean;
 }) {
   const [versions, setVersions] = useState(initialVersions);
   const [versionId, setVersionId] = useState(initialVersionId);
@@ -45,11 +47,17 @@ export function Client({
     setVersionId(version.id);
     setIsDirty(false);
   }, []);
+  const setVersionArchivedAt = useCallback((id: number, archivedAt: Date | null) => {
+    setVersions((prev) => prev.map((version) =>
+      version.id === id ? { ...version, archivedAt } : version
+    ));
+  }, []);
+  const currentVersionIsArchived = versions.find((version) => version.id === versionId)?.archivedAt != null;
 
   return (
     <MediaProvider media={media}>
       <DocumentContext.Provider
-        value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
+        value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isVersionArchived: currentVersionIsArchived, isDirty, addVersion, setVersionArchivedAt, setPublishedVersionId }}
       >
         <UnsavedChangesContext.Provider value={{ confirmDiscardChanges }}>
           <Puck
@@ -58,7 +66,7 @@ export function Client({
             onChange={() => setIsDirty(true)}
             ui={{ plugin: { current: "version-plugin" } }}
             plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
-            permissions={isArchived
+            permissions={isArchived || isVersionArchived
               ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
               : { duplicate: false } // We replace this with our own, to avoid an icon collision
             }

@@ -43,13 +43,14 @@ function useSaveHotkey(save: () => void, target?: Document | null, enabled = tru
 
 export function EditorSaveProvider({ children }: { children: ReactNode }) {
   const data = usePuck((s) => s.appState.data);
-  const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
+  const { documentId, documentName, isArchived, isVersionArchived, isDirty, addVersion } = useDocumentContext();
   const { alert } = useDialogs();
   const [isSaving, startTransition] = useTransition();
-  const canSave = !isArchived && !isSaving && isDirty;
+  const canSave = !isArchived && !isVersionArchived && !isSaving && isDirty;
   const saveStateRef = useRef({
     canSave,
     isArchived,
+    isVersionArchived,
     isSaving,
     isDirty,
     data,
@@ -60,6 +61,7 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
   saveStateRef.current = {
     canSave,
     isArchived,
+    isVersionArchived,
     isSaving,
     isDirty,
     data,
@@ -68,10 +70,10 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
   };
 
   const save = useCallback(() => {
-    const { canSave, isArchived, isSaving, isDirty, data, documentId, documentName } = saveStateRef.current;
+    const { canSave, isArchived, isVersionArchived, isSaving, isDirty, data, documentId, documentName } = saveStateRef.current;
 
     if (!canSave) {
-      if (!isArchived && !isSaving && !isDirty) {
+      if (!isArchived && !isVersionArchived && !isSaving && !isDirty) {
         toast.info("No changes to save", { id: "editor-no-changes-to-save" });
       }
 
