@@ -5,6 +5,16 @@
 @source inline("{md:,lg:,}{p,px,py}-{0,1,2,4,6,8,12}");
 @source inline("{md:,lg:,}gap-{0,1,2,4,6,8,12}");
 @source inline("{md:,lg:,}grid-cols-{1,2,3,4,5,6}");
+@source inline("{md:,lg:,}grid-cols-[1fr_2fr]");
+@source inline("{md:,lg:,}grid-cols-[2fr_1fr]");
+@source inline("{md:,lg:,}grid-cols-[1fr_3fr]");
+@source inline("{md:,lg:,}grid-cols-[3fr_1fr]");
+@source inline("{md:,lg:,}grid-cols-[1fr_2fr_1fr]");
+@source inline("{md:,lg:,}grid-cols-[1fr_3fr_1fr]");
+@source inline("{md:,lg:,}grid-cols-[1fr_1fr_2fr]");
+@source inline("{md:,lg:,}grid-cols-[1fr_1fr_3fr]");
+@source inline("{md:,lg:,}grid-cols-[2fr_1fr_1fr]");
+@source inline("{md:,lg:,}grid-cols-[3fr_1fr_1fr]");
 @source inline("{md:,lg:,}grid-rows-{none,1,2,3,4,5,6}");
 @source inline("{md:,lg:,}auto-rows-{auto,[0]}");
 @source inline("{md:,lg:,}overflow-{visible,hidden}");

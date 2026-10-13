@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  getColumnTrackCount,
   getContainerSlotClassName,
   getContainerSurfaceClassName,
   getGridClassName,
@@ -32,17 +33,23 @@ describe("layout helpers", () => {
   it("builds responsive grid classes for columns, rows, and gap", () => {
     expect(
       getGridClassName({
-        columns: { base: "1", md: "3" },
+        columns: { base: "1", md: "1:3" },
         rows: { base: "auto", md: "2" },
         gap: { base: "sm" },
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-[1fr_3fr] grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
     );
   });
 
+  it("counts grid tracks for numeric and ratio column configs", () => {
+    expect(getColumnTrackCount("4")).toBe(4);
+    expect(getColumnTrackCount("1:3")).toBe(2);
+    expect(getColumnTrackCount("1:2:1")).toBe(3);
+  });
+
   it("returns the largest configured breakpoint column count", () => {
-    expect(getMaxCols({ base: "1", md: "3", lg: "2" })).toBe(3);
+    expect(getMaxCols({ base: "1:2", md: "1:3:1", lg: "2" })).toBe(3);
   });
 });
