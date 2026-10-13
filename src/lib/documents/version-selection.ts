@@ -1,5 +1,6 @@
 interface VersionOption {
   id: number;
+  archivedAt?: Date | null;
 }
 
 export function resolveEditorVersionId(
@@ -7,7 +8,7 @@ export function resolveEditorVersionId(
   requestedVersionId?: number,
 ) {
   if (requestedVersionId === undefined) {
-    return versions[0]?.id;
+    return versions.find((version) => version.archivedAt === null || version.archivedAt === undefined)?.id;
   }
 
   // Editor URLs with an explicit version must stay scoped to the current document;
@@ -34,5 +35,5 @@ export function resolvePreviewVersionId({
   }
 
   // Without an explicit version, preview the published version and fall back to the latest draft.
-  return publishedVersionId ?? versions[0]?.id;
+  return publishedVersionId ?? versions.find((version) => version.archivedAt === null || version.archivedAt === undefined)?.id;
 }

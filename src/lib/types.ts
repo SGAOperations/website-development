@@ -4,6 +4,7 @@ export type Version = {
   id: number;
   documentId: number;
   createdAt: Date;
+  archivedAt: Date | null;
 };
 
 export type ActionResult<T = void> =
@@ -21,6 +22,11 @@ export type SaveVersionInput = {
 };
 
 export type PublishVersionInput = {
+  documentId: number;
+  versionId: number;
+};
+
+export type ArchiveVersionInput = {
   documentId: number;
   versionId: number;
 };

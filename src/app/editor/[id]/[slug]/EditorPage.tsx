@@ -35,6 +35,7 @@ export default async function EditorPage({
     id: v.id,
     documentId: v.documentId,
     createdAt: v.createdAt,
+    archivedAt: v.archivedAt,
   }));
 
   return (
@@ -46,6 +47,7 @@ export default async function EditorPage({
       media={media}
       versionId={targetVersionId}
       publishedVersionId={document.publishedVersionId || undefined}
+      isVersionArchived={document.versions.find((v) => v.id === targetVersionId)?.archivedAt != null}
       versions={versions}
       isArchived={document.archivedAt !== null}
     />
