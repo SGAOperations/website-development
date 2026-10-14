@@ -40,10 +40,7 @@ async function createVersion(documentId: number, content: Data) {
   });
 }
 
-async function publishVersion(
-  documentId: number,
-  versionId: number
-): Promise<void> {
+async function publishVersion(documentId: number, versionId: number): Promise<void> {
   const version = await prisma.version.findFirst({
     where: {
       id: versionId,
@@ -61,11 +58,7 @@ async function publishVersion(
   });
 }
 
-async function createDocumentWithVersion(
-  name: string,
-  content: Data,
-  publish: boolean = false
-) {
+async function createDocumentWithVersion(name: string, content: Data, publish: boolean = false) {
   return await prisma.$transaction(async (tx) => {
     const document = await tx.document.create({
       data: { name },
@@ -90,7 +83,7 @@ async function createDocumentWithVersion(
 }
 
 export async function createDocumentAction(
-  input: CreateDocumentInput
+  input: CreateDocumentInput,
 ): Promise<ActionResult<{ documentId: number }>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
@@ -101,7 +94,7 @@ export async function createDocumentAction(
 }
 
 export async function saveVersionAction(
-  input: SaveVersionInput
+  input: SaveVersionInput,
 ): Promise<ActionResult<{ version: Version }>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
@@ -117,7 +110,7 @@ export async function saveVersionAction(
 }
 
 export async function publishVersionAction(
-  input: PublishVersionInput
+  input: PublishVersionInput,
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
@@ -126,7 +119,7 @@ export async function publishVersionAction(
 }
 
 export async function archiveDocumentAction(
-  input: ArchiveDocumentInput
+  input: ArchiveDocumentInput,
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await prisma.document.update({
@@ -137,7 +130,7 @@ export async function archiveDocumentAction(
 }
 
 export async function unarchiveDocumentAction(
-  input: ArchiveDocumentInput
+  input: ArchiveDocumentInput,
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await prisma.document.update({
@@ -148,7 +141,7 @@ export async function unarchiveDocumentAction(
 }
 
 export async function duplicateDocumentAction(
-  input: DuplicateDocumentInput
+  input: DuplicateDocumentInput,
 ): Promise<ActionResult<{ documentId: number }>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
@@ -163,15 +156,13 @@ export async function duplicateDocumentAction(
     const newDoc = await createDocumentWithVersion(
       name,
       doc.publishedVersion.content as Data,
-      false
+      false,
     );
     return { documentId: newDoc.id };
   });
 }
 
-export async function renameDocumentAction(
-  input: RenameInput
-): Promise<ActionResult<void>> {
+export async function renameDocumentAction(input: RenameInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.id);
     const name = validateName(input.name);

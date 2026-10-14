@@ -1,17 +1,12 @@
 "use server";
 
 import { prisma } from "../prisma";
-import type {
-  ActionResult,
-  CreateRouteInput,
-  DeleteRouteInput,
-  UpdateRouteInput,
-} from "../types";
+import type { ActionResult, CreateRouteInput, DeleteRouteInput, UpdateRouteInput } from "../types";
 import { wrapAction } from "../utils";
 import { assertValidRoutePath } from "./utils";
 
 export async function createRouteAction(
-  input: CreateRouteInput
+  input: CreateRouteInput,
 ): Promise<ActionResult<{ routeId: number }>> {
   return wrapAction(async () => {
     assertValidRoutePath(input.path);
@@ -25,9 +20,7 @@ export async function createRouteAction(
   });
 }
 
-export async function updateRouteAction(
-  input: UpdateRouteInput
-): Promise<ActionResult<void>> {
+export async function updateRouteAction(input: UpdateRouteInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     assertValidRoutePath(input.path);
     await prisma.route.update({
@@ -40,9 +33,7 @@ export async function updateRouteAction(
   });
 }
 
-export async function deleteRouteAction(
-  input: DeleteRouteInput
-): Promise<ActionResult<void>> {
+export async function deleteRouteAction(input: DeleteRouteInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await prisma.route.delete({
       where: { id: input.id },

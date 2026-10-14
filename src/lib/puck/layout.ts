@@ -57,12 +57,7 @@ export function getContainerSurfaceClassName({
   );
 }
 
-export function getContainerSlotClassName({
-  layout: l,
-  gap,
-  align,
-  justify: j,
-}: ContainerStyle) {
+export function getContainerSlotClassName({ layout: l, gap, align, justify: j }: ContainerStyle) {
   return cn(
     "w-full",
     layoutToken.classes[l],

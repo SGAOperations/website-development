@@ -6,9 +6,7 @@ export type Version = {
   createdAt: Date;
 };
 
-export type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+export type ActionResult<T = void> = { success: true; data: T } | { success: false; error: string };
 
 export type CreateDocumentInput = {
   name: string;

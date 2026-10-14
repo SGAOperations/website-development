@@ -14,9 +14,7 @@ type ColumnsProps = {
 };
 
 const slotField = { type: "slot" } as const;
-const columnSlotKeys = columnCount.options.map(
-  ({ value }) => `column${value}` as SlotKey,
-);
+const columnSlotKeys = columnCount.options.map(({ value }) => `column${value}` as SlotKey);
 
 const columnSlotFields = Object.fromEntries(
   columnSlotKeys.map((key) => [key, slotField]),
@@ -27,7 +25,10 @@ const columnSlotDefaults = Object.fromEntries(
 ) as Record<SlotKey, Slot>;
 
 const props = defineProps({
-  columns: responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
+  columns: responsive.select(columnCount, {
+    label: "Columns",
+    default: { base: "1", md: "2" },
+  }),
   gap: responsive.select(gap, { label: "Gap", default: "md" }),
 });
 
