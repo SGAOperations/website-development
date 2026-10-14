@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
-import {
-  createRouteAction,
-  updateRouteAction,
-  deleteRouteAction,
-} from "../../lib/routes/actions";
+import { createRouteAction, updateRouteAction, deleteRouteAction } from "../../lib/routes/actions";
 import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
@@ -194,7 +190,10 @@ export function RouteTable({
       const result = await runAction(createRouteAction({ path, documentId }));
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
+        setRoutes((prev) => [
+          ...prev,
+          { id: result.data.routeId, path, documentId, documentName: doc.name },
+        ]);
       } else {
         await alert(result.error);
       }
@@ -206,7 +205,9 @@ export function RouteTable({
       const result = await runAction(updateRouteAction({ id, path, documentId }));
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
+        setRoutes((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)),
+        );
       } else {
         await alert(result.error);
       }
@@ -214,7 +215,14 @@ export function RouteTable({
   }
 
   async function handleDelete(route: RouteRow) {
-    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete", destructive: true })) return;
+    if (
+      !(await confirm({
+        message: `Delete route "${route.path}"?`,
+        actionLabel: "Delete",
+        destructive: true,
+      }))
+    )
+      return;
     startTransition(async () => {
       const result = await runAction(deleteRouteAction({ id: route.id }));
       if (result.success) {

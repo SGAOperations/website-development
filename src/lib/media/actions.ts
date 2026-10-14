@@ -4,15 +4,11 @@ import { prisma } from "../prisma";
 import { supabase, MEDIA_BUCKET, getMediaUrl } from "../supabase";
 import { validateName } from "../utils";
 import type { Media } from "../../generated/prisma/client";
-import type {
-  ActionResult,
-  DeleteMediaInput,
-  RenameInput,
-} from "../types";
+import type { ActionResult, DeleteMediaInput, RenameInput } from "../types";
 import { wrapAction } from "../utils";
 
 export async function uploadMediaAction(
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResult<Media & { url: string }>> {
   return wrapAction(async () => {
     const file = formData.get("file");
@@ -49,9 +45,7 @@ export async function uploadMediaAction(
   });
 }
 
-export async function renameMediaAction(
-  input: RenameInput
-): Promise<ActionResult<void>> {
+export async function renameMediaAction(input: RenameInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
     await prisma.media.update({
@@ -61,18 +55,14 @@ export async function renameMediaAction(
   });
 }
 
-export async function deleteMediaAction(
-  input: DeleteMediaInput
-): Promise<ActionResult<void>> {
+export async function deleteMediaAction(input: DeleteMediaInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     const media = await prisma.media.findUniqueOrThrow({
       where: { id: input.id },
       select: { storagePath: true },
     });
 
-    const { error } = await supabase.storage
-      .from(MEDIA_BUCKET)
-      .remove([media.storagePath]);
+    const { error } = await supabase.storage.from(MEDIA_BUCKET).remove([media.storagePath]);
 
     if (error) {
       throw new Error(error.message);

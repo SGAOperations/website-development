@@ -16,8 +16,6 @@ describe("responsive helpers", () => {
 
   it("updates the base value but refuses to clear it", () => {
     expect(setAt({ base: 1, md: 2 }, "base", 0)).toEqual({ base: 0, md: 2 });
-    expect(() => setAt({ base: 1 }, "base", undefined)).toThrow(
-      "Base value cannot be undefined",
-    );
+    expect(() => setAt({ base: 1 }, "base", undefined)).toThrow("Base value cannot be undefined");
   });
 });
