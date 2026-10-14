@@ -121,7 +121,20 @@ export const columnGap = defineToken({
   "2xl": { label: "2XL",    classes: "gap-x-12" },
 });
 
+
+//NOTE! This will need to be configured as the actual value begins to be created!
+//This is just my guess for how speed will go in based on other responsive values
+export const speed = defineToken({
+  exslow: {label: "Extra Slow", classes: "speed-2"},
+  slow: {label: "Slow", classes: "speed-2"},
+  medium: {label: "Medium", classes: "speed-4"},
+  fast: {label: "Fast", classes: "speed-6"},
+  exfast: {label: "Extra Fast", classes: "speed-10"}
+});
+
 export type Spacing = TokenValue<typeof padding>;
+
+export type Speed = TokenValue<typeof speed>;
 
 export const bgColor = defineToken({
   background:           { label: "Background",         classes: "bg-background" },
