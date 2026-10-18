@@ -1,5 +1,5 @@
 import type { Config } from "@puckeditor/core";
-import { Container } from "@/components/puck/blocks/container";
+import { Group } from "@/components/puck/blocks/group";
 import { Columns } from "@/components/puck/blocks/columns";
 import { Grid } from "@/components/puck/blocks/grid";
 import { RichTextComponent } from "@/components/puck/blocks/rich-text";
@@ -15,8 +15,8 @@ export const config = {
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
-    Section,
-    Container,
+    Anchor,
+    Group,
     Columns,
     Grid,
     Text: RichTextComponent,
