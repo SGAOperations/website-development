@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
-  getContainerSlotClassName,
-  getContainerSurfaceClassName,
+  getGroupSlotClassName,
+  getGroupSurfaceClassName,
   getGridClassName,
   getMaxCols,
 } from "./layout";
 
 describe("layout helpers", () => {
-  it("compose container surface and slot classes from token selections", () => {
+  it("compose group surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
       padding: { phone: "sm" as const, md: "lg" as const },

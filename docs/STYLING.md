@@ -123,7 +123,7 @@ responsive.number({ label: "Rows", default: { phone: 1, md: 3 } })
 
 ```ts
 field.slot({ allow: ["Card", "Button"] })
-field.slot({ disallow: ["Section"] })
+field.slot({ disallow: ["Anchor"] })
 ```
 
 The same token definition works for both static and responsive use. Numeric responsive fields do not need a token.
