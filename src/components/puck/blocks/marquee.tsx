@@ -10,10 +10,7 @@ import {
   type MarqueeRowPadding,
   type MarqueeSpeed,
 } from "@/lib/puck/tokens";
-import {
-  getMarqueeItemClassName,
-  marqueeClassName,
-} from "@/lib/puck/layout";
+import { getMarqueeItemClassName, marqueeClassName } from "@/lib/puck/layout";
 import { cn } from "@/lib/utils";
 
 //Did my best to set up the most basic framework of the file, details still to be worked out for most stuff here
@@ -40,7 +37,12 @@ export const Marquee: ComponentConfig<MarqueeProps> = {
   inline: true,
   ...props,
   render: ({ content: Content, speed, direction, gap, rowPadding, puck }) => {
-    const itemClassName = getMarqueeItemClassName({ speed, direction, gap, rowPadding });
+    const itemClassName = getMarqueeItemClassName({
+      speed,
+      direction,
+      gap,
+      rowPadding,
+    });
 
     // marquee content is static in editor, but animated in preview and production
     if (puck.isEditing) {

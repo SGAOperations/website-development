@@ -3,6 +3,7 @@ import {
   getContainerSlotClassName,
   getContainerSurfaceClassName,
   getGridClassName,
+  getMarqueeItemClassName,
   getMaxCols,
 } from "./layout";
 
@@ -39,6 +40,22 @@ describe("layout helpers", () => {
       }),
     ).toBe(
       "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+    );
+  });
+
+  it("builds marquee item classes", () => {
+    const style = {
+      speed: "medium" as const,
+      direction: "ltr" as const,
+      gap: "sm" as const,
+      rowPadding: "lg" as const,
+    };
+    const item =
+      "marquee-item flex min-w-full shrink-0 items-center text-center gap-4 pr-4 py-12";
+
+    expect(getMarqueeItemClassName(style)).toBe(item); // static
+    expect(getMarqueeItemClassName({ ...style, animated: true })).toBe(
+      `${item} [animation:marquee_30s_linear_infinite] [animation-direction:reverse]! group-hover:[animation-play-state:paused] motion-reduce:[animation:none]`,
     );
   });
 
