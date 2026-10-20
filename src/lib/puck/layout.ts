@@ -23,13 +23,13 @@ import {
   type Layout,
   type Radius,
   type Shadow,
-  type Spacing,
+  type Padding,
   type Width,
 } from "@/lib/puck/tokens";
 
 export type ContainerStyle = {
   layout: Layout;
-  padding: ResponsiveValue<Spacing>;
+  padding: ResponsiveValue<Padding>;
   gap: ResponsiveValue<Gap>;
   align: CrossAxisAlign;
   justify: Justify;

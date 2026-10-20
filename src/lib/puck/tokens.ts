@@ -122,7 +122,7 @@ export const columnGap = defineToken({
   32:    { label: "32px",     classes: "gap-x-8" },
 });
 
-export type Spacing = TokenValue<typeof padding>;
+export type Padding = TokenValue<typeof padding>;
 export type PaddingX = TokenValue<typeof paddingX>;
 export type PaddingY = TokenValue<typeof paddingY>;
 export type Gap = TokenValue<typeof gap>;
