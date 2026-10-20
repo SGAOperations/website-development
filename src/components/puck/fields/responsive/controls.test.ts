@@ -16,22 +16,22 @@ describe("responsive number control helpers", () => {
     expect(formatResponsiveNumberValue(3)).toBe("3");
   });
 
-  it("clears inherited overrides, preserves base values, and validates numeric input", () => {
-    expect(getResponsiveNumberChange("", { isBase: false })).toEqual({
+  it("clears inherited overrides, preserves 'phone' values, and validates numeric input", () => {
+    expect(getResponsiveNumberChange("", { isPhone: false })).toEqual({
       kind: "set",
       value: undefined,
     });
-    expect(getResponsiveNumberChange("", { isBase: true })).toEqual({
+    expect(getResponsiveNumberChange("", { isPhone: true })).toEqual({
       kind: "ignore",
     });
-    expect(getResponsiveNumberChange("4", { isBase: true, min: 1, max: 6 })).toEqual({
+    expect(getResponsiveNumberChange("4", { isPhone: true, min: 1, max: 6 })).toEqual({
       kind: "set",
       value: 4,
     });
-    expect(getResponsiveNumberChange("0", { isBase: true, min: 1, max: 6 })).toEqual({
+    expect(getResponsiveNumberChange("0", { isPhone: true, min: 1, max: 6 })).toEqual({
       kind: "ignore",
     });
-    expect(getResponsiveNumberChange("9", { isBase: false, min: 1, max: 6 })).toEqual({
+    expect(getResponsiveNumberChange("9", { isPhone: false, min: 1, max: 6 })).toEqual({
       kind: "ignore",
     });
   });

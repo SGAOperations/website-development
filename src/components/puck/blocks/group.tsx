@@ -1,9 +1,9 @@
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ElementType } from "react";
 import {
-  getContainerSlotClassName,
-  getContainerSurfaceClassName,
-  type ContainerStyle,
+  getGroupSlotClassName,
+  getGroupSurfaceClassName,
+  type GroupStyle,
 } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import {
@@ -33,7 +33,7 @@ const tag = defineToken({
 });
 type Tag = TokenValue<typeof tag>;
 
-type ContainerProps = ContainerStyle & {
+type GroupProps = GroupStyle & {
   content: Slot;
   tag: Tag;
 };
@@ -56,16 +56,16 @@ const props = defineProps({
   tag: field.select(tag, { label: "HTML tag" }),
 });
 
-export const Container: ComponentConfig<ContainerProps> = {
-  label: "Container",
+export const Group: ComponentConfig<GroupProps> = {
+  label: "Group",
   inline: true,
   ...props,
   render: ({ content: Content, tag: t, puck, ...style }) => {
     const Tag = t as ElementType;
 
     return (
-      <Tag ref={puck.dragRef} className={getContainerSurfaceClassName(style)}>
-        {Content && <Content className={getContainerSlotClassName(style)} minEmptyHeight="200px" />}
+      <Tag ref={puck.dragRef} className={getGroupSurfaceClassName(style)}>
+        {Content && <Content className={getGroupSlotClassName(style)} minEmptyHeight="200px" />}
       </Tag>
     );
   },
