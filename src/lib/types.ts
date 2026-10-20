@@ -18,6 +18,7 @@ export type CreateDocumentInput = {
 export type SaveVersionInput = {
   documentId: number;
   content: Data;
+  versionName: string;
 };
 
 export type PublishVersionInput = {
