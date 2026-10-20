@@ -2,7 +2,7 @@ import { AutoField } from "@puckeditor/core";
 import type { TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveFieldControlProps } from "./frame";
 
-// Non-base breakpoints can clear their override and inherit from the smaller breakpoint.
+// Non-phone breakpoints can clear their override and inherit from the smaller breakpoint.
 const inheritOption: TokenOption<""> = { label: "–", value: "" };
 
 function withInheritOption<T extends string>(
@@ -20,7 +20,7 @@ export function fromResponsiveSelectValue<T extends string>(selected: T | ""): T
 }
 
 export function ResponsiveSelectControl<T extends string>({
-  isBase,
+  isPhone,
   value,
   onChange,
   readOnly,
@@ -28,8 +28,8 @@ export function ResponsiveSelectControl<T extends string>({
 }: ResponsiveFieldControlProps<T> & {
   options: TokenOption<T>[];
 }) {
-  const fieldOptions = isBase ? options : withInheritOption(options);
-  const isInheriting = !isBase && value === undefined;
+  const fieldOptions = isPhone ? options : withInheritOption(options);
+  const isInheriting = !isPhone && value === undefined;
 
   return (
     <div className={isInheriting ? "opacity-40" : undefined}>

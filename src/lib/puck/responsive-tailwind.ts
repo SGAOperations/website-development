@@ -24,7 +24,7 @@ function resolveResponsiveClassNames<T>(
 
     const className = classNameFor(breakpointValue);
 
-    return bp === "base"
+    return bp === "phone"
       ? className.split(/\s+/).filter(Boolean)
       : prefixResponsiveClassNames(bp, className);
   });
