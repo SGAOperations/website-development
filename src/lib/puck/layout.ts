@@ -9,6 +9,10 @@ import {
   gridRows,
   justify,
   layout as layoutToken,
+  marqueeDirection,
+  marqueeGap,
+  marqueeRowPadding,
+  marqueeSpeed,
   padding as paddingToken,
   radius,
   shadow,
@@ -20,6 +24,10 @@ import {
   type GridRows,
   type Justify,
   type Layout,
+  type MarqueeDirection,
+  type MarqueeGap,
+  type MarqueeRowPadding,
+  type MarqueeSpeed,
   type Radius,
   type Shadow,
   type Spacing,
@@ -89,6 +97,32 @@ export function getGridClassName({
     resolveResponsive(columns, columnCount.classes),
     resolveResponsive(rows, gridRows.classes),
     resolveResponsive(gap, gapToken.classes),
+  );
+}
+
+export const marqueeClassName =
+  "group flex w-full overflow-hidden whitespace-nowrap motion-reduce:overflow-x-auto";
+
+export function getMarqueeItemClassName({
+  speed,
+  direction,
+  gap,
+  rowPadding,
+  animated = false,
+}: {
+  speed: MarqueeSpeed;
+  direction: MarqueeDirection;
+  gap: MarqueeGap;
+  rowPadding: MarqueeRowPadding;
+  animated?: boolean;
+}) {
+  return cn(
+    "marquee-item flex min-w-full shrink-0 items-center text-center",
+    marqueeGap.classes[gap],
+    marqueeRowPadding.classes[rowPadding],
+    animated && marqueeSpeed.classes[speed],
+    animated && marqueeDirection.classes[direction],
+    animated && "group-hover:[animation-play-state:paused] motion-reduce:[animation:none]",
   );
 }
 
