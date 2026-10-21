@@ -6,10 +6,11 @@ import { RichTextComponent } from "@/components/puck/blocks/rich-text";
 import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { Footer } from "@/components/puck/blocks/footer";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid"] },
+    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Footer"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
@@ -18,6 +19,7 @@ export const config = {
     Group,
     Columns,
     Grid,
+    Footer,
     Text: RichTextComponent,
     Image: Media,
     Button: PuckButton,
