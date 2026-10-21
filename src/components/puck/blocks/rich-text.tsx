@@ -12,7 +12,7 @@ import {
   type LineSpacing,
   type TextAlign,
   type TextColumnCount,
-  type Spacing,
+  type ColumnGap,
 } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 
@@ -22,7 +22,7 @@ type RichTextProps = {
   align: TextAlign;
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
-  columnGap: ResponsiveValue<Spacing>;
+  columnGap: ResponsiveValue<ColumnGap>;
 };
 
 const props = defineProps({
@@ -34,7 +34,7 @@ const props = defineProps({
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
-  columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
+  columnGap: responsive.select(columnGap, { label: "Column gap", default: "16" }),
 });
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
