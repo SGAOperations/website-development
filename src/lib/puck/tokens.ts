@@ -3,7 +3,6 @@
 // root font size is 16px) so divide pixel values by 4 to get the
 // Tailwind class number:
 // ex: 8px ->  gap-2, 12px -> gap-3
-
 export type TokenOption<K extends string = string> = {
   value: K;
   label: string;
