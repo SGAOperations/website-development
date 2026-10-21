@@ -21,10 +21,10 @@ describe("layout helpers", () => {
       shadow: "sm" as const,
     };
 
-    expect(getContainerSurfaceClassName(style)).toBe(
+    expect(getGroupSurfaceClassName(style)).toBe(
       "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
-    expect(getContainerSlotClassName(style)).toBe(
+    expect(getGroupSlotClassName(style)).toBe(
       "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
     );
   });
