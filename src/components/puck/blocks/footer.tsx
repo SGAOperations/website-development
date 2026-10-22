@@ -10,6 +10,14 @@ import {
     type TextAlign,
     padding,
     Spacing,
+    Layout,
+    CrossAxisAlign,
+    Justify,
+    layout,
+    justify,
+    crossAxisAlign,
+    gap as gapToken,
+    layout as layoutToken,
 } from '@/lib/puck/tokens';
 import { ResponsiveValue } from '@/lib/puck/responsive';
 import { resolveResponsive } from '@/lib/puck/responsive-tailwind';
@@ -21,9 +29,14 @@ type FooterProps = {
     buttonSpace: Slot;
     emails: string;
     align: TextAlign;
+    titleColor : Color;
     textColor : Color;
     backgroundColor : Color;
     padding : ResponsiveValue<Spacing> 
+    layout: Layout;
+    gap: ResponsiveValue<Spacing>;
+    slotAlign: CrossAxisAlign;
+    justify: Justify;
 }
 
 const props = defineProps({
@@ -41,21 +54,34 @@ const props = defineProps({
         "Contact: myname@mydomain.com\nInquiries: myfunding@mydomain.com\nWebmaster: webmaster@mydomain.com"
     ),
     align: field.radio(textAlign, { label: "Text align", default: "center" }),
-    textColor: field.select(textColor, {label: "Text Color", default: "background"}),
+    titleColor : field.select(textColor, {label: "Title Text Color", default: "sga-red"}),
+    textColor: field.select(textColor, {label: "Body Text Color", default: "background"}),
     backgroundColor: field.select(bgColor, {label: "Background Color", default: "foreground"}),
     padding: responsive.select(padding, { label: "Padding", default: "md"}),
+    layout : field.radio(layout, {label: "Layout"}),
+    justify : field.radio(justify, {label: "Justify"}),
+    slotAlign : field.radio(crossAxisAlign, {label: "Align items"}),
+    gap: responsive.select(gapToken, { label: "Icon Gap", default: "md" }),
 });
 
 export const Footer: ComponentConfig<FooterProps> = {
     label: "Footer",
     ...props,
-    render: ({title, textLines, buttonSpace: Content, emails, align, textColor : tc, backgroundColor, padding : p}) => {
+    render: ({title, textLines, buttonSpace: Content, emails, align, titleColor : tic, textColor : txc, backgroundColor, padding : p, layout : l, gap, slotAlign : s, justify : j}) => {
+       const slotClasses = cn(
+        "slot section",
+        layoutToken.classes[l],
+        crossAxisAlign.classes[s],
+        justify.classes[j],
+        resolveResponsive(gap, gapToken.classes),
+       );
+       
         return (
             <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0}}>
                 <div className={cn(
-                    "first footer attempt",
+                    "Title section",
                     textAlign.classes[align],
-                    textColor.classes[tc],
+                    textColor.classes[tic],
                     bgColor.classes[backgroundColor],
 
                     resolveResponsive(p, padding.classes),
@@ -63,14 +89,22 @@ export const Footer: ComponentConfig<FooterProps> = {
                     {title}
                 </div>
                 <div className={cn(
-                    "first footer attempt",
+                    "Text lines section",
                     textAlign.classes[align],
-                    textColor.classes[tc],
+                    textColor.classes[txc],
                     bgColor.classes[backgroundColor],
 
                     resolveResponsive(p, padding.classes),
                 )}>
                     {textLines}
+                </div>
+                <div className = {cn(
+                    "Slot section outer class"
+                    //more slot customizing would go here
+                )}>
+                    {Content && (
+                      <Content className={slotClasses} minEmptyHeight="200px" />
+                    )}
                 </div>
             </div>
         );
@@ -79,6 +113,5 @@ export const Footer: ComponentConfig<FooterProps> = {
 
 
 //notes for when i resume:
-//add a new textColor for the title color
-//add in the slot
 //final major challenge: add in that final thing with the emails spaced apart
+//Confirm that the slot settings work, see about adding more in
