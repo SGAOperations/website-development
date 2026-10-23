@@ -6,14 +6,16 @@ import { RichTextComponent } from "@/components/puck/blocks/rich-text";
 import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { NavBar } from "@/components/puck/blocks/nav-bar";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid"] },
+    layout: { title: "Layout", components: ["NavBar", "Anchor", "Group", "Columns", "Grid"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
+    NavBar,
     Anchor,
     Group,
     Columns,
