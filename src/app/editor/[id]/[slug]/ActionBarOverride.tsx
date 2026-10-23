@@ -17,20 +17,13 @@ type ClipboardPayload = {
 };
 
 /** Check whether a prop is a slot by looking up its field definition in the config. */
-function isSlotArray(
-  propKey: string,
-  componentType: string,
-  config: Config
-): boolean {
+function isSlotArray(propKey: string, componentType: string, config: Config): boolean {
   const fieldDef = config.components?.[componentType]?.fields?.[propKey];
   return fieldDef?.type === "slot";
 }
 
 /** Recursively regenerate all `props.id` fields to avoid duplicates. */
-function regenerateIds(
-  component: ComponentData,
-  config: Config
-): ComponentData {
+function regenerateIds(component: ComponentData, config: Config): ComponentData {
   const clone = structuredClone(component);
   clone.props.id = crypto.randomUUID();
 
@@ -38,9 +31,7 @@ function regenerateIds(
     if (key === "id") continue;
     const val = clone.props[key];
     if (Array.isArray(val) && isSlotArray(key, clone.type, config)) {
-      clone.props[key] = val.map((child: ComponentData) =>
-        regenerateIds(child, config)
-      );
+      clone.props[key] = val.map((child: ComponentData) => regenerateIds(child, config));
     }
   }
 
@@ -143,9 +134,7 @@ export function ActionBarOverride({
       // Validate component type exists in config
       // (in case a user copies components from different versions, for example)
       if (!config.components?.[component.type]) {
-        console.warn(
-          `Cannot paste: unknown component type "${component.type}"`
-        );
+        console.warn(`Cannot paste: unknown component type "${component.type}"`);
         return;
       }
 

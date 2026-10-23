@@ -56,11 +56,9 @@ describe("built-in tokens", () => {
   });
 
   it("work with responsive resolution through their class maps", () => {
-    expect(resolveResponsive({ phone: "sm", md: "lg" }, gap.classes)).toBe(
-      "gap-2 md:gap-6",
+    expect(resolveResponsive({ phone: "sm", md: "lg" }, gap.classes)).toBe("gap-2 md:gap-6");
+    expect(resolveResponsive({ phone: "1", lg: "4" }, columnCount.classes)).toBe(
+      "grid-cols-1 lg:grid-cols-4",
     );
-    expect(
-      resolveResponsive({ phone: "1", lg: "4" }, columnCount.classes),
-    ).toBe("grid-cols-1 lg:grid-cols-4");
   });
 });

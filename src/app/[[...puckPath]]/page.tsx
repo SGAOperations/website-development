@@ -14,11 +14,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ puckPath?: string[] }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ puckPath?: string[] }> }) {
   const data = await getPublishedDocument(params);
 
   if (!data) {
