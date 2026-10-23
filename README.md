@@ -55,6 +55,24 @@ Afterwards, you should be able to run the application using:
 npm run dev
 ```
 
+## Formatting
+
+This project uses [Prettier](https://prettier.io/) for code formatting (added on October 22, 2026). The config lives in `.prettierrc`, and files to skip are listed in `.prettierignore`.
+
+To check formatting without changing any files:
+
+```sh
+npm run format:check
+```
+
+To fix formatting issues automatically:
+
+```sh
+npm run format
+```
+
+The format check runs in CI as the "Prettier" GitHub workflow (`.github/workflows/prettier.yml`) on every pull request and push to `main`.
+
 ## Features for implementation
 
 - Visual Drag-and-Drop Editor
