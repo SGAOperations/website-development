@@ -2,7 +2,7 @@
 
 Components in the Puck editor are styled through **design tokens** — named choices that map to arbitrary properties, but mostly Tailwind classes. Editors pick tokens from dropdowns; the system turns those choices into class names at render time.
 
-Any token can be made **responsive**, letting editors pick different values per breakpoint (base / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
+Any token can be made **responsive**, letting editors pick different values per breakpoint (phone / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
 
 ## Core concepts
 
@@ -57,22 +57,22 @@ type Spacing = TokenValue<typeof padding>; // "sm" | "md"
 
 ### 2. Responsive values
 
-A `ResponsiveValue<T>` has a required `base` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
+A `ResponsiveValue<T>` has a required `phone` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
 
 ```ts
-type ResponsiveValue<T> = { base: T } & Partial<Record<"md" | "lg", T>>;
+type ResponsiveValue<T> = { phone: T } & Partial<Record<"md" | "lg", T>>;
 
-{ base: "sm" }                        // same at all sizes
-{ base: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
-{ base: "sm", lg: "lg" }              // skip md — it inherits from base
+{ phone: "sm" }                        // same at all sizes
+{ phone: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
+{ phone: "sm", lg: "lg" }              // skip md — it inherits from phone
 ```
 
 **Helper functions** for working with responsive values:
 
 | Function | Purpose |
 |---|---|
-| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ base: "sm", lg: "lg" }, "md")` → `"sm"` |
-| `hasOverride(value)` | Returns `true` if any non-base overrides are set |
+| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ phone: "sm", lg: "lg" }, "md")` → `"sm"` |
+| `hasOverride(value)` | Returns `true` if any non-phone overrides are set |
 | `map(value, fn)` | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())` |
 | `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override |
 
@@ -99,7 +99,7 @@ const props = defineProps({
   // Responsive number — per-breakpoint numeric input
   columns: responsive.number({
     label: "Columns",
-    default: { base: 1, md: 2 },
+    default: { phone: 1, md: 2 },
     min: 1,
     max: 6,
     step: 1,
@@ -114,16 +114,16 @@ const props = defineProps({
 
 ```ts
 responsive.select(columnCount, { label: "Columns", default: "3" })
-responsive.select(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "3" } })
 responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
-responsive.number({ label: "Rows", default: { base: 1, md: 3 } })
+responsive.number({ label: "Rows", default: { phone: 1, md: 3 } })
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
 
 ```ts
 field.slot({ allow: ["Card", "Button"] })
-field.slot({ disallow: ["Section"] })
+field.slot({ disallow: ["Anchor"] })
 ```
 
 The same token definition works for both static and responsive use. Numeric responsive fields do not need a token.

@@ -37,11 +37,11 @@ describe("prop builders", () => {
       size: field.select(size, { label: "Size", default: "md" }),
       gap: responsive.select(size, {
         label: "Gap",
-        default: { base: "sm", md: "lg" },
+        default: { phone: "sm", md: "lg" },
       }),
       rows: responsive.number({
         label: "Rows",
-        default: { base: 1, md: 2 },
+        default: { phone: 1, md: 2 },
         min: 1,
         max: 6,
         step: 1,
@@ -61,8 +61,8 @@ describe("prop builders", () => {
     expect(props.defaultProps).toEqual({
       content: [],
       size: "md",
-      gap: { base: "sm", md: "lg" },
-      rows: { base: 1, md: 2 },
+      gap: { phone: "sm", md: "lg" },
+      rows: { phone: 1, md: 2 },
       color: "red",
       title: "Hello",
     });
