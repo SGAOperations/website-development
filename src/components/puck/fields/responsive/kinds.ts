@@ -18,7 +18,6 @@ export function createResponsiveNumberFieldDescriptor(
   return { kind: responsiveNumberFieldKind, ...options };
 }
 
-
 /**
  * Select
  */
@@ -37,8 +36,7 @@ export function createResponsiveSelectFieldDescriptor<T extends string>(
 
 // Aggregate
 export type ResponsiveFieldKind =
-  | typeof responsiveSelectFieldKind
-  | typeof responsiveNumberFieldKind;
+  typeof responsiveSelectFieldKind | typeof responsiveNumberFieldKind;
 
 export const responsiveFieldDescriptor = {
   select: createResponsiveSelectFieldDescriptor,

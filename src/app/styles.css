@@ -16,7 +16,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-sga-red: #C8102E;
+  --color-sga-red: #c8102e;
   --color-semi-transparent-black: rgba(0, 0, 0, 0.5);
   --color-solid-black: #000000;
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
@@ -98,7 +98,10 @@ body {
   @apply font-display text-4xl text-sga-red;
 }
 
-.prose h3, .prose h4, .prose h5, .prose h6 {
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
   @apply font-display;
 }
 

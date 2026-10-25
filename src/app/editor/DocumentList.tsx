@@ -18,13 +18,13 @@ import { ResourceCard, NewResourceCard } from "./ResourceCard";
 import { formatRelativeTime } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
-type DocumentItem = { id: number; name: string | null; lastModified: Date | null };
+type DocumentItem = {
+  id: number;
+  name: string | null;
+  lastModified: Date | null;
+};
 
 function DocumentCard({
   id,
@@ -56,7 +56,11 @@ function useDocumentActions() {
   const { prompt, alert, confirm } = useDialogs();
 
   async function handleRename(id: number, currentName: string) {
-    const newName = await prompt({ title: `Rename "${currentName}"`, label: "New name", defaultValue: currentName });
+    const newName = await prompt({
+      title: `Rename "${currentName}"`,
+      label: "New name",
+      defaultValue: currentName,
+    });
     if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
     startTransition(async () => {
       const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
@@ -69,7 +73,10 @@ function useDocumentActions() {
   }
 
   async function handleArchive(id: number, displayName: string) {
-    const confirmed = await confirm({ message: `Archive "${displayName}"?`, actionLabel: "Archive" });
+    const confirmed = await confirm({
+      message: `Archive "${displayName}"?`,
+      actionLabel: "Archive",
+    });
     if (!confirmed) return;
     startTransition(async () => {
       const result = await runAction(archiveDocumentAction({ id }));
@@ -82,7 +89,10 @@ function useDocumentActions() {
   }
 
   async function handleUnarchive(id: number, displayName: string) {
-    const confirmed = await confirm({ message: `Unarchive "${displayName}"?`, actionLabel: "Unarchive" });
+    const confirmed = await confirm({
+      message: `Unarchive "${displayName}"?`,
+      actionLabel: "Unarchive",
+    });
     if (!confirmed) return;
     startTransition(async () => {
       const result = await runAction(unarchiveDocumentAction({ id }));
@@ -111,7 +121,13 @@ function useDocumentActions() {
     });
   }
 
-  return { isPending, handleRename, handleArchive, handleUnarchive, handleDuplicate };
+  return {
+    isPending,
+    handleRename,
+    handleArchive,
+    handleUnarchive,
+    handleDuplicate,
+  };
 }
 
 function NewDocumentCard() {
@@ -235,12 +251,8 @@ export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] 
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-2">
         <h2 className="text-2xl font-bold leading-none">Archived</h2>
-        <CollapsibleTrigger
-          render={<Button variant="ghost" size="icon-xs" />}
-        >
-          <ChevronDown
-            className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
-          />
+        <CollapsibleTrigger render={<Button variant="ghost" size="icon-xs" />}>
+          <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
       </div>
 

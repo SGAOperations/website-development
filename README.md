@@ -1,4 +1,4 @@
-# SGA Website Internal CMS  Application
+# SGA Website Internal CMS Application
 
 This is SGA's internal application tool to allow for SGA's Webmaster Team to easily manage and update SGA's website. We are developing new features for administrators to modify the application without the need for changes in the core code structure, allowing for quick content management and visual edits throughout the website.
 
@@ -29,7 +29,7 @@ This is SGA's internal application tool to allow for SGA's Webmaster Team to eas
 
 ### Cloning and Running the Project
 
-We *highly* recommend the use of VSCode for this project. Please download the VSCode and clone the GitHub repository either using the command below or cloning the repo with the web URL.
+We _highly_ recommend the use of VSCode for this project. Please download the VSCode and clone the GitHub repository either using the command below or cloning the repo with the web URL.
 
 ```sh
 git clone git@github.com:SGAOperations/website-development.git
@@ -54,6 +54,24 @@ Afterwards, you should be able to run the application using:
 ```sh
 npm run dev
 ```
+
+## Formatting
+
+This project uses [Prettier](https://prettier.io/) for code formatting (added on October 22, 2026). The config lives in `.prettierrc`, and files to skip are listed in `.prettierignore`.
+
+To check formatting without changing any files:
+
+```sh
+npm run format:check
+```
+
+To fix formatting issues automatically:
+
+```sh
+npm run format
+```
+
+The format check runs in CI as the "Prettier" GitHub workflow (`.github/workflows/prettier.yml`) on every pull request and push to `main`.
 
 ## Features for implementation
 
