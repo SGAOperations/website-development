@@ -12,8 +12,12 @@ import {
 
 type PropSpec<F, V> = { field: F; defaultValue: V };
 
-type FieldsOf<S> = { [K in keyof S]: S[K] extends PropSpec<infer F, any> ? F : never };
-type DefaultsOf<S> = { [K in keyof S]: S[K] extends PropSpec<any, infer V> ? V : never };
+type FieldsOf<S> = {
+  [K in keyof S]: S[K] extends PropSpec<infer F, any> ? F : never;
+};
+type DefaultsOf<S> = {
+  [K in keyof S]: S[K] extends PropSpec<any, infer V> ? V : never;
+};
 
 // -- Builder: responsive fields -----------------------------------------------
 
@@ -36,7 +40,11 @@ export const responsive = {
     } & Omit<ResponsiveNumberFieldDescriptor, "kind">,
   ): PropSpec<CustomField<ResponsiveValue<number>>, ResponsiveValue<number>> {
     return buildResponsiveFieldProp(
-      responsiveFieldDescriptor.number({ min: opts.min, max: opts.max, step: opts.step }),
+      responsiveFieldDescriptor.number({
+        min: opts.min,
+        max: opts.max,
+        step: opts.step,
+      }),
       opts.label,
       opts.default,
     );
@@ -68,16 +76,23 @@ function resolveResponsiveDefaultValue<T extends string | number>(
   value: NoInfer<T | ResponsiveValue<T>>,
 ): ResponsiveValue<T> {
   return value !== undefined && typeof value === "object"
-    ? value as ResponsiveValue<T>
-    : { phone: value } as ResponsiveValue<T>;
+    ? (value as ResponsiveValue<T>)
+    : ({ phone: value } as ResponsiveValue<T>);
 }
 
 // -- Builder: static fields ---------------------------------------------------
 
-type FieldDescriptor = { type: "select" | "radio"; label: string; options: TokenOption[] };
+type FieldDescriptor = {
+  type: "select" | "radio";
+  label: string;
+  options: TokenOption[];
+};
 
 export const field = {
-  slot(descriptor?: { allow?: string[]; disallow?: string[] }): PropSpec<{ type: "slot" } & typeof descriptor, Slot> {
+  slot(descriptor?: {
+    allow?: string[];
+    disallow?: string[];
+  }): PropSpec<{ type: "slot" } & typeof descriptor, Slot> {
     return {
       field: { type: "slot" as const, ...descriptor },
       defaultValue: [] as Slot,
@@ -103,7 +118,7 @@ export const field = {
       defaultValue: (opts.default ?? token.defaultValue) as K,
     };
   },
-  
+
   raw: fieldRaw,
 };
 
@@ -128,5 +143,8 @@ export function defineProps<S extends Record<string, PropSpec<any, any>>>(
     defaultProps[key] = entry.defaultValue;
   }
 
-  return { fields, defaultProps } as { fields: FieldsOf<S>; defaultProps: DefaultsOf<S> };
+  return { fields, defaultProps } as {
+    fields: FieldsOf<S>;
+    defaultProps: DefaultsOf<S>;
+  };
 }

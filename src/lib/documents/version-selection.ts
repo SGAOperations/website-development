@@ -2,10 +2,7 @@ interface VersionOption {
   id: number;
 }
 
-export function resolveEditorVersionId(
-  versions: VersionOption[],
-  requestedVersionId?: number,
-) {
+export function resolveEditorVersionId(versions: VersionOption[], requestedVersionId?: number) {
   if (requestedVersionId === undefined) {
     return versions[0]?.id;
   }

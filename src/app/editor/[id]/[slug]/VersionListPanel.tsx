@@ -18,8 +18,14 @@ export interface VersionListPanelProps {
 function formatVersionLabel(version: Version) {
   const date = new Date(version.createdAt);
   const relative = formatRelativeTime(date);
-  const month = date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toLowerCase().replace(" ", "");
+  const month = date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+  const time = date
+    .toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    .toLowerCase()
+    .replace(" ", "");
   const absolute = `${month}, ${time}`;
   return { relative, absolute };
 }
@@ -50,25 +56,19 @@ function VersionEntry({
       onClick={onLoad}
       className={cn(
         "px-3 py-2 rounded text-xs cursor-pointer transition",
-        isCurrent
-          ? "bg-gray-100 font-semibold"
-          : "bg-white hover:bg-gray-50",
+        isCurrent ? "bg-gray-100 font-semibold" : "bg-white hover:bg-gray-50",
       )}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <span>{absolute}</span>
 
-          <div className="text-[11px] text-gray-400 mt-0.5">
-            {relative}
-          </div>
+          <div className="text-[11px] text-gray-400 mt-0.5">{relative}</div>
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
           {isPublished ? (
-            <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">
-              Published
-            </span>
+            <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">Published</span>
           ) : (
             <button
               onClick={(e) => {
@@ -108,24 +108,15 @@ export function VersionListPanel({
   isPublishing,
   isPublishDisabled,
 }: VersionListPanelProps) {
-
   return (
     <div className="">
-      <div className="text-xs font-semibold text-gray-600 mb-2">
-        Versions ({versions.length})
-      </div>
+      <div className="text-xs font-semibold text-gray-600 mb-2">Versions ({versions.length})</div>
 
-      {isLoading ?
-      (
+      {isLoading ? (
         <div className="text-xs text-gray-500 text-center py-2">Loading...</div>
-      ) :
-       versions.length === 0 ?
-      (
-        <div className="text-xs text-gray-500 text-center py-2">
-          No versions found
-        </div>
-      ) :
-      (
+      ) : versions.length === 0 ? (
+        <div className="text-xs text-gray-500 text-center py-2">No versions found</div>
+      ) : (
         <div className="space-y-1 max-h-96">
           {versions.map((version) => (
             <VersionEntry
