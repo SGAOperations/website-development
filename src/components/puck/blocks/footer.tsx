@@ -18,6 +18,10 @@ import {
     crossAxisAlign,
     gap as gapToken,
     layout as layoutToken,
+    ColumnCount,
+    columnCount,
+    gridRows,
+    GridRows,
 } from '@/lib/puck/tokens';
 import { ResponsiveValue } from '@/lib/puck/responsive';
 import { resolveResponsive } from '@/lib/puck/responsive-tailwind';
@@ -27,7 +31,7 @@ type FooterProps = {
     title: string;
     textLines: string;
     buttonSpace: Slot;
-    emails: string;
+    email1: string;
     align: TextAlign;
     titleColor : Color;
     textColor : Color;
@@ -37,6 +41,7 @@ type FooterProps = {
     gap: ResponsiveValue<Spacing>;
     slotAlign: CrossAxisAlign;
     justify: Justify;
+    emailColumns: ResponsiveValue<ColumnCount>
 }
 
 const props = defineProps({
@@ -49,25 +54,26 @@ const props = defineProps({
         "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.",
     ),
     buttonSpace: field.slot(),
-    emails: field.raw(
+    email1: field.raw(
         { type: "text", contentEditable: true },
-        "Contact: myname@mydomain.com\nInquiries: myfunding@mydomain.com\nWebmaster: webmaster@mydomain.com"
+        "Contact: email.com"
     ),
     align: field.radio(textAlign, { label: "Text align", default: "center" }),
     titleColor : field.select(textColor, {label: "Title Text Color", default: "sga-red"}),
     textColor: field.select(textColor, {label: "Body Text Color", default: "background"}),
     backgroundColor: field.select(bgColor, {label: "Background Color", default: "foreground"}),
     padding: responsive.select(padding, { label: "Padding", default: "md"}),
-    layout : field.radio(layout, {label: "Layout"}),
+    layout : field.radio(layout, {label: "Layout", default: "stack"}),
     justify : field.radio(justify, {label: "Justify"}),
     slotAlign : field.radio(crossAxisAlign, {label: "Align items"}),
     gap: responsive.select(gapToken, { label: "Icon Gap", default: "md" }),
+    emailColumns: responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "2" } }),
 });
 
 export const Footer: ComponentConfig<FooterProps> = {
     label: "Footer",
     ...props,
-    render: ({title, textLines, buttonSpace: Content, emails, align, titleColor : tic, textColor : txc, backgroundColor, padding : p, layout : l, gap, slotAlign : s, justify : j}) => {
+    render: ({title, textLines, buttonSpace: Content, email1, align, titleColor : tic, textColor : txc, backgroundColor, padding : p, layout : l, gap, slotAlign : s, justify : j, emailColumns, rows}) => {
        const slotClasses = cn(
         "slot section",
         layoutToken.classes[l],
@@ -75,9 +81,17 @@ export const Footer: ComponentConfig<FooterProps> = {
         justify.classes[j],
         resolveResponsive(gap, gapToken.classes),
        );
-       
+
+       const emailClasses = cn(
+        "email bit",
+        textAlign.classes[align],
+        textColor.classes[txc],
+        bgColor.classes[backgroundColor],
+        resolveResponsive(p, padding.classes),
+       );
+
         return (
-            <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0}}>
+            <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0, align: 'center'}}>
                 <div className={cn(
                     "Title section",
                     textAlign.classes[align],
@@ -99,12 +113,23 @@ export const Footer: ComponentConfig<FooterProps> = {
                     {textLines}
                 </div>
                 <div className = {cn(
-                    "Slot section outer class"
-                    //more slot customizing would go here
+                    "Slot section outer class",
+                    bgColor.classes[backgroundColor],
                 )}>
                     {Content && (
                       <Content className={slotClasses} minEmptyHeight="200px" />
                     )}
+                </div>
+                <div style = {{display: 'flex', flexDirection: 'row', margin: 0, gap: 0, backgroundColor: '#000000', justifyContent: 'center'}}>
+                    <div className = {emailClasses}>
+                        {true && email1}
+                    </div>
+                    <div className = {emailClasses}>
+                        {true && email1}
+                    </div>
+                    <div className = {emailClasses}>
+                        {false && email1}
+                    </div>
                 </div>
             </div>
         );
@@ -113,5 +138,7 @@ export const Footer: ComponentConfig<FooterProps> = {
 
 
 //notes for when i resume:
-//final major challenge: add in that final thing with the emails spaced apart
+//Implement emails input fields 1 thru X
+//Add an emailCount field and necessary boolean values to <div></div>s
+//add a new gap token for the email list
 //Confirm that the slot settings work, see about adding more in
