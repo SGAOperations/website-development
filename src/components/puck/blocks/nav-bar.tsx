@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { defineProps, field } from "@/lib/puck/define-props";
 import { mediaField } from "@/components/puck/fields/media-field";
+import { cn } from "@/lib/utils";
 
 type NavRoute = {
   label: string;
@@ -47,10 +48,12 @@ const ROUTES: NavRoute[] = [
 
 type NavBarProps = {
   logo: { mediaId: number; url: string } | null;
+  backgroundImage: { mediaId: number; url: string } | null;
 };
 
 const props = defineProps({
   logo: field.raw(mediaField("Logo"), null),
+  backgroundImage: field.raw(mediaField("Background image"), null),
 });
 
 const linkClasses = "block whitespace-nowrap px-3 py-2";
@@ -58,40 +61,58 @@ const linkClasses = "block whitespace-nowrap px-3 py-2";
 export const NavBar: ComponentConfig<NavBarProps> = {
   label: "Nav Bar",
   ...props,
-  render: ({ logo }) => (
-    <nav className="flex w-full items-center justify-between gap-6 bg-black px-4 py-4 text-white">
-      {logo?.url ? (
+  render: ({ logo, backgroundImage }) => (
+    <div className="relative w-full">
+      {backgroundImage?.url && (
         <Image
-          src={logo.url}
-          alt="SGA logo"
-          width={96}
-          height={96}
+          src={backgroundImage.url}
+          alt=""
+          width={0}
+          height={0}
+          sizes="100vw"
           unoptimized
-          className="h-24 w-auto shrink-0"
+          className="h-84 w-full object-cover"
         />
-      ) : (
-        <div className="size-24 shrink-0 bg-white/20" />
       )}
-      <ul className="flex flex-wrap items-center pr-4">
-        {ROUTES.map((route) => (
-          <li key={route.href} className="group relative">
-            <a href={route.href} className={linkClasses}>
-              {route.label}
-            </a>
-            {route.children && (
-              <ul className="absolute left-0 top-full z-10 hidden min-w-full bg-black shadow-md group-focus-within:block group-hover:block">
-                {route.children.map((child) => (
-                  <li key={child.href}>
-                    <a href={child.href} className={linkClasses}>
-                      {child.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
+      <nav
+        className={cn(
+          "flex items-center justify-between gap-6 px-4 py-4 text-white/80",
+          backgroundImage?.url ? "absolute inset-x-0 top-0 bg-black/50" : "bg-black",
+        )}
+      >
+        {logo?.url ? (
+          <Image
+            src={logo.url}
+            alt="SGA logo"
+            width={96}
+            height={96}
+            unoptimized
+            className="h-24 w-auto shrink-0"
+          />
+        ) : (
+          <div className="size-24 shrink-0 bg-white/20" />
+        )}
+        <ul className="flex flex-wrap items-center pr-4">
+          {ROUTES.map((route) => (
+            <li key={route.href} className="group relative">
+              <a href={route.href} className={linkClasses}>
+                {route.label}
+              </a>
+              {route.children && (
+                <ul className="absolute left-0 top-full z-10 hidden min-w-full bg-black shadow-md group-focus-within:block group-hover:block">
+                  {route.children.map((child) => (
+                    <li key={child.href}>
+                      <a href={child.href} className={linkClasses}>
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   ),
 };
