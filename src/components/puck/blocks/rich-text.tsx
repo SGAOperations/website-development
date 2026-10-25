@@ -8,6 +8,8 @@ import {
   lineSpacing,
   textColumns,
   columnGap,
+  padding,
+  bgColor,
   type Color,
   type LineSpacing,
   type TextAlign,
@@ -23,6 +25,8 @@ type RichTextProps = {
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
   columnGap: ResponsiveValue<Spacing>;
+  padding: Spacing;
+  backgroundColor: Color;
 };
 
 const props = defineProps({
@@ -35,18 +39,22 @@ const props = defineProps({
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
   columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
+  padding: field.select(padding, {label: "Padding", default: "md"}),
+  backgroundColor: field.select(bgColor, {label: "Background Color", default: "background"}),
 });
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
   ...props,
-  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg }) => {
+  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg, padding: p, backgroundColor: bg }) => {
     return (
       <div className={cn(
         "prose max-w-none",
         textColor.classes[tc],
         textAlign.classes[align],
         lineSpacing.classes[ls],
+        padding.classes[p],
+        bgColor.classes[bg],
         resolveResponsive(columns, textColumns.classes),
         resolveResponsive(cg, columnGap.classes),
       )}>
