@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ImageIcon } from "lucide-react";
 import type { ComponentConfig } from "@puckeditor/core";
 import { defineProps, field } from "@/lib/puck/define-props";
 import { mediaField } from "@/components/puck/fields/media-field";
@@ -61,8 +62,8 @@ const linkClasses = "block whitespace-nowrap px-3 py-2";
 export const NavBar: ComponentConfig<NavBarProps> = {
   label: "Nav Bar",
   ...props,
-  render: ({ logo, backgroundImage }) => (
-    <div className="relative w-full">
+  render: ({ logo, backgroundImage, puck }) => (
+    <div ref={puck.dragRef} className="relative w-full">
       {backgroundImage?.url && (
         <Image
           src={backgroundImage.url}
@@ -90,7 +91,9 @@ export const NavBar: ComponentConfig<NavBarProps> = {
             className="h-24 w-auto shrink-0"
           />
         ) : (
-          <div className="size-24 shrink-0 bg-white/20" />
+          <div className="flex size-24 shrink-0 items-center justify-center bg-muted">
+            <ImageIcon className="size-8 text-muted-foreground" />
+          </div>
         )}
         <ul className="flex flex-wrap items-center pr-4">
           {ROUTES.map((route) => (
