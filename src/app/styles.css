@@ -22,6 +22,7 @@
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
   --color-sga-red-alt: #dc2626;
   --font-display: var(--font-bebas-neue), sans-serif;
+  --font-text: var(--font-inter);
 }
 
 :root {
