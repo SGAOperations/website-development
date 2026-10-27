@@ -22,10 +22,10 @@ describe("layout helpers", () => {
     };
 
     expect(getGroupSurfaceClassName(style)).toBe(
-      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-6",
+      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getGroupSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-2 lg:gap-8",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
     );
   });
 
@@ -38,7 +38,7 @@ describe("layout helpers", () => {
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-4",
     );
   });
 
