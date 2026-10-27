@@ -255,3 +255,9 @@ export const gridRows = defineToken({
   "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
 });
 export type GridRows = TokenValue<typeof gridRows>;
+
+export const fontFamily = defineToken({
+  inter: {label: "Inter", classes: "font-text"},
+  bebasNeue: {label: "Bebas Neue", classes: "font-display"}
+});
+export type FontFamily = TokenValue<typeof fontFamily>;
