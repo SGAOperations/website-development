@@ -8,6 +8,8 @@ import {
   lineSpacing,
   textColumns,
   columnGap,
+  fontFamily,
+  type FontFamily,
   type Color,
   type LineSpacing,
   type TextAlign,
@@ -23,6 +25,7 @@ type RichTextProps = {
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
   columnGap: ResponsiveValue<Spacing>;
+  fontFamily: FontFamily;
 };
 
 const props = defineProps({
@@ -35,18 +38,21 @@ const props = defineProps({
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
   columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
+  fontFamily: field.select(fontFamily, { label: "Font", default: "inter" }),
 });
+
 
 export const RichTextComponent: ComponentConfig<RichTextProps> = {
   label: "Text",
   ...props,
-  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg }) => {
+  render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg, fontFamily: f}) => {
     return (
       <div className={cn(
         "prose max-w-none",
         textColor.classes[tc],
         textAlign.classes[align],
         lineSpacing.classes[ls],
+        fontFamily.classes[f],
         resolveResponsive(columns, textColumns.classes),
         resolveResponsive(cg, columnGap.classes),
       )}>
