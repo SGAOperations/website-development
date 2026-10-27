@@ -45,6 +45,6 @@ model Route {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   parentId    Int?
-  parent      Route?    @relation("RouteHierarchy", fields: [parentId], references: [id], onDelete: Restrict)   
+  parent      Route?    @relation("RouteHierarchy", fields: [parentId], references: [id], onDelete: Cascade)   
   children    Route[]   @relation("RouteHierarchy")
 }

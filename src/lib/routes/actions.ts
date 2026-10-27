@@ -19,6 +19,7 @@ export async function createRouteAction(
       data: {
         path: input.path,
         documentId: input.documentId,
+        parentId: input.parentId ?? null,
       },
     });
     return { routeId: route.id };
