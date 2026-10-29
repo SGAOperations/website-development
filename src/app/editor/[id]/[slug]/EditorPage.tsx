@@ -34,6 +34,8 @@ export default async function EditorPage({
   const versions = document.versions.map((v) => ({
     id: v.id,
     documentId: v.documentId,
+    name: v.name,
+    author: v.author,
     createdAt: v.createdAt,
   }));
 
