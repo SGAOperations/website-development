@@ -1,4 +1,4 @@
-import { ComponentConfig, Slot } from '@puckeditor/core';
+import {Config, ComponentConfig, Slot } from '@puckeditor/core';
 import React from 'react';
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { cn } from '@/lib/utils';
@@ -22,6 +22,8 @@ import {
     columnCount,
     gridRows,
     GridRows,
+    EmailCount,
+    emailCount,
 } from '@/lib/puck/tokens';
 import { ResponsiveValue } from '@/lib/puck/responsive';
 import { resolveResponsive } from '@/lib/puck/responsive-tailwind';
@@ -31,7 +33,6 @@ type FooterProps = {
     title: string;
     textLines: string;
     buttonSpace: Slot;
-    email1: string;
     align: TextAlign;
     titleColor : Color;
     textColor : Color;
@@ -41,23 +42,22 @@ type FooterProps = {
     gap: ResponsiveValue<Spacing>;
     slotAlign: CrossAxisAlign;
     justify: Justify;
-    emailColumns: ResponsiveValue<ColumnCount>
+    numEmails: EmailCount;
+    email1: string;
+    email2: string;
+    email3: string;
+    email4: string;
+    email5: string;
+    email6: string;
 }
 
 const props = defineProps({
     title: field.raw(
-        { type: "text", contentEditable: true },
+        { type: "text", contentEditable: true},
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     ),
-    textLines: field.raw(
-        { type: "text", contentEditable: true },
-        "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.",
-    ),
+    textLines: field.raw({type: "text", contentEditable: false}, "Lorem ipsum dolor sit amet"),
     buttonSpace: field.slot(),
-    email1: field.raw(
-        { type: "text", contentEditable: true },
-        "Contact: email.com"
-    ),
     align: field.radio(textAlign, { label: "Text align", default: "center" }),
     titleColor : field.select(textColor, {label: "Title Text Color", default: "sga-red"}),
     textColor: field.select(textColor, {label: "Body Text Color", default: "background"}),
@@ -67,13 +67,43 @@ const props = defineProps({
     justify : field.radio(justify, {label: "Justify"}),
     slotAlign : field.radio(crossAxisAlign, {label: "Align items"}),
     gap: responsive.select(gapToken, { label: "Icon Gap", default: "md" }),
-    emailColumns: responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "2" } }),
+    numEmails : field.select(emailCount, {label: "Number of Emails", default: "3"}),
+    email1: field.raw({type: "text", contentEditable: true },"Contact: sga@northeastern.edu"),
+    email2: field.raw({type: "text", contentEditable: true}, "Media Inquiries: sgaExternalAffairs@northeastern.edu"),
+    email3: field.raw({type: "text", contentEditable: true}, "Webmaster: sgaOperations@northeastern.edu"),
+    email4: field.raw({type: "text", contentEditable: true},""),
+    email5: field.raw({type: "text", contentEditable: true}, ""),
+    email6: field.raw({type: "text", contentEditable: true}, "")
 });
 
 export const Footer: ComponentConfig<FooterProps> = {
     label: "Footer",
     ...props,
-    render: ({title, textLines, buttonSpace: Content, email1, align, titleColor : tic, textColor : txc, backgroundColor, padding : p, layout : l, gap, slotAlign : s, justify : j, emailColumns, rows}) => {
+   resolveFields: (data) => ({
+    ...props.fields,
+    email2: {
+        ...props.fields.email2,
+        visible: data.props.numEmails >= "2",
+    },
+    email3: {
+        ...props.fields.email2,
+        visible: data.props.numEmails >= "3",
+    },
+    email4: {
+        ...props.fields.email2,
+        visible: data.props.numEmails >= "4",
+    },
+    email5: {
+        ...props.fields.email2,
+        visible: data.props.numEmails >= "5",
+    },
+    email6: {
+        ...props.fields.email2,
+        visible: data.props.numEmails >= "6",
+    },
+   }),
+
+    render: ({ title, textLines, buttonSpace: Content, align, titleColor : tic, textColor : txc, backgroundColor, padding : p, layout : l, gap, slotAlign : s, justify : j, numEmails, email1, email2, email3, email4, email5, email6}) => {
        const slotClasses = cn(
         "slot section",
         layoutToken.classes[l],
@@ -91,7 +121,7 @@ export const Footer: ComponentConfig<FooterProps> = {
        );
 
         return (
-            <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0, align: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0}}>
                 <div className={cn(
                     "Title section",
                     textAlign.classes[align],
@@ -122,14 +152,23 @@ export const Footer: ComponentConfig<FooterProps> = {
                 </div>
                 <div style = {{display: 'flex', flexDirection: 'row', margin: 0, gap: 0, backgroundColor: '#000000', justifyContent: 'center'}}>
                     <div className = {emailClasses}>
-                        {true && email1}
+                        {email1}
                     </div>
-                    <div className = {emailClasses}>
-                        {true && email1}
-                    </div>
-                    <div className = {emailClasses}>
-                        {false && email1}
-                    </div>
+                    {numEmails >= "2" && <div className = {emailClasses}>
+                        {email2}
+                    </div>}
+                    {numEmails >= "3" && <div className = {emailClasses}>
+                        {email3}
+                    </div>}
+                    {numEmails >= "4" && <div className = {emailClasses}>
+                        {email4}
+                    </div>}
+                    {numEmails >= "5" && <div className = {emailClasses}>
+                        {email5}
+                    </div>}
+                    {numEmails >= "6" && <div className = {emailClasses}>
+                        {email6}
+                    </div>}
                 </div>
             </div>
         );
@@ -139,6 +178,8 @@ export const Footer: ComponentConfig<FooterProps> = {
 
 //notes for when i resume:
 //Implement emails input fields 1 thru X
+//Create a var to determine whether those emails are input or auto-set (look at other blocks to figure out examples, shouldn't matter what set to as long as set to something)
+
 //Add an emailCount field and necessary boolean values to <div></div>s
 //add a new gap token for the email list
 //Confirm that the slot settings work, see about adding more in
