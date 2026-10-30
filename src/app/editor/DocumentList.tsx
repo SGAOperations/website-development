@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Archive, ArchiveRestore, ChevronDown, CopyPlus, FileText, Pencil } from "lucide-react";
 import {
   archiveDocumentAction,
@@ -56,12 +57,13 @@ function useDocumentActions() {
   const { prompt, alert, confirm } = useDialogs();
 
   async function handleRename(id: number, currentName: string) {
-    const newName = await prompt({ title: `Rename "${currentName}"`, label: "New name", defaultValue: currentName });
-    if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
+    const newName = await prompt({ title: `Rename "${currentName}"`, label: "New name", defaultValue: currentName, required: true });
+    if (newName === null || newName.trim() === currentName) return;
     startTransition(async () => {
       const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
       if (result.success) {
         router.refresh();
+        toast.success(`Renamed to ${newName.trim()}`);
       } else {
         await alert(result.error);
       }
@@ -75,6 +77,9 @@ function useDocumentActions() {
       const result = await runAction(archiveDocumentAction({ id }));
       if (result.success) {
         router.refresh();
+        toast.success(`Archived ${displayName}`);
+        // The focused card is about to disappear; move focus somewhere predictable (WCAG 2.4.3).
+        document.getElementById("documents-heading")?.focus();
       } else {
         await alert(result.error);
       }
@@ -88,6 +93,8 @@ function useDocumentActions() {
       const result = await runAction(unarchiveDocumentAction({ id }));
       if (result.success) {
         router.refresh();
+        toast.success(`Restored ${displayName}`);
+        document.getElementById("documents-heading")?.focus();
       } else {
         await alert(result.error);
       }
@@ -99,12 +106,14 @@ function useDocumentActions() {
       title: "Duplicate document",
       label: "Name",
       defaultValue: `Copy of ${displayName}`,
+      required: true,
     });
-    if (name === null || name.trim() === "") return;
+    if (name === null) return;
     startTransition(async () => {
       const result = await runAction(duplicateDocumentAction({ id, name: name.trim() }));
       if (result.success) {
         router.refresh();
+        toast.success(`Created ${name.trim()}`);
       } else {
         await alert(result.error);
       }
@@ -120,7 +129,7 @@ function NewDocumentCard() {
   const { prompt, alert } = useDialogs();
 
   async function handleCreateDocument() {
-    const name = await prompt({ title: "Create document", label: "Name" });
+    const name = await prompt({ title: "Create document", label: "Name", required: true });
 
     if (name === null) {
       return;
@@ -161,7 +170,7 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Documents</h1>
+      <h2 id="documents-heading" tabIndex={-1} className="text-2xl font-bold">Documents</h2>
 
       <div className="resource-card-grid grid gap-2">
         <NewDocumentCard />
@@ -186,6 +195,7 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
                     }}
                     disabled={isPending}
                     title="Rename"
+                    aria-label={`Rename ${displayName}`}
                   >
                     <Pencil className="h-3 w-3" />
                   </Button>
@@ -199,6 +209,7 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
                     }}
                     disabled={isPending}
                     title="Duplicate"
+                    aria-label={`Duplicate ${displayName}`}
                   >
                     <CopyPlus className="h-3 w-3" />
                   </Button>
@@ -212,6 +223,7 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
                     }}
                     disabled={isPending}
                     title="Archive"
+                    aria-label={`Archive ${displayName}`}
                   >
                     <Archive className="h-3 w-3" />
                   </Button>
@@ -236,7 +248,7 @@ export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] 
       <div className="flex items-center gap-2">
         <h2 className="text-2xl font-bold leading-none">Archived</h2>
         <CollapsibleTrigger
-          render={<Button variant="ghost" size="icon-xs" />}
+          render={<Button variant="ghost" size="icon-xs" aria-label="Archived documents" />}
         >
           <ChevronDown
             className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
@@ -265,6 +277,7 @@ export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] 
                     }}
                     disabled={isPending}
                     title="Unarchive"
+                    aria-label={`Unarchive ${displayName}`}
                   >
                     <ArchiveRestore className="h-3 w-3" />
                   </Button>

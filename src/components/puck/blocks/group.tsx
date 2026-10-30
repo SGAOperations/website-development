@@ -7,6 +7,9 @@ import {
 } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, padding, gap, bgColor, textColor, radius, shadow, crossAxisAlign, layout, justify, width } from "@/lib/puck/tokens";
+import { getContrastWarning, MAIN_CONTENT_ID } from "@/lib/puck/a11y";
+import { EditorWarning } from "@/components/puck/editor-warning";
+import { cn } from "@/lib/utils";
 
 const tag = defineToken({
   div:     "<div>",
@@ -46,12 +49,16 @@ export const Group: ComponentConfig<GroupProps> = {
   ...props,
   render: ({ content: Content, tag: t, puck, ...style }) => {
     const Tag = t as ElementType;
+    const contrastWarning = puck.isEditing ? getContrastWarning(style.bgColor, style.textColor) : null;
 
     return (
       <Tag
         ref={puck.dragRef}
-        className={getGroupSurfaceClassName(style)}
+        // A <main> Group becomes the skip link target (see PuckRender).
+        id={t === "main" ? MAIN_CONTENT_ID : undefined}
+        className={cn(getGroupSurfaceClassName(style), contrastWarning && "relative")}
       >
+        {contrastWarning && <EditorWarning label="Low contrast">{contrastWarning}</EditorWarning>}
         {Content && (
           <Content
             className={getGroupSlotClassName(style)}

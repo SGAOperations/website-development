@@ -3,6 +3,7 @@ import {
   getGroupSlotClassName,
   getGroupSurfaceClassName,
   getGridClassName,
+  getGridOverflowClassName,
   getMaxCols,
 } from "./layout";
 
@@ -38,7 +39,18 @@ describe("layout helpers", () => {
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2 md:[&>*:nth-child(-n+6)]:visible md:[&>*:nth-child(n+7)]:invisible",
+    );
+  });
+
+  it("hides grid items past the fixed rows x columns at each breakpoint", () => {
+    expect(getGridOverflowClassName({ phone: "3" }, { phone: "auto" })).toBe("");
+    expect(getGridOverflowClassName({ phone: "2", lg: "4" }, { phone: "1" })).toBe(
+      "[&>*:nth-child(-n+2)]:visible [&>*:nth-child(n+3)]:invisible lg:[&>*:nth-child(-n+4)]:visible lg:[&>*:nth-child(n+5)]:invisible",
+    );
+    // Going back to auto rows makes everything visible again.
+    expect(getGridOverflowClassName({ phone: "6" }, { phone: "6", md: "auto" })).toBe(
+      "[&>*:nth-child(-n+36)]:visible [&>*:nth-child(n+37)]:invisible md:[&>*:nth-child(n)]:visible",
     );
   });
 

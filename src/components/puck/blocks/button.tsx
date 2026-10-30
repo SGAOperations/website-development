@@ -44,7 +44,8 @@ export const PuckButton: ComponentConfig<PuckButtonProps> = {
     const className = cn(
       "box-border flex max-w-full items-center justify-center rounded-[6.8px] border-0 bg-sga-red py-0 text-center text-[17px] font-normal leading-normal tracking-[0.12em] text-white uppercase no-underline antialiased [backface-visibility:hidden] transition-opacity duration-100 ease-linear break-words",
       resolveResponsive(s, size.classes),
-      href ? "cursor-pointer hover:opacity-90 focus-visible:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sga-red" : undefined,
+      // White band plus dark ring, so focus shows on any section color, SGA red included (WCAG 2.4.7).
+      href ? "cursor-pointer hover:opacity-90 focus-visible:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background" : undefined,
     );
 
     if (href) {

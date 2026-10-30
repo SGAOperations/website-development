@@ -5,7 +5,7 @@ import {
   type ResponsiveBreakpoint,
   type ResponsiveValue,
 } from "@/lib/puck/responsive";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 const breakpointLabels: Record<ResponsiveBreakpoint, string> = {
   phone: "Phone",
@@ -14,6 +14,7 @@ const breakpointLabels: Record<ResponsiveBreakpoint, string> = {
 };
 
 export type ResponsiveFieldControlProps<T extends string | number> = {
+  id: string;
   breakpoint: ResponsiveBreakpoint;
   isPhone: boolean;
   value: T | undefined;
@@ -34,19 +35,25 @@ export function ResponsiveFieldFrame<T extends string | number>({
   readOnly?: boolean;
   renderControl: (props: ResponsiveFieldControlProps<T>) => ReactNode;
 }) {
+  const id = useId();
+
   return (
     <FieldLabel label={label} el="div" readOnly={readOnly}>
       <div className="grid grid-cols-3 gap-1">
         {responsiveBreakpoints.map((bp) => {
           const isPhone = bp === "phone";
           const currentValue = value[bp];
+          const controlId = `${id}-${bp}`;
 
           return (
             <div key={bp} className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-muted-foreground">
+              {/* Name each control "<field> <breakpoint>" so a screen reader announces e.g. "Padding Tablet". */}
+              <label htmlFor={controlId} className="text-xs font-semibold text-muted-foreground">
+                <span className="sr-only">{label} </span>
                 {breakpointLabels[bp]}
-              </span>
+              </label>
               {renderControl({
+                id: controlId,
                 breakpoint: bp,
                 isPhone,
                 value: currentValue,

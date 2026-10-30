@@ -12,8 +12,13 @@
 @source inline("{md:,lg:,}gap-x-{0,1,2,4,6,8,12}");
 @source inline("{md:,lg:,}min-h-{12,16,20}");
 @source inline("{md:,lg:,}w-{fit,full}");
+/* Grid overflow hiding, see getGridOverflowClassName in src/lib/puck/layout.ts */
+@source inline("{md:,lg:,}[&>*:nth-child(-n+{1..36})]:visible");
+@source inline("{md:,lg:,}[&>*:nth-child(n+{2..37})]:invisible");
+@source inline("{md:,lg:}[&>*:nth-child(n)]:visible");
 
-@custom-variant dark (&:is(.dark *));
+/* dark: utilities follow the CMS theme setting (see display settings below). */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
   --color-sga-red: #C8102E;
@@ -43,8 +48,10 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Input borders identify the field, so they need 3:1 too (WCAG 1.4.11); #868686 is 3.6:1. */
+  --input: oklch(0.62 0 0);
+  /* Focus rings need 3:1 against the page (WCAG 1.4.11); 0.556 is #737373, 4.7:1 on white. */
+  --ring: oklch(0.556 0 0);
   --radius: 0.625rem;
 }
 
@@ -78,12 +85,260 @@ body {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring;
   }
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Published pages: draw focus in the text color, which already contrasts with
+     whatever background the editor picked. Utilities (e.g. the Button block) can override. */
+  .site-content :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
 }
+
+/* Puck's secondary grey (#767676) is 4.4:1 on its #fafafa sidebar; darken it to pass AA.
+   Doubled :root outranks Puck's own :root rule regardless of stylesheet order. */
+:root:root {
+  --puck-color-grey-05: #6b6b6b;
+}
+
+/* Puck's field borders (#dcdcdc, 1.4:1) are the only outline of each input (WCAG 1.4.11). */
+:root [class*="_Input-input_"] {
+  border-color: #868686;
+}
+
+/* Puck's plugin rail items are made buttons in editor-a11y.tsx; show where focus is. */
+:root [class*="_NavItem-link_"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+/* Windows High Contrast / forced colors drops box-shadow rings (Tailwind ring-*),
+   so give every focused control a system-colored outline instead. */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+  }
+}
+
+/* Follow the OS by default; the CMS motion setting can force it on (data-motion="reduce")
+   or opt out (data-motion="full"). */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) *,
+  html:not([data-motion="full"]) *::before,
+  html:not([data-motion="full"]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+/* ---------------------------------------------------------------------------
+   CMS display settings (src/lib/display-settings.ts). Only the CMS sets these
+   attributes on <html>; published pages and the editor's canvas iframe never do.
+   --------------------------------------------------------------------------- */
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  /* Input borders and focus rings keep 3:1 on the dark background (WCAG 1.4.11). */
+  --input: oklch(0.556 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+/* Puck's editor chrome: its 12-step palettes run light (12) to dark (01), so reverse them. */
+:root:root[data-theme="dark"] {
+  --puck-color-rose-01: #fef8fc;
+  --puck-color-rose-02: #faf4f8;
+  --puck-color-rose-03: #f6eaf1;
+  --puck-color-rose-04: #efd6e3;
+  --puck-color-rose-05: #e3b8cf;
+  --puck-color-rose-06: #d89aba;
+  --puck-color-rose-07: #cc7ca5;
+  --puck-color-rose-08: #bc5089;
+  --puck-color-rose-09: #a81a66;
+  --puck-color-rose-10: #87114c;
+  --puck-color-rose-11: #670833;
+  --puck-color-rose-12: #4a001c;
+  --puck-color-azure-01: #f7faff;
+  --puck-color-azure-02: #f3f6fb;
+  --puck-color-azure-03: #e7eef7;
+  --puck-color-azure-04: #cfdff0;
+  --puck-color-azure-05: #abc7e5;
+  --puck-color-azure-06: #88b0da;
+  --puck-color-azure-07: #6499cf;
+  --puck-color-azure-08: #3479be;
+  --puck-color-azure-09: #0158ad;
+  --puck-color-azure-10: #014292;
+  --puck-color-azure-11: #002c77;
+  --puck-color-azure-12: #00175d;
+  --puck-color-green-01: #f3fcf4;
+  --puck-color-green-02: #eff8f0;
+  --puck-color-green-03: #ddf3e0;
+  --puck-color-green-04: #b8e8bf;
+  --puck-color-green-05: #7dd78b;
+  --puck-color-green-06: #56c16f;
+  --puck-color-green-07: #2faa53;
+  --puck-color-green-08: #1d882f;
+  --puck-color-green-09: #0c680c;
+  --puck-color-green-10: #084e08;
+  --puck-color-green-11: #043604;
+  --puck-color-green-12: #002000;
+  --puck-color-yellow-01: #fcfaf0;
+  --puck-color-yellow-02: #f9f7ed;
+  --puck-color-yellow-03: #f3efd9;
+  --puck-color-yellow-04: #e6deb1;
+  --puck-color-yellow-05: #d4c474;
+  --puck-color-yellow-06: #bfac4e;
+  --puck-color-yellow-07: #ab9429;
+  --puck-color-yellow-08: #877614;
+  --puck-color-yellow-09: #645a00;
+  --puck-color-yellow-10: #4c4000;
+  --puck-color-yellow-11: #362700;
+  --puck-color-yellow-12: #211000;
+  --puck-color-red-01: #fff9fa;
+  --puck-color-red-02: #faf4f5;
+  --puck-color-red-03: #f6eaec;
+  --puck-color-red-04: #efd7db;
+  --puck-color-red-05: #e4b9c2;
+  --puck-color-red-06: #d99ca8;
+  --puck-color-red-07: #ce7e8e;
+  --puck-color-red-08: #bf5366;
+  --puck-color-red-09: #ac1f35;
+  --puck-color-red-10: #8a1422;
+  --puck-color-red-11: #6a0a10;
+  --puck-color-red-12: #4c0000;
+  --puck-color-grey-01: #fafafa;
+  --puck-color-grey-02: #f5f5f5;
+  --puck-color-grey-03: #efefef;
+  --puck-color-grey-04: #dcdcdc;
+  --puck-color-grey-05: #c3c3c3;
+  --puck-color-grey-06: #ababab;
+  --puck-color-grey-07: #949494;
+  --puck-color-grey-08: #767676;
+  --puck-color-grey-09: #5a5a5a;
+  --puck-color-grey-10: #404040;
+  --puck-color-grey-11: #292929;
+  --puck-color-grey-12: #181818;
+  --puck-color-white: #0a0a0a;
+  --puck-color-black: #ffffff;
+}
+
+html[data-theme="dark"] [class*="_PuckCanvas-root_"],
+html[data-theme="dark"] [class*="_FieldsPlugin_"],
+html[data-theme="dark"] [class*="_Select-items_"] {
+  background: var(--puck-color-white);
+}
+
+html[data-contrast="more"] {
+  --foreground: oklch(0 0 0);
+  --muted-foreground: oklch(0.37 0 0);
+  --border: oklch(0.45 0 0);
+  --input: oklch(0.145 0 0);
+  --ring: oklch(0.145 0 0);
+}
+
+:root:root[data-contrast="more"] {
+  --puck-color-grey-01: #000000;
+  --puck-color-grey-02: #111111;
+  --puck-color-grey-03: #222222;
+  --puck-color-grey-04: #333333;
+  --puck-color-grey-05: #404040;
+  --puck-color-grey-06: #505050;
+  --puck-color-grey-07: #5f5f5f;
+  --puck-color-grey-08: #6b6b6b;
+  --puck-color-grey-09: #767676;
+}
+
+html[data-theme="dark"][data-contrast="more"] {
+  --foreground: oklch(1 0 0);
+  --muted-foreground: oklch(0.87 0 0);
+  --border: oklch(1 0 0 / 45%);
+  --input: oklch(0.87 0 0);
+  --ring: oklch(1 0 0);
+}
+
+:root:root[data-theme="dark"][data-contrast="more"] {
+  --puck-color-grey-01: #ffffff;
+  --puck-color-grey-02: #f5f5f5;
+  --puck-color-grey-03: #ebebeb;
+  --puck-color-grey-04: #e0e0e0;
+  --puck-color-grey-05: #d6d6d6;
+  --puck-color-grey-06: #c7c7c7;
+  --puck-color-grey-07: #b3b3b3;
+  --puck-color-grey-08: #a3a3a3;
+  --puck-color-grey-09: #8f8f8f;
+}
+
+html[data-theme="dark"] [class*="_Input-input_"] {
+  border-color: #868686;
+}
+
+/* After the dark rule so dark + more contrast gets the brighter border. */
+html[data-contrast="more"] [class*="_Input-input_"] {
+  border-color: var(--puck-color-grey-05);
+}
+
+/* Text size: everything in the CMS is sized in rem, so scaling the root scales it all. */
+html[data-text-size="87.5"] { font-size: 87.5%; }
+html[data-text-size="112.5"] { font-size: 112.5%; }
+html[data-text-size="125"] { font-size: 125%; }
+html[data-text-size="150"] { font-size: 150%; }
+html[data-text-size="175"] { font-size: 175%; }
+html[data-text-size="200"] { font-size: 200%; }
+
+/* Puck sizes a few things in px, which would ignore the text size setting. Same sizes, in rem. */
+@media (min-width: 638px) {
+  :root [class*="_PuckLayout-inner_"] {
+    --puck-side-nav-width: 4.25rem;
+  }
+}
+
+:root [class*="_Input-input_"] {
+  font-size: 1rem;
+}
+
+@media (min-width: 458px) {
+  :root [class*="_Input-input_"] {
+    font-size: 0.875rem;
+  }
+}
+
+:root [class*="_Button_"],
+:root [class*="_ExternalInputModal-th_"],
+:root [class*="_ExternalInputModal-searchInput_"],
+:root [class*="_ExternalInputModal-footer_"] {
+  font-size: 0.875rem;
+}
+
 
 @layer utilities {
   .resource-card-grid {
@@ -101,6 +356,11 @@ body {
 
 .prose h3, .prose h4, .prose h5, .prose h6 {
   @apply font-display;
+}
+
+/* The reset strips link underlines; without one, links in text are told apart by nothing (WCAG 1.4.1). */
+.prose a {
+  @apply underline underline-offset-2;
 }
 
 .prose ul {

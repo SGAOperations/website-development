@@ -4,6 +4,9 @@ import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 import { mediaField } from "@/components/puck/fields/media-field";
+import { EditorWarning } from "@/components/puck/editor-warning";
+import type { ImageValue } from "@/components/puck/fields/media-field";
+import { getImageAlt } from "@/lib/puck/a11y-check";
 
 const aspectRatio = defineToken({
   auto:   { label: "Auto", classes: "" },
@@ -22,7 +25,9 @@ const objectFit = defineToken({
 type ObjectFit = TokenValue<typeof objectFit>;
 
 type MediaProps = {
-  image: { mediaId: number; url: string } | null;
+  image: ImageValue;
+  // Decorative images get alt="" so screen readers skip them (WCAG 1.1.1).
+  decorative: boolean;
   alt: string;
   objectFit: ObjectFit;
   aspectRatio: AspectRatio;
@@ -31,7 +36,18 @@ type MediaProps = {
 
 const props = defineProps({
   image: field.raw(mediaField("Image"), null),
-  alt: field.raw({ type: "text", label: "Alt text" }, ""),
+  decorative: field.raw(
+    {
+      type: "radio",
+      label: "Decorative only",
+      options: [
+        { label: "No", value: false },
+        { label: "Yes", value: true },
+      ],
+    },
+    false,
+  ),
+  alt: field.raw({ type: "text", label: "Alt text (blank uses the media library's)" }, ""),
   objectFit: field.select(objectFit, { label: "Object fit" }),
   aspectRatio: field.select(aspectRatio, { label: "Aspect ratio" }),
   radius: field.select(radius, { label: "Corners" }),
@@ -39,12 +55,16 @@ const props = defineProps({
 
 function MediaRenderer({
   image,
+  decorative,
   alt,
   objectFit: fit,
   aspectRatio: ratio,
   radius: r,
-}: MediaProps) {
+  isEditing,
+}: MediaProps & { isEditing: boolean }) {
   const { url, mediaId } = image ?? {};
+  // Falls back to the media library's alt text when the block's own field is empty.
+  const altText = decorative ? "" : getImageAlt({ alt, image });
 
   const wrapperClass = cn(
     "relative h-full w-full overflow-hidden",
@@ -67,9 +87,13 @@ function MediaRenderer({
 
   return (
     <div className={wrapperClass}>
+      {isEditing && !decorative && !altText && (
+        <EditorWarning label="No alt text">Add alt text or mark as decorative</EditorWarning>
+      )}
       <img
         src={url}
-        alt={alt}
+        // Without alt text yet, omit alt rather than alt="", which would pass the image off as decorative.
+        alt={decorative ? "" : altText || undefined}
         className={cn("h-full w-full", objectFit.classes[fit])}
       />
     </div>
@@ -79,5 +103,11 @@ function MediaRenderer({
 export const Media: ComponentConfig<MediaProps> = {
   label: "Image",
   ...props,
-  render: (props) => <MediaRenderer {...props} />,
+  // Alt text is meaningless for decorative images, so hide the field.
+  resolveFields: (data) => {
+    const f = { ...Media.fields! };
+    f.alt = { ...f.alt, visible: !data.props.decorative };
+    return f;
+  },
+  render: ({ puck, ...props }) => <MediaRenderer {...props} isEditing={puck.isEditing} />,
 };
