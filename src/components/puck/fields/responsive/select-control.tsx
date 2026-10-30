@@ -3,7 +3,7 @@ import type { TokenOption } from "@/lib/puck/tokens";
 import type { ResponsiveFieldControlProps } from "./frame";
 
 // Non-phone breakpoints can clear their override and inherit from the smaller breakpoint.
-const inheritOption: TokenOption<""> = { label: "–", value: "" };
+const inheritOption: TokenOption<""> = { label: "Inherit", value: "" };
 
 function withInheritOption<T extends string>(
   options: TokenOption<T>[],
@@ -20,6 +20,7 @@ export function fromResponsiveSelectValue<T extends string>(selected: T | ""): T
 }
 
 export function ResponsiveSelectControl<T extends string>({
+  id,
   isPhone,
   value,
   onChange,
@@ -32,8 +33,9 @@ export function ResponsiveSelectControl<T extends string>({
   const isInheriting = !isPhone && value === undefined;
 
   return (
-    <div className={isInheriting ? "opacity-40" : undefined}>
+    <div className={isInheriting ? "opacity-60" : undefined}>
       <AutoField
+        id={id}
         field={{ type: "select", options: fieldOptions }}
         onChange={(selected: T | "") => {
           onChange(fromResponsiveSelectValue(selected));

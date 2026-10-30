@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { ResponsiveValue } from "@/lib/puck/responsive";
+import { responsiveBreakpoints, type ResponsiveValue } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import {
   bgColor,
@@ -89,7 +89,38 @@ export function getGridClassName({
     resolveResponsive(columns, columnCount.classes),
     resolveResponsive(rows, gridRows.classes),
     resolveResponsive(gap, gapToken.classes),
+    getGridOverflowClassName(columns, rows),
   );
+}
+
+/**
+ * Fixed row counts collapse extra items to zero height, but they would still be
+ * focusable and read by screen readers. Hide them with `visibility` at each breakpoint
+ * (rows x columns items stay visible). Needs the matching @source hints in styles.css.
+ */
+export function getGridOverflowClassName(
+  columns: ResponsiveValue<ColumnCount>,
+  rows: ResponsiveValue<GridRows>,
+) {
+  let cols = columns.phone;
+  let rowCount = rows.phone;
+
+  return responsiveBreakpoints
+    .map((bp) => {
+      if (columns[bp] === undefined && rows[bp] === undefined) return "";
+      cols = columns[bp] ?? cols;
+      rowCount = rows[bp] ?? rowCount;
+
+      const prefix = bp === "phone" ? "" : `${bp}:`;
+      if (rowCount === "auto") {
+        return bp === "phone" ? "" : `${prefix}[&>*:nth-child(n)]:visible`;
+      }
+
+      const limit = Number(rowCount) * Number(cols);
+      return `${prefix}[&>*:nth-child(-n+${limit})]:visible ${prefix}[&>*:nth-child(n+${limit + 1})]:invisible`;
+    })
+    .filter(Boolean)
+    .join(" ");
 }
 
 export function getMaxCols(columns: ResponsiveValue<ColumnCount>): number {

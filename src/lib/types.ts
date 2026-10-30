@@ -45,6 +45,11 @@ export type RenameInput = {
   name: string;
 };
 
+export type UpdateMediaAltTextInput = {
+  id: number;
+  altText: string;
+};
+
 export type DeleteMediaInput = {
   id: number;
 };

@@ -56,7 +56,14 @@ export const RichTextComponent: ComponentConfig<RichTextProps> = {
         resolveResponsive(columns, textColumns.classes),
         resolveResponsive(cg, columnGap.classes),
       )}>
-        {content}
+        {typeof content === "string" ? (
+          // Puck 0.21 skips its rich text renderer for top-level blocks on published pages, passing the
+          // raw HTML string; printed as-is, headings and links became literal "<h2>" text. Render it the way
+          // Puck's own fallback does (same editor-authored HTML, same .rich-text wrapper).
+          <div className="rich-text" dangerouslySetInnerHTML={{ __html: content }} />
+        ) : (
+          content
+        )}
       </div>
     );
   },

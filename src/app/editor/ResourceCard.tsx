@@ -23,7 +23,8 @@ export function ResourceCard({
     : {};
 
   const previewContent = (
-    <div className="flex h-24 items-center justify-center bg-muted">
+    // The name link below carries the label; the preview is a duplicate, so hide it from assistive tech.
+    <div className="flex h-24 items-center justify-center bg-muted" aria-hidden="true">
       {preview}
     </div>
   );
@@ -35,9 +36,9 @@ export function ResourceCard({
   );
 
   return (
-    <Card className="h-48 min-w-0 gap-0 py-0">
+    <Card className="min-h-48 min-w-0 gap-0 py-0">
       {href ? (
-        <Link href={href} className="block" {...linkProps}>
+        <Link href={href} className="block" tabIndex={-1} aria-hidden="true" {...linkProps}>
           {previewContent}
         </Link>
       ) : (
@@ -53,6 +54,7 @@ export function ResourceCard({
             {...linkProps}
           >
             {name}
+            {external && <span className="sr-only"> (opens in new tab)</span>}
           </Link>
         ) : (
           nameContent
@@ -87,11 +89,12 @@ export function NewResourceCard({
   return (
     <Card
       className={cn(
-        "h-48 min-w-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors hover:bg-muted/50 hover:text-foreground",
+        "min-h-48 min-w-0 cursor-pointer gap-0 border-dashed py-0 text-center transition-colors outline-none hover:bg-muted/50 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring",
         disabled && "cursor-not-allowed opacity-60",
       )}
       role="button"
       tabIndex={0}
+      aria-disabled={disabled || undefined}
       onClick={disabled ? undefined : onClick}
       onKeyDown={(e) => {
         if (!disabled && (e.key === "Enter" || e.key === " ")) {
@@ -101,7 +104,7 @@ export function NewResourceCard({
       }}
     >
       <div className="flex flex-1 flex-col items-center justify-center p-4">
-        <span className="text-3xl leading-none">+</span>
+        <span className="text-3xl leading-none" aria-hidden="true">+</span>
         <span className="mt-2 text-sm font-medium">
           {disabled ? loadingLabel : label}
         </span>
