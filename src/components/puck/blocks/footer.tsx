@@ -53,10 +53,10 @@ type FooterProps = {
 
 const props = defineProps({
     title: field.raw(
-        { type: "richtext", label: "Title", contentEditable: true},
+        { type: "text", label: "Title", contentEditable: true},
         "Northeastern University Student Government Association",
     ),
-    textLines: field.raw({type: "richtext", label: "Text", contentEditable: false}, "332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115"),
+    textLines: field.raw({type: "text", label: "Text", contentEditable: false}, "332 Curry Student Center, 360 Huntington Avenue, Boston, MA 02115"),
     buttonSpace: field.slot(),
     align: field.radio(textAlign, { label: "Text align", default: "center" }),
     titleColor : field.select(textColor, {label: "Title Text Color", default: "sga-red"}),
@@ -68,12 +68,12 @@ const props = defineProps({
     slotAlign : field.radio(crossAxisAlign, {label: "Align items"}),
     gap: responsive.select(gapToken, { label: "Icon Gap", default: "md" }),
     numEmails : field.select(emailCount, {label: "Number of Emails", default: "3"}),
-    email1: field.raw({type: "richtext", label: "First email", contentEditable: true },"Contact: sga@northeastern.edu"),
-    email2: field.raw({type: "richtext", label: "Second email", contentEditable: true}, "Media Inquiries: sgaExternalAffairs@northeastern.edu"),
-    email3: field.raw({type: "richtext", label: "Third email", contentEditable: true}, "Webmaster: sgaOperations@northeastern.edu"),
-    email4: field.raw({type: "richtext", label: "Fourth email", contentEditable: true},""),
-    email5: field.raw({type: "richtext", label: "Fifth email", contentEditable: true}, ""),
-    email6: field.raw({type: "richtext", label: "Sixth email", contentEditable: true}, "")
+    email1: field.raw({type: "text", label: "First email", contentEditable: true },"Contact: sga@northeastern.edu"),
+    email2: field.raw({type: "text", label: "Second email", contentEditable: true}, "Media Inquiries: sgaExternalAffairs@northeastern.edu"),
+    email3: field.raw({type: "text", label: "Third email", contentEditable: true}, "Webmaster: sgaOperations@northeastern.edu"),
+    email4: field.raw({type: "text", label: "Fourth email", contentEditable: true},""),
+    email5: field.raw({type: "text", label: "Fifth email", contentEditable: true}, ""),
+    email6: field.raw({type: "text", label: "Sixth email", contentEditable: true}, "")
 });
 
 export const Footer: ComponentConfig<FooterProps> = {
@@ -86,19 +86,19 @@ export const Footer: ComponentConfig<FooterProps> = {
         visible: data.props.numEmails >= "2",
     },
     email3: {
-        ...props.fields.email2,
+        ...props.fields.email3,
         visible: data.props.numEmails >= "3",
     },
     email4: {
-        ...props.fields.email2,
+        ...props.fields.email4,
         visible: data.props.numEmails >= "4",
     },
     email5: {
-        ...props.fields.email2,
+        ...props.fields.email5,
         visible: data.props.numEmails >= "5",
     },
     email6: {
-        ...props.fields.email2,
+        ...props.fields.email6,
         visible: data.props.numEmails >= "6",
     },
    }),
@@ -120,17 +120,18 @@ export const Footer: ComponentConfig<FooterProps> = {
         resolveResponsive(p, padding.classes),
        );
 
+
         return (
             <div style={{display: 'flex', flexDirection: 'column', margin: 0, gap: 0}}>
                 <div className={cn(
-                    "Title section",
+                    "title text font-bold",
                     textAlign.classes[align],
                     textColor.classes[tic],
                     bgColor.classes[backgroundColor],
 
                     resolveResponsive(p, padding.classes),
                 )}>
-                    <span style = {{fontWeight: 'bold'}}> {title} </span>
+                  {title} 
                 </div>
                 <div className={cn(
                     "Text lines section",
@@ -186,5 +187,4 @@ export const Footer: ComponentConfig<FooterProps> = {
         );
     }
 }
-
 
