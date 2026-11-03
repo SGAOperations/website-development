@@ -75,40 +75,40 @@ export const padding = defineToken({
   none:  { label: "None",   classes: "p-0" },
   xs:    { label: "XS",     classes: "p-1" },
   sm:    { label: "Small",  classes: "p-2" },
-  md:    { label: "Medium", classes: "p-4" },
-  lg:    { label: "Large",  classes: "p-6" },
-  xl:    { label: "XL",     classes: "p-8" },
-  "2xl": { label: "2XL",    classes: "p-12" },
+  md:    { label: "Medium", classes: "p-3" },
+  lg:    { label: "Large",  classes: "p-4" },
+  xl:    { label: "XL",     classes: "p-6" },
+  "2xl": { label: "2XL",    classes: "p-10" },
 });
 
 export const paddingX = defineToken({
   none:  { label: "None",   classes: "px-0" },
   xs:    { label: "XS",     classes: "px-1" },
   sm:    { label: "Small",  classes: "px-2" },
-  md:    { label: "Medium", classes: "px-4" },
-  lg:    { label: "Large",  classes: "px-6" },
-  xl:    { label: "XL",     classes: "px-8" },
-  "2xl": { label: "2XL",    classes: "px-12" },
+  md:    { label: "Medium", classes: "px-3" },
+  lg:    { label: "Large",  classes: "px-4" },
+  xl:    { label: "XL",     classes: "px-6" },
+  "2xl": { label: "2XL",    classes: "px-10" },
 });
 
 export const paddingY = defineToken({
   none:  { label: "None",   classes: "py-0" },
   xs:    { label: "XS",     classes: "py-1" },
   sm:    { label: "Small",  classes: "py-2" },
-  md:    { label: "Medium", classes: "py-4" },
-  lg:    { label: "Large",  classes: "py-6" },
-  xl:    { label: "XL",     classes: "py-8" },
-  "2xl": { label: "2XL",    classes: "py-12" },
+  md:    { label: "Medium", classes: "py-3" },
+  lg:    { label: "Large",  classes: "py-4" },
+  xl:    { label: "XL",     classes: "py-6" },
+  "2xl": { label: "2XL",    classes: "py-10" },
 });
 
 export const gap = defineToken({
   none:  { label: "None",   classes: "gap-0" },
-  xs:    { label: "XS",     classes: "gap-1" },
-  sm:    { label: "Small",  classes: "gap-2" },
-  md:    { label: "Medium", classes: "gap-4" },
-  lg:    { label: "Large",  classes: "gap-6" },
-  xl:    { label: "XL",     classes: "gap-8" },
-  "2xl": { label: "2XL",    classes: "gap-12" },
+  xs:    { label: "XS",     classes: "gap-2" },
+  sm:    { label: "Small",  classes: "gap-4" },
+  md:    { label: "Medium", classes: "gap-8" },
+  lg:    { label: "Large",  classes: "gap-10" },
+  xl:    { label: "XL",     classes: "gap-14" },
+  "2xl": { label: "2XL",    classes: "gap-18" },
 });
 
 export const columnGap = defineToken({
@@ -253,6 +253,17 @@ export const textColumns = defineToken({
 });
 
 export type TextColumnCount = TokenValue<typeof textColumns>;
+
+export const emailCount = defineToken({
+  "1": {label: "1", classes: "emails-1"},
+  "2": {label: "2", classes: "emails-2"},
+  "3": {label: "3", classes: "emails-3"},
+  "4": {label: "4", classes: "emails-4"},
+  "5": {label: "5", classes: "emails-5"},
+  "6": {label: "6", classes: "emails-6"},
+})
+
+export type EmailCount = TokenValue<typeof emailCount>;
 
 export const layout = defineToken({
   stack: { label: "Stack", classes: "flex flex-col" },

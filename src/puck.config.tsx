@@ -7,10 +7,11 @@ import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Marquee } from "@/components/puck/blocks/marquee";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { Footer } from "@/components/puck/blocks/footer";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee"] },
+    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
@@ -20,6 +21,7 @@ export const config = {
     Columns,
     Grid,
     Marquee,
+    Footer,
     Text: RichTextComponent,
     Image: Media,
     Button: PuckButton,
