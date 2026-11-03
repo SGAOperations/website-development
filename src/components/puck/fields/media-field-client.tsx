@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useState } from "react";
 import { FieldLabel } from "@puckeditor/core";
 import { ImageIcon, X } from "lucide-react";
 import {
@@ -13,13 +13,11 @@ import { useMedia, type MediaWithUrl } from "@/components/puck/media-context";
 import { uploadMediaAction } from "@/lib/media/actions";
 import { runAction } from "@/app/editor/runAction";
 import { toast } from "sonner";
-import {
-  ResourceCard,
-  NewResourceCard,
-} from "@/app/editor/ResourceCard";
+import { ResourceCard } from "@/app/editor/ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ImageValue } from "./media-field";
+import { DropzoneUploadCard } from "@/components/media/DropzoneUploadCard";
 
 function MediaPickerDialog({
   open,
@@ -31,21 +29,13 @@ function MediaPickerDialog({
   onClose: () => void;
 }) {
   const { imageMedia, addMedia } = useMedia();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, startTransition] = useTransition();
-
-  function handleUpload(file: File) {
+  async function handleUpload(file: File) {
     const formData = new FormData();
     formData.append("file", file);
-    startTransition(async () => {
-      const result = await runAction(uploadMediaAction(formData));
-      if (result.success) {
-        addMedia(result.data);
-        onSelect(result.data);
-      } else {
-        toast.error(result.error);
-      }
-    });
+    const result = await runAction(uploadMediaAction(formData));
+    if (!result.success) throw new Error(result.error);
+      addMedia(result.data);
+      onSelect(result.data);
   }
 
   return (
@@ -56,24 +46,10 @@ function MediaPickerDialog({
         </DialogHeader>
 
         <div className="resource-card-grid grid max-h-96 gap-2 overflow-y-auto p-0.5">
-          <NewResourceCard
-            label="Upload File"
-            loadingLabel="Uploading..."
-            disabled={isUploading}
-            onClick={() => inputRef.current?.click()}
-          >
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleUpload(file);
-                e.target.value = "";
-              }}
-            />
-          </NewResourceCard>
+          <DropzoneUploadCard
+            upload={handleUpload}
+            onError={(message) => toast.error(message)}
+          />
 
           {imageMedia.map((m) => {
             const date = `${formatRelativeTime(new Date(m.createdAt))} · ${formatFileSize(m.size)}`;
