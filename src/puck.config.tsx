@@ -6,6 +6,7 @@ import { RichTextComponent } from "@/components/puck/blocks/rich-text";
 import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { ElectionResultsComponent } from "@/components/puck/blocks/election-bar";
 
 export const config = {
   categories: {
@@ -21,6 +22,7 @@ export const config = {
     Text: RichTextComponent,
     Image: Media,
     Button: PuckButton,
+    ElectionResults: ElectionResultsComponent,
   },
 } satisfies Config;
 
