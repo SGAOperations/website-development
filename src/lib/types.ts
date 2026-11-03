@@ -57,3 +57,22 @@ export type DuplicateDocumentInput = {
   id: number;
   name: string;
 };
+
+export type CreateFolderInput = {
+  name: string;
+  parentId?: number | null;
+};
+
+export type RenameFolderInput = {
+  id: number;
+  name: string;
+};
+
+export type MoveFolderInput = {
+  id: number;
+  parentId: number | null;
+};
+
+export type DeleteFolderInput = {
+  id: number;
+};
