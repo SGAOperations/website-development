@@ -219,6 +219,17 @@ export const textColumns = defineToken({
 
 export type TextColumnCount = TokenValue<typeof textColumns>;
 
+export const emailCount = defineToken({
+  "1": {label: "1", classes: "emails-1"},
+  "2": {label: "2", classes: "emails-2"},
+  "3": {label: "3", classes: "emails-3"},
+  "4": {label: "4", classes: "emails-4"},
+  "5": {label: "5", classes: "emails-5"},
+  "6": {label: "6", classes: "emails-6"},
+})
+
+export type EmailCount = TokenValue<typeof emailCount>;
+
 export const layout = defineToken({
   stack: { label: "Stack", classes: "flex flex-col" },
   row:   { label: "Row",   classes: "flex flex-row flex-wrap" },
@@ -255,3 +266,9 @@ export const gridRows = defineToken({
   "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
 });
 export type GridRows = TokenValue<typeof gridRows>;
+
+export const fontFamily = defineToken({
+  inter: {label: "Inter", classes: "font-text"},
+  bebasNeue: {label: "Bebas Neue", classes: "font-display"}
+});
+export type FontFamily = TokenValue<typeof fontFamily>;
