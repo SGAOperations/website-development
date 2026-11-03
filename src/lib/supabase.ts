@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
+import { requireEnv } from "./env";
 
 const globalForSupabase = globalThis as unknown as {
   supabase?: ReturnType<typeof createClient>;
@@ -8,8 +9,8 @@ const globalForSupabase = globalThis as unknown as {
 export const supabase =
   globalForSupabase.supabase ??
   createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    requireEnv("SUPABASE_URL"),
+    requireEnv("SUPABASE_SERVICE_ROLE_KEY")
   );
 
 if (process.env.NODE_ENV !== "production") {
