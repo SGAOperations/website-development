@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { describe, it, expect, afterEach, beforeAll, vi } from "vitest";
 
 // Runs before any imports: load .env so prisma/supabase see their variables.
 vi.hoisted(() => {
@@ -13,10 +13,32 @@ vi.hoisted(() => {
 
 // Replace the "server-only" guard with nothing, for this test file only.
 vi.mock("server-only", () => ({}));
-import { describe, it, expect, afterEach } from "vitest";
-import { supabase, MEDIA_BUCKET } from "../supabase";
-import { prisma } from "../prisma";
-import { uploadMediaAction, renameMediaAction, deleteMediaAction } from "./actions";
+
+// Integration tests need a real Supabase and database. In CI there are none,
+// so skip them there. They still run locally.
+// DATABASE_URL is an assumption: check src/lib/prisma.ts or prisma/schema.prisma
+// (datasource db, env("...")) and use the real name.
+const hasEnv = Boolean(
+  process.env.SUPABASE_URL &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY &&
+    process.env.DATABASE_URL
+);
+
+// These are imported dynamically, because a normal import would run
+// supabase.ts at load time and crash in CI before the skip could happen.
+let supabase: typeof import("../supabase").supabase;
+let MEDIA_BUCKET: string;
+let prisma: typeof import("../prisma").prisma;
+let uploadMediaAction: typeof import("./actions").uploadMediaAction;
+let renameMediaAction: typeof import("./actions").renameMediaAction;
+let deleteMediaAction: typeof import("./actions").deleteMediaAction;
+
+beforeAll(async () => {
+  if (!hasEnv) return;
+  ({ supabase, MEDIA_BUCKET } = await import("../supabase"));
+  ({ prisma } = await import("../prisma"));
+  ({ uploadMediaAction, renameMediaAction, deleteMediaAction } = await import("./actions"));
+});
 
 const createdIds: number[] = [];
 const unique = () => `t${Date.now()}${Math.floor(Math.random() * 1000)}`;
@@ -37,13 +59,14 @@ async function existsInStorage(path: string) {
 }
 
 afterEach(async () => {
+  if (!hasEnv) return;
   // deleteMediaAction reads the CURRENT storagePath, so this works after renames too
   for (const id of createdIds.splice(0)) {
     await deleteMediaAction({ id });
   }
 });
 
-describe("renameMediaAction", () => {
+describe.skipIf(!hasEnv)("renameMediaAction", () => {
   it("renames only the display name without moving the file", async () => {
     const m = await createTestMedia();
     const result = await renameMediaAction({ id: m.id, name: "New label" });
