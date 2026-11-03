@@ -7,7 +7,13 @@ export const getDocumentById = async (id: number) => {
     include: {
       versions: {
         orderBy: { createdAt: "desc" },
-        select: { id: true, documentId: true, createdAt: true },
+        select: {
+          id: true,
+          documentId: true,
+          name: true,
+          author: true,
+          createdAt: true,
+        },
       },
     },
   });
