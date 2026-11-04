@@ -75,40 +75,40 @@ export const padding = defineToken({
   none:  { label: "None",   classes: "p-0" },
   xs:    { label: "XS",     classes: "p-1" },
   sm:    { label: "Small",  classes: "p-2" },
-  md:    { label: "Medium", classes: "p-4" },
-  lg:    { label: "Large",  classes: "p-6" },
-  xl:    { label: "XL",     classes: "p-8" },
-  "2xl": { label: "2XL",    classes: "p-12" },
+  md:    { label: "Medium", classes: "p-3" },
+  lg:    { label: "Large",  classes: "p-4" },
+  xl:    { label: "XL",     classes: "p-6" },
+  "2xl": { label: "2XL",    classes: "p-10" },
 });
 
 export const paddingX = defineToken({
   none:  { label: "None",   classes: "px-0" },
   xs:    { label: "XS",     classes: "px-1" },
   sm:    { label: "Small",  classes: "px-2" },
-  md:    { label: "Medium", classes: "px-4" },
-  lg:    { label: "Large",  classes: "px-6" },
-  xl:    { label: "XL",     classes: "px-8" },
-  "2xl": { label: "2XL",    classes: "px-12" },
+  md:    { label: "Medium", classes: "px-3" },
+  lg:    { label: "Large",  classes: "px-4" },
+  xl:    { label: "XL",     classes: "px-6" },
+  "2xl": { label: "2XL",    classes: "px-10" },
 });
 
 export const paddingY = defineToken({
   none:  { label: "None",   classes: "py-0" },
   xs:    { label: "XS",     classes: "py-1" },
   sm:    { label: "Small",  classes: "py-2" },
-  md:    { label: "Medium", classes: "py-4" },
-  lg:    { label: "Large",  classes: "py-6" },
-  xl:    { label: "XL",     classes: "py-8" },
-  "2xl": { label: "2XL",    classes: "py-12" },
+  md:    { label: "Medium", classes: "py-3" },
+  lg:    { label: "Large",  classes: "py-4" },
+  xl:    { label: "XL",     classes: "py-6" },
+  "2xl": { label: "2XL",    classes: "py-10" },
 });
 
 export const gap = defineToken({
   none:  { label: "None",   classes: "gap-0" },
-  xs:    { label: "XS",     classes: "gap-1" },
-  sm:    { label: "Small",  classes: "gap-2" },
-  md:    { label: "Medium", classes: "gap-4" },
-  lg:    { label: "Large",  classes: "gap-6" },
-  xl:    { label: "XL",     classes: "gap-8" },
-  "2xl": { label: "2XL",    classes: "gap-12" },
+  xs:    { label: "XS",     classes: "gap-2" },
+  sm:    { label: "Small",  classes: "gap-4" },
+  md:    { label: "Medium", classes: "gap-8" },
+  lg:    { label: "Large",  classes: "gap-10" },
+  xl:    { label: "XL",     classes: "gap-14" },
+  "2xl": { label: "2XL",    classes: "gap-18" },
 });
 
 export const columnGap = defineToken({
@@ -120,6 +120,41 @@ export const columnGap = defineToken({
   xl:    { label: "XL",     classes: "gap-x-8" },
   "2xl": { label: "2XL",    classes: "gap-x-12" },
 });
+
+
+export const marqueeSpeed = defineToken({
+  xslow: {label: "Extra Slow", classes: "[animation:marquee_120s_linear_infinite]"},
+  slow:   { label: "Slow",   classes: "[animation:marquee_60s_linear_infinite]" },
+  medium: { label: "Medium", classes: "[animation:marquee_30s_linear_infinite]" },
+  fast:   { label: "Fast",   classes: "[animation:marquee_10s_linear_infinite]" },
+  xfast: {label: "Extra Fast", classes: "[animation:marquee_2s_linear_infinite]"}
+}, "medium");
+
+export const marqueeDirection = defineToken({
+  rtl: { label: "Right to left", classes: "" },
+  ltr: { label: "Left to right", classes: "[animation-direction:reverse]!" },
+});
+
+export const marqueeGap = defineToken({
+  none: { label: "None",          classes: "gap-0 pr-0" },
+  sm:   { label: "Small",         classes: "gap-4 pr-4" },
+  md:   { label: "Medium",        classes: "gap-8 pr-8" },
+  lg:   { label: "Large",         classes: "gap-16 pr-16" },
+}, "md");
+
+// Vertical padding above and below the scrolling row, helpful for text marquees
+export const marqueeRowPadding = defineToken({
+  none: { label: "None",          classes: "py-0" },
+  sm:   { label: "Small",         classes: "py-4" },
+  md:   { label: "Medium",        classes: "py-8" },
+  lg:   { label: "Large",         classes: "py-12" },
+  xl:   { label: "X-Large",       classes: "py-16" },
+}, "md");
+
+export type MarqueeSpeed = TokenValue<typeof marqueeSpeed>;
+export type MarqueeDirection = TokenValue<typeof marqueeDirection>;
+export type MarqueeGap = TokenValue<typeof marqueeGap>;
+export type MarqueeRowPadding = TokenValue<typeof marqueeRowPadding>;
 
 export type Spacing = TokenValue<typeof padding>;
 
