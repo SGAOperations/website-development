@@ -3,24 +3,23 @@ import { cn } from "@/lib/utils";
 import { defineProps, field, responsive } from "@/lib/puck/define-props";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import {
-  textColor,
   textAlign,
   lineSpacing,
   textColumns,
   columnGap,
   fontFamily,
   type FontFamily,
-  type Color,
   type LineSpacing,
   type TextAlign,
   type TextColumnCount,
   type Spacing,
 } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
+import { colorField } from "../fields/color-selector";
 
 type RichTextProps = {
   content: RichText;
-  textColor: Color;
+  textColor: string;
   align: TextAlign;
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
@@ -33,7 +32,8 @@ const props = defineProps({
     { type: "richtext", contentEditable: true },
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   ),
-  textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
+  //textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
+  textColor: field.raw(colorField("Text Color"), "#000000"),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
   lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
@@ -47,9 +47,8 @@ export const RichTextComponent: ComponentConfig<RichTextProps> = {
   ...props,
   render: ({ content, textColor: tc, align, lineSpacing: ls, columns, columnGap: cg, fontFamily: f}) => {
     return (
-      <div className={cn(
+      <div style={{ color: tc }} className={cn(
         "prose max-w-none",
-        textColor.classes[tc],
         textAlign.classes[align],
         lineSpacing.classes[ls],
         fontFamily.classes[f],
