@@ -13,18 +13,20 @@ type GridProps = {
 
 const props = defineProps({
   content: field.slot(),
-  columns: responsive.token(columnCount, { label: "Columns", default: "3" }),
-  rows: responsive.token(gridRows, { label: "Rows", default: "auto" }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  columns: responsive.select(columnCount, { label: "Columns", default: "3" }),
+  rows: responsive.select(gridRows, { label: "Rows", default: "auto" }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
 });
 
 export const Grid: ComponentConfig<GridProps> = {
   label: "Grid",
+  inline: true,
   ...props,
-  render: ({ content: Content, columns, rows: r, gap }) => {
+  render: ({ content: Content, columns, rows: r, gap, puck }) => {
     if (!Content) {
       return (
         <div
+          ref={puck.dragRef}
           className={getGridClassName({
             columns,
             rows: r,
@@ -37,6 +39,7 @@ export const Grid: ComponentConfig<GridProps> = {
 
     return (
       <Content
+        ref={puck.dragRef}
         className={getGridClassName({ columns, rows: r, gap })}
         minEmptyHeight="200px"
       />

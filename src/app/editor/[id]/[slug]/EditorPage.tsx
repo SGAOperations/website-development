@@ -1,10 +1,11 @@
 import "@puckeditor/core/puck.css";
 import { notFound } from "next/navigation";
 import { Client } from "./client";
+import { loadDocument } from "../../../../lib/documents/editor-route";
 import { getVersionContent } from "../../../../lib/documents/queries";
+import { resolveEditorVersionId } from "../../../../lib/documents/version-selection";
+import { getMediaFiles } from "../../../../lib/media/queries";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
-import { resolveEditorVersionId } from "./version-selection";
-import { loadDocument } from "./params";
 
 export default async function EditorPage({
   documentId,
@@ -15,7 +16,10 @@ export default async function EditorPage({
   slug: string;
   versionId?: number;
 }) {
-  const document = await loadDocument(documentId, slug, { versionId });
+  const [document, media] = await Promise.all([
+    loadDocument(documentId, slug, { versionId }),
+    getMediaFiles(),
+  ]);
 
   const targetVersionId = resolveEditorVersionId(document.versions, versionId);
 
@@ -39,6 +43,7 @@ export default async function EditorPage({
       documentId={documentId}
       documentName={document.name}
       data={data}
+      media={media}
       versionId={targetVersionId}
       publishedVersionId={document.publishedVersionId || undefined}
       versions={versions}

@@ -1,9 +1,9 @@
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { ElementType } from "react";
 import {
-  getContainerSlotClassName,
-  getContainerSurfaceClassName,
-  type ContainerStyle,
+  getGroupSlotClassName,
+  getGroupSurfaceClassName,
+  type GroupStyle,
 } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, padding, gap, bgColor, textColor, radius, shadow, crossAxisAlign, layout, justify, width } from "@/lib/puck/tokens";
@@ -20,7 +20,7 @@ const tag = defineToken({
 });
 type Tag = TokenValue<typeof tag>;
 
-type ContainerProps = ContainerStyle & {
+type GroupProps = GroupStyle & {
   content: Slot;
   tag: Tag;
 };
@@ -28,8 +28,8 @@ type ContainerProps = ContainerStyle & {
 const props = defineProps({
   content: field.slot(),
   layout: field.radio(layout, { label: "Layout" }),
-  padding: responsive.token(padding, { label: "Padding", default: "md" }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  padding: responsive.select(padding, { label: "Padding", default: "md" }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
   align: field.radio(crossAxisAlign, { label: "Align items" }),
   justify: field.radio(justify, { label: "Justify" }),
   width: field.select(width, { label: "Max width" }),
@@ -40,17 +40,21 @@ const props = defineProps({
   tag: field.select(tag, { label: "HTML tag" }),
 });
 
-export const Container: ComponentConfig<ContainerProps> = {
-  label: "Container",
+export const Group: ComponentConfig<GroupProps> = {
+  label: "Group",
+  inline: true,
   ...props,
-  render: ({ content: Content, tag: t, ...style }) => {
+  render: ({ content: Content, tag: t, puck, ...style }) => {
     const Tag = t as ElementType;
 
     return (
-      <Tag className={getContainerSurfaceClassName(style)}>
+      <Tag
+        ref={puck.dragRef}
+        className={getGroupSurfaceClassName(style)}
+      >
         {Content && (
           <Content
-            className={getContainerSlotClassName(style)}
+            className={getGroupSlotClassName(style)}
             minEmptyHeight="200px"
           />
         )}

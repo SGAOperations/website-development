@@ -2,7 +2,7 @@
 
 Components in the Puck editor are styled through **design tokens** — named choices that map to arbitrary properties, but mostly Tailwind classes. Editors pick tokens from dropdowns; the system turns those choices into class names at render time.
 
-Any token can be made **responsive**, letting editors pick different values per breakpoint (base / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
+Any token can be made **responsive**, letting editors pick different values per breakpoint (phone / tablet / desktop). Unset breakpoints inherit from the nearest smaller one.
 
 ## Core concepts
 
@@ -57,22 +57,22 @@ type Spacing = TokenValue<typeof padding>; // "sm" | "md"
 
 ### 2. Responsive values
 
-A `ResponsiveValue<T>` has a required `base` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
+A `ResponsiveValue<T>` has a required `phone` and optional `md` / `lg` overrides (`src/lib/puck/responsive.ts`):
 
 ```ts
-type ResponsiveValue<T> = { base: T } & Partial<Record<"md" | "lg", T>>;
+type ResponsiveValue<T> = { phone: T } & Partial<Record<"md" | "lg", T>>;
 
-{ base: "sm" }                        // same at all sizes
-{ base: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
-{ base: "sm", lg: "lg" }              // skip md — it inherits from base
+{ phone: "sm" }                        // same at all sizes
+{ phone: "sm", md: "md", lg: "lg" }    // changes at each breakpoint
+{ phone: "sm", lg: "lg" }              // skip md — it inherits from phone
 ```
 
 **Helper functions** for working with responsive values:
 
 | Function | Purpose |
 |---|---|
-| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ base: "sm", lg: "lg" }, "md")` → `"sm"` |
-| `hasOverride(value)` | Returns `true` if any non-base overrides are set |
+| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ phone: "sm", lg: "lg" }, "md")` → `"sm"` |
+| `hasOverride(value)` | Returns `true` if any non-phone overrides are set |
 | `map(value, fn)` | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())` |
 | `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override |
 
@@ -82,7 +82,7 @@ These helpers are for component logic — see [Rendering](#4-rendering) for how 
 
 `defineProps` wires tokens to Puck editor fields (`src/lib/puck/define-props.ts`). It returns `{ fields, defaultProps }` to spread onto a `ComponentConfig`.
 
-There are four field builders:
+There are two builder namespaces:
 
 ```ts
 const props = defineProps({
@@ -94,7 +94,16 @@ const props = defineProps({
   layout:  field.radio(layout, { label: "Layout" }),
 
   // Responsive — per-breakpoint picker, also token-backed
-  padding: responsive.token(padding, { label: "Padding" }),
+  padding: responsive.select(padding, { label: "Padding" }),
+
+  // Responsive number — per-breakpoint numeric input
+  columns: responsive.number({
+    label: "Columns",
+    default: { phone: 1, md: 2 },
+    min: 1,
+    max: 6,
+    step: 1,
+  }),
 
   // Raw — any Puck field descriptor, for things tokens don't cover
   url:     field.raw({ type: "text", label: "URL" }, ""),
@@ -104,18 +113,39 @@ const props = defineProps({
 **Defaults.** Every builder falls back to the token's first key if no `default` is given. You can override with a scalar or a full responsive object:
 
 ```ts
-responsive.token(columnCount, { label: "Columns", default: "3" })
-responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "3" } })
+responsive.select(columnCount, { label: "Columns", default: "3" })
+responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "3" } })
+responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
+responsive.number({ label: "Rows", default: { phone: 1, md: 3 } })
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
 
 ```ts
 field.slot({ allow: ["Card", "Button"] })
-field.slot({ disallow: ["Section"] })
+field.slot({ disallow: ["Anchor"] })
 ```
 
-The same token definition works for both static and responsive use — only the field builder differs.
+The same token definition works for both static and responsive use. Numeric responsive fields do not need a token.
+
+### Responsive field architecture
+
+Responsive field descriptors are built on the server and rendered on the client, so the implementation is split intentionally:
+
+Everything lives in `src/components/puck/fields/responsive/`:
+
+- `kinds.ts` — descriptor types, factories, and the `responsiveFieldDescriptor` barrel (plain TS, no React).
+- `client.tsx` — client-only dispatcher + registry that maps `descriptor.kind` to the right renderer.
+- `index.tsx` — server-safe wrapper that turns a serializable descriptor into a Puck custom field.
+- `frame.tsx` — shared breakpoint UI; kind-specific controls only deal with their own value format.
+- `number-field.tsx`, `select-field.tsx` — kind renderers.
+- `number-control.tsx`, `select-control.tsx` — low-level input controls.
+
+To add a new responsive field kind:
+
+1. Add the descriptor type and factory to `kinds.ts`.
+2. Add a `<kind>-field.tsx` renderer and register it in `client.tsx`.
+4. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
 
 ### 4. Rendering
 
@@ -142,6 +172,8 @@ const classes = cn(
   resolveResponsive(py, paddingY.classes),  // responsive
 );
 ```
+
+Responsive numeric props stay as data. Use `resolveAt(...)` or your own component logic when they need to influence layout or behavior; they do not go through `resolveResponsive(...)`.
 
 ## Tailwind source hints
 
@@ -187,13 +219,15 @@ import { padding, bgColor, type Spacing, type Color } from "@/lib/puck/tokens";
 type CardProps = {
   content: Slot;
   padding: ResponsiveValue<Spacing>;
+  columns: ResponsiveValue<number>;
   bgColor: Color;
   title: string;
 };
 
 const props = defineProps({
   content: field.slot(),
-  padding: responsive.token(padding, { label: "Padding", default: "md" }),
+  padding: responsive.select(padding, { label: "Padding", default: "md" }),
+  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2 }, min: 1, max: 4, step: 1 }),
   bgColor: field.select(bgColor, { label: "Background" }),
   title: field.raw({ type: "text", label: "Title" }, ""),
 });
@@ -201,17 +235,21 @@ const props = defineProps({
 
 ### Step 3 — Export the component config
 
-Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive props and direct `token.classes[value]` lookups for static ones:
+Spread `props` onto the config and destructure in `render`. Use `resolveResponsive` for responsive token props, `resolveAt` or component logic for responsive numeric props, and direct `token.classes[value]` lookups for static ones:
 
 ```ts
+import { resolveAt } from "@/lib/puck/responsive";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import { cn } from "@/lib/utils";
 
 export const Card: ComponentConfig<CardProps> = {
   label: "Card",
   ...props,
-  render: ({ content: Content, padding: pad, bgColor: bg, title }) => (
-    <div className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}>
+  render: ({ content: Content, padding: pad, columns, bgColor: bg, title }) => (
+    <div
+      className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}
+      style={{ columns: resolveAt(columns, "base") }}
+    >
       {title && <h3>{title}</h3>}
       {Content && <Content />}
     </div>

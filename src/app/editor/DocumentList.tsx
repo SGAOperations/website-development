@@ -14,7 +14,8 @@ import {
 import { runAction } from "./runAction";
 import { getDocumentName } from "../../lib/documents/utils";
 import { getEditorUrl } from "../../lib/editor-url";
-import { ResourceCard, NewResourceCard, formatRelativeTime } from "./ResourceCard";
+import { ResourceCard, NewResourceCard } from "./ResourceCard";
+import { formatRelativeTime } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 import {
@@ -162,7 +163,7 @@ export function DocumentList({ documents }: { documents: DocumentItem[] }) {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Documents</h1>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="resource-card-grid grid gap-2">
         <NewDocumentCard />
 
         {documents.map((doc) => {
@@ -244,7 +245,7 @@ export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] 
       </div>
 
       <CollapsibleContent>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="resource-card-grid mt-4 grid gap-2">
           {documents.map((doc) => {
             const displayName = getDocumentName(doc);
             return (

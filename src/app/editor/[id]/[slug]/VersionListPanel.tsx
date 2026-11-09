@@ -1,6 +1,7 @@
 import { Eye } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 import type { Version } from "../../../../lib/types";
+import { formatRelativeTime } from "@/lib/format";
 
 export interface VersionListPanelProps {
   versions: Version[];
@@ -9,16 +10,18 @@ export interface VersionListPanelProps {
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
-  previewBaseUrl: string;
+  getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
 }
 
 function formatVersionLabel(version: Version) {
   const date = new Date(version.createdAt);
-  const label = date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-  return { label, time };
+  const relative = formatRelativeTime(date);
+  const month = date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toLowerCase().replace(" ", "");
+  const absolute = `${month}, ${time}`;
+  return { relative, absolute };
 }
 
 function VersionEntry({
@@ -27,7 +30,7 @@ function VersionEntry({
   isPublished,
   onLoad,
   onPublish,
-  previewBaseUrl,
+  getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
 }: {
@@ -36,11 +39,11 @@ function VersionEntry({
   isPublished: boolean;
   onLoad: () => void;
   onPublish: () => void;
-  previewBaseUrl: string;
+  getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
 }) {
-  const { label, time } = formatVersionLabel(version);
+  const { relative, absolute } = formatVersionLabel(version);
 
   return (
     <div
@@ -54,10 +57,10 @@ function VersionEntry({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <span>{label}</span>
+          <span>{absolute}</span>
 
-          <div className="text-xs text-gray-500 mt-1">
-            {time}
+          <div className="text-[11px] text-gray-400 mt-0.5">
+            {relative}
           </div>
         </div>
 
@@ -79,7 +82,7 @@ function VersionEntry({
             </button>
           )}
           <a
-            href={`${previewBaseUrl}/${version.id}/preview`}
+            href={getPreviewUrlForVersion(version.id)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
@@ -101,7 +104,7 @@ export function VersionListPanel({
   publishedVersionId,
   onLoadVersion,
   onPublishVersion,
-  previewBaseUrl,
+  getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
 }: VersionListPanelProps) {
@@ -132,7 +135,7 @@ export function VersionListPanel({
               isPublished={version.id === publishedVersionId}
               onLoad={() => onLoadVersion(version.id)}
               onPublish={() => onPublishVersion(version.id)}
-              previewBaseUrl={previewBaseUrl}
+              getPreviewUrlForVersion={getPreviewUrlForVersion}
               isPublishing={isPublishing}
               isPublishDisabled={isPublishDisabled}
             />

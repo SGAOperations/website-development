@@ -27,19 +27,20 @@ const columnSlotDefaults = Object.fromEntries(
 ) as Record<SlotKey, Slot>;
 
 const props = defineProps({
-  columns: responsive.token(columnCount, { label: "Columns", default: { base: "1", md: "2" } }),
-  gap: responsive.token(gap, { label: "Gap", default: "md" }),
+  columns: responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "2" } }),
+  gap: responsive.select(gap, { label: "Gap", default: "md" }),
 });
 
 export const Columns: ComponentConfig<ColumnsProps> = {
   label: "Columns",
+  inline: true,
   fields: { ...columnSlotFields, ...props.fields },
   defaultProps: { ...columnSlotDefaults, ...props.defaultProps },
   // Hide column slot fields that exceed the selected column count,
   // so the editor sidebar only shows slots that are actually rendered.
   resolveFields: (data) => {
     const f = { ...Columns.fields! };
-    const columns = data.props.columns ?? { base: "1", md: "2" };
+    const columns = data.props.columns ?? { phone: "1", md: "2" };
     const maxCols = getMaxCols(columns);
 
     for (const [index, key] of columnSlotKeys.entries()) {
@@ -48,12 +49,15 @@ export const Columns: ComponentConfig<ColumnsProps> = {
 
     return f;
   },
-  render: ({ columns, gap, ...slots }) => {
+  render: ({ columns, gap, puck, ...slots }) => {
     const maxCols = getMaxCols(columns);
     const slotMap = slots as Record<SlotKey, SlotComponent>;
 
     return (
-      <div className={getGridClassName({ columns, rows: { base: "auto" }, gap })}>
+      <div
+        ref={puck.dragRef}
+        className={getGridClassName({ columns, rows: { phone: "auto" }, gap })}
+      >
         {columnSlotKeys.slice(0, maxCols).map((key) => {
           const Col = slotMap[key];
           return Col && <Col key={key} />;
