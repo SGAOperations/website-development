@@ -9,6 +9,10 @@ import {
   gridRows,
   justify,
   layout as layoutToken,
+  marqueeDirection,
+  marqueeGap,
+  marqueeRowPadding,
+  marqueeSpeed,
   padding as paddingToken,
   radius,
   shadow,
@@ -20,13 +24,17 @@ import {
   type GridRows,
   type Justify,
   type Layout,
+  type MarqueeDirection,
+  type MarqueeGap,
+  type MarqueeRowPadding,
+  type MarqueeSpeed,
   type Radius,
   type Shadow,
   type Spacing,
   type Width,
 } from "@/lib/puck/tokens";
 
-export type ContainerStyle = {
+export type GroupStyle = {
   layout: Layout;
   padding: ResponsiveValue<Spacing>;
   gap: ResponsiveValue<Spacing>;
@@ -39,14 +47,14 @@ export type ContainerStyle = {
   shadow: Shadow;
 };
 
-export function getContainerSurfaceClassName({
+export function getGroupSurfaceClassName({
   padding,
   width: w,
   bgColor: bg,
   textColor: text,
   radius: r,
   shadow: s,
-}: ContainerStyle) {
+}: GroupStyle) {
   return cn(
     width.classes[w],
     bgColor.classes[bg],
@@ -57,12 +65,12 @@ export function getContainerSurfaceClassName({
   );
 }
 
-export function getContainerSlotClassName({
+export function getGroupSlotClassName({
   layout: l,
   gap,
   align,
   justify: j,
-}: ContainerStyle) {
+}: GroupStyle) {
   return cn(
     "w-full",
     layoutToken.classes[l],
@@ -89,6 +97,32 @@ export function getGridClassName({
     resolveResponsive(columns, columnCount.classes),
     resolveResponsive(rows, gridRows.classes),
     resolveResponsive(gap, gapToken.classes),
+  );
+}
+
+export const marqueeClassName =
+  "group flex w-full overflow-hidden whitespace-nowrap motion-reduce:overflow-x-auto";
+
+export function getMarqueeItemClassName({
+  speed,
+  direction,
+  gap,
+  rowPadding,
+  animated = false,
+}: {
+  speed: MarqueeSpeed;
+  direction: MarqueeDirection;
+  gap: MarqueeGap;
+  rowPadding: MarqueeRowPadding;
+  animated?: boolean;
+}) {
+  return cn(
+    "marquee-item flex min-w-full shrink-0 items-center text-center",
+    marqueeGap.classes[gap],
+    marqueeRowPadding.classes[rowPadding],
+    animated && marqueeSpeed.classes[speed],
+    animated && marqueeDirection.classes[direction],
+    animated && "group-hover:[animation-play-state:paused] motion-reduce:[animation:none]",
   );
 }
 
