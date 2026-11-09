@@ -12,7 +12,7 @@ describe("layout helpers", () => {
     const style = {
       layout: "row" as const,
       padding: { phone: "8" as const, md: "16" as const },
-      gap: { phone: "8" as const, lg: "32" as const },
+      gap: { phone: "16" as const, lg: "32" as const },
       align: "end" as const,
       justify: "center" as const,
       width: "prose" as const,
