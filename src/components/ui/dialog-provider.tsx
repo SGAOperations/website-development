@@ -15,18 +15,22 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useId, useRef, useState } from "react";
 
 type PromptInput = {
   title: string;
+  description?: string;
   label?: string;
   defaultValue?: string;
+  /** Keep the dialog open with an inline error instead of accepting an empty value. */
+  required?: boolean;
 };
 
 type ConfirmInput = {
@@ -45,39 +49,61 @@ const DialogContext = createContext<DialogContextValue | null>(null);
 
 function PromptDialogContent({
   title,
+  description,
   label,
   defaultValue,
+  required,
   onResolve,
-}: {
-  title: string;
-  label?: string;
-  defaultValue?: string;
+}: PromptInput & {
   onResolve: (value: string | null) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
+  const errorId = useId();
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
+        {description && <DialogDescription>{description}</DialogDescription>}
       </DialogHeader>
       <form
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
-          onResolve(inputRef.current?.value ?? "");
+          const value = inputRef.current?.value ?? "";
+          if (required && !value.trim()) {
+            // Name the problem next to the field and keep focus there (WCAG 3.3.1, 3.3.3).
+            setError(`Enter a ${label ? label.toLowerCase() : "value"}.`);
+            inputRef.current?.focus();
+            return;
+          }
+          onResolve(value);
         }}
       >
         <div className="grid gap-2">
           {label && (
-            <label className="text-sm font-medium text-foreground">
+            <label htmlFor={inputId} className="text-sm font-medium text-foreground">
               {label}
             </label>
           )}
           <Input
+            id={inputId}
             ref={inputRef}
+            aria-label={label ? undefined : title}
             defaultValue={defaultValue}
+            required={required}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
+            onChange={() => setError(null)}
             autoFocus
           />
+          {error && (
+            <p id={errorId} role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          )}
         </div>
         <DialogFooter className="mt-4">
           <Button type="button" variant="outline" onClick={() => onResolve(null)}>
@@ -125,13 +151,11 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     </AlertDialog>
   ));
 
-  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, label, defaultValue }, resolve, key) => (
+  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>((input, resolve, key) => (
     <Dialog open onOpenChange={() => resolve(null)}>
       <PromptDialogContent
         key={key}
-        title={title}
-        label={label}
-        defaultValue={defaultValue}
+        {...input}
         onResolve={resolve}
       />
     </Dialog>

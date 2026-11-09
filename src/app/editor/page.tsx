@@ -5,6 +5,9 @@ import { getRoutesWithDocuments } from "../../lib/routes/queries";
 import { DocumentList, ArchivedDocumentList } from "./DocumentList";
 import { MediaLibrary } from "./MediaLibrary";
 import { RouteTable } from "./RouteTable";
+import { DisplaySettingsButton } from "@/components/display-settings/DisplaySettingsButton";
+
+export const metadata = { title: "Editor" };
 
 export default async function EditorIndexPage() {
   const [routes, mediaFiles, documents] = await Promise.all([
@@ -23,7 +26,12 @@ export default async function EditorIndexPage() {
   const archivedDocuments = documents.filter((doc) => doc.archivedAt !== null).map(toDocumentItem);
 
   return (
-    <div className="p-6 flex flex-col gap-6">
+    <>
+    <header className="flex items-center justify-between border-b px-6 py-3">
+      <h1 className="text-lg font-semibold">Site editor</h1>
+      <DisplaySettingsButton />
+    </header>
+    <main className="p-6 flex flex-col gap-6">
 
       <RouteTable
         routes={routes.map((route) => ({
@@ -43,7 +51,8 @@ export default async function EditorIndexPage() {
       <ArchivedDocumentList documents={archivedDocuments} />
 
       <MediaLibrary files={mediaFiles} />
-    </div>
+    </main>
+    </>
   );
 }
 

@@ -43,7 +43,7 @@ function MediaPickerDialog({
         addMedia(result.data);
         onSelect(result.data);
       } else {
-        toast.error(result.error);
+        toast.error(result.error, { duration: Infinity, closeButton: true });
       }
     });
   }
@@ -144,8 +144,10 @@ export function MediaFieldClient({
           className="flex min-w-0 flex-1 items-center px-3 py-3 text-left transition hover:bg-muted/50 disabled:pointer-events-none disabled:opacity-50"
           onClick={() => setOpen(true)}
           disabled={readOnly}
+          aria-haspopup="dialog"
+          aria-label={`${label}: ${displayName}`}
         >
-          <span className="truncate text-sm text-muted-foreground" title={displayName}>
+          <span className={cn("truncate text-sm", unresolved ? "text-foreground" : "text-muted-foreground")} title={displayName}>
             {displayName}
           </span>
         </button>
@@ -156,6 +158,8 @@ export function MediaFieldClient({
             className="flex items-center border-l px-2 text-muted-foreground transition hover:bg-muted/50 hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
             onClick={() => onChange(null)}
             disabled={readOnly}
+            title="Remove image"
+            aria-label="Remove image"
           >
             <X className="size-3.5" />
           </button>
@@ -165,7 +169,7 @@ export function MediaFieldClient({
       <MediaPickerDialog
         open={open}
         onSelect={(media) => {
-          onChange({ mediaId: media.id, url: media.url });
+          onChange({ mediaId: media.id, url: media.url, alt: media.altText ?? undefined });
           setOpen(false);
         }}
         onClose={() => setOpen(false)}

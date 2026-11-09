@@ -42,6 +42,7 @@ export function getResponsiveNumberChange(
 }
 
 export function ResponsiveNumberControl({
+  id,
   isPhone,
   value,
   onChange,
@@ -57,8 +58,9 @@ export function ResponsiveNumberControl({
   const isInheriting = !isPhone && value === undefined;
 
   return (
-    <div className={isInheriting ? "opacity-40" : undefined}>
+    <div className={isInheriting ? "opacity-60" : undefined}>
       <Input
+        id={id}
         type="number"
         value={formatResponsiveNumberValue(value)}
         onChange={(event) => {

@@ -34,6 +34,8 @@ model Media {
   storagePath String   @unique
   size        Int
   contentType String?
+  // Default alt text, copied into Image blocks when this file is chosen.
+  altText     String?
   createdAt   DateTime @default(now())
 }
 

@@ -14,6 +14,8 @@ import {
   type Spacing,
   type Width,
 } from "@/lib/puck/tokens";
+import { getContrastWarning } from "@/lib/puck/a11y";
+import { EditorWarning } from "@/components/puck/editor-warning";
 
 type AnchorProps = {
   content: Slot;
@@ -49,9 +51,13 @@ export const Anchor: ComponentConfig<AnchorProps> = {
     width: w,
     bgColor: bg,
     textColor: text,
+    puck,
   }) => {
+    const contrastWarning = puck.isEditing ? getContrastWarning(bg, text) : null;
+
     const outerClasses = cn(
       "w-full",
+      contrastWarning && "relative",
       bgColor.classes[bg],
       textColor.classes[text],
       resolveResponsive(py, paddingY.classes),
@@ -70,6 +76,7 @@ export const Anchor: ComponentConfig<AnchorProps> = {
 
     return (
       <section id={anchorId || undefined} className={outerClasses}>
+        {contrastWarning && <EditorWarning label="Low contrast">{contrastWarning}</EditorWarning>}
         <div className={innerClasses}>
           {Content && (
             <Content className={slotClasses} minEmptyHeight="200px" />

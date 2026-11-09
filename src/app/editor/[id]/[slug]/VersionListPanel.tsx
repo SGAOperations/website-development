@@ -44,6 +44,8 @@ function VersionEntry({
   isPublishDisabled?: boolean;
 }) {
   const { relative, absolute } = formatVersionLabel(version);
+  // Spoken name; the relative time tells apart versions saved in the same minute.
+  const name = `${absolute}, ${relative}`;
 
   return (
     <div
@@ -51,22 +53,32 @@ function VersionEntry({
       className={cn(
         "px-3 py-2 rounded text-xs cursor-pointer transition",
         isCurrent
-          ? "bg-gray-100 font-semibold"
-          : "bg-white hover:bg-gray-50",
+          ? "bg-muted font-semibold"
+          : "bg-background hover:bg-muted",
       )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <span>{absolute}</span>
-
-          <div className="text-[11px] text-gray-400 mt-0.5">
+      {/* Wraps so the actions drop below the date at large text sizes instead of overlapping it. */}
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        {/* The row stays clickable for mouse users; this button makes loading reachable by keyboard. */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onLoad();
+          }}
+          aria-current={isCurrent || undefined}
+          aria-label={`Load version from ${name}`}
+          className="min-w-32 flex-1 cursor-pointer rounded text-left"
+        >
+          <span className="block">{absolute}</span>
+          <span className={cn("block text-[0.6875rem] mt-0.5", isCurrent ? "text-foreground" : "text-muted-foreground")}>
             {relative}
-          </div>
-        </div>
+          </span>
+        </button>
 
         <div className="flex items-center gap-1 shrink-0">
           {isPublished ? (
-            <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">
+            <span className="px-2 py-0.5 bg-green-700 text-white rounded text-xs">
               Published
             </span>
           ) : (
@@ -76,7 +88,8 @@ function VersionEntry({
                 onPublish();
               }}
               disabled={isPublishing || isPublishDisabled}
-              className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              aria-label={`Publish version from ${name}`}
+              className="px-2 py-1 text-xs text-foreground border border-input rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               Publish
             </button>
@@ -86,8 +99,9 @@ function VersionEntry({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 transition"
+            className="p-1.5 text-muted-foreground rounded hover:text-foreground hover:bg-muted transition"
             title="Preview"
+            aria-label={`Preview version from ${name} (opens in new tab)`}
           >
             <Eye size={14} />
           </a>
@@ -111,17 +125,17 @@ export function VersionListPanel({
 
   return (
     <div className="">
-      <div className="text-xs font-semibold text-gray-600 mb-2">
+      <div className="text-xs font-semibold text-muted-foreground mb-2">
         Versions ({versions.length})
       </div>
 
       {isLoading ?
       (
-        <div className="text-xs text-gray-500 text-center py-2">Loading...</div>
+        <div role="status" className="text-xs text-muted-foreground text-center py-2">Loading...</div>
       ) :
        versions.length === 0 ?
       (
-        <div className="text-xs text-gray-500 text-center py-2">
+        <div className="text-xs text-muted-foreground text-center py-2">
           No versions found
         </div>
       ) :

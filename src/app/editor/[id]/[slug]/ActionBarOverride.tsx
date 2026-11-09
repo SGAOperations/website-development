@@ -3,8 +3,9 @@
 import { useCallback, useRef } from "react";
 import { ActionBar, createUsePuck } from "@puckeditor/core";
 import type { ComponentData, Config } from "@puckeditor/core";
-import { Copy, CopyPlus, ClipboardPaste } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, CopyPlus, ClipboardPaste } from "lucide-react";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import { useBlockActions } from "./block-actions";
 
 const usePuck = createUsePuck();
 
@@ -101,6 +102,7 @@ export function ActionBarOverride({
   const getSelectorForId = usePuck((s) => s.getSelectorForId);
   const isPastingRef = useRef(false);
   const { alert } = useDialogs();
+  const { move } = useBlockActions();
 
   const handleDuplicate = useCallback(() => {
     if (!selectedItem) return;
@@ -182,6 +184,13 @@ export function ActionBarOverride({
   return (
     <ActionBar label={label}>
       <ActionBar.Group>
+        {/* Single-pointer and keyboard alternative to dragging (WCAG 2.5.7). */}
+        <ActionBar.Action label="Move up" onClick={() => move("up")}>
+          <ArrowUp size={16} />
+        </ActionBar.Action>
+        <ActionBar.Action label="Move down" onClick={() => move("down")}>
+          <ArrowDown size={16} />
+        </ActionBar.Action>
         <ActionBar.Action label="Duplicate" onClick={handleDuplicate}>
           <CopyPlus size={16} />
         </ActionBar.Action>

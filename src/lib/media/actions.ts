@@ -8,6 +8,7 @@ import type {
   ActionResult,
   DeleteMediaInput,
   RenameInput,
+  UpdateMediaAltTextInput,
 } from "../types";
 import { wrapAction } from "../utils";
 
@@ -57,6 +58,18 @@ export async function renameMediaAction(
     await prisma.media.update({
       where: { id: input.id },
       data: { name },
+    });
+  });
+}
+
+export async function updateMediaAltTextAction(
+  input: UpdateMediaAltTextInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    const altText = input.altText.trim();
+    await prisma.media.update({
+      where: { id: input.id },
+      data: { altText: altText || null },
     });
   });
 }

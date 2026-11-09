@@ -9,9 +9,10 @@ export async function generateMetadata({
 }: {
   params: Promise<{ puckPath?: string[] }>;
 }): Promise<Metadata> {
-  return {
-    title: (await getPublishedDocument(params))?.root.props?.title,
-  };
+  const title = (await getPublishedDocument(params))?.root.props?.title?.trim();
+
+  // Leave untitled pages to the layout's default so every page has a <title>.
+  return title ? { title } : {};
 }
 
 export default async function Page({
