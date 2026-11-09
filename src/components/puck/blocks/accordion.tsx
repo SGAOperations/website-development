@@ -1,4 +1,16 @@
 import type { ComponentConfig, RichText } from "@puckeditor/core";
+import { cn } from "@/lib/utils";
+import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
+import {
+  accordionTitleSize,
+  fontFamily,
+  padding,
+  paddingBottom,
+  paddingY,
+  type AccordionTitleSize,
+  type Spacing,
+} from "@/lib/puck/tokens";
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +20,18 @@ import {
 
 const DEFAULT_CONTENT =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+const containerPadding: ResponsiveValue<Spacing> = { phone: "sm", md: "md" };
+const rowPadding: ResponsiveValue<Spacing> = {
+  phone: "sm",
+  md: "md",
+  lg: "lg",
+};
+const titleSize: ResponsiveValue<AccordionTitleSize> = {
+  phone: "md",
+  md: "lg",
+  lg: "xl",
+};
 
 type AccordionItemProps = {
   title: string;
@@ -45,14 +69,32 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
   },
   render: ({ items }) => {
     return (
-      <Accordion multiple className="w-full p-3">
+      <Accordion
+        multiple
+        className={cn(
+          "w-full",
+          resolveResponsive(containerPadding, padding.classes),
+        )}
+      >
         {items.map((item, index) => (
           <AccordionItem key={index} value={String(index)}>
-            <AccordionTrigger className="py-4 font-display text-2xl uppercase tracking-[0.08em] hover:no-underline">
+            <AccordionTrigger
+              className={cn(
+                "font-normal hover:no-underline",
+                fontFamily.classes.bebasNeue,
+                resolveResponsive(titleSize, accordionTitleSize.classes),
+                resolveResponsive(rowPadding, paddingY.classes),
+              )}
+            >
               {item.title}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="prose max-w-none pb-4">
+              <div
+                className={cn(
+                  "prose max-w-none",
+                  resolveResponsive(rowPadding, paddingBottom.classes),
+                )}
+              >
                 {typeof item.content === "string" ? (
                   <div dangerouslySetInnerHTML={{ __html: item.content }} />
                 ) : (

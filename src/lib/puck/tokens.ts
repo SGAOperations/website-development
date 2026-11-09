@@ -101,6 +101,25 @@ export const paddingY = defineToken({
   "2xl": { label: "2XL",    classes: "py-10" },
 });
 
+export const paddingBottom = defineToken({
+  none:  { label: "None",   classes: "pb-0" },
+  xs:    { label: "XS",     classes: "pb-1" },
+  sm:    { label: "Small",  classes: "pb-2" },
+  md:    { label: "Medium", classes: "pb-3" },
+  lg:    { label: "Large",  classes: "pb-4" },
+  xl:    { label: "XL",     classes: "pb-6" },
+  "2xl": { label: "2XL",    classes: "pb-10" },
+});
+
+export const accordionTitleSize = defineToken({
+  sm:  { label: "Small",  classes: "text-lg tracking-widest" },
+  md:  { label: "Medium", classes: "text-xl tracking-widest" },
+  lg:  { label: "Large",  classes: "text-2xl tracking-widest" },
+  xl:  { label: "XL",     classes: "text-3xl tracking-widest" },
+});
+
+export type AccordionTitleSize = TokenValue<typeof accordionTitleSize>;
+
 export const gap = defineToken({
   none:  { label: "None",   classes: "gap-0" },
   xs:    { label: "XS",     classes: "gap-2" },
