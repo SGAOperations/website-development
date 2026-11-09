@@ -127,6 +127,40 @@ export type PaddingY = TokenValue<typeof paddingY>;
 export type Gap = TokenValue<typeof gap>;
 export type ColumnGap = TokenValue<typeof columnGap>;
 
+export const marqueeSpeed = defineToken({
+  xslow: {label: "Extra Slow", classes: "[animation:marquee_120s_linear_infinite]"},
+  slow:   { label: "Slow",   classes: "[animation:marquee_60s_linear_infinite]" },
+  medium: { label: "Medium", classes: "[animation:marquee_30s_linear_infinite]" },
+  fast:   { label: "Fast",   classes: "[animation:marquee_10s_linear_infinite]" },
+  xfast: {label: "Extra Fast", classes: "[animation:marquee_2s_linear_infinite]"}
+}, "medium");
+
+export const marqueeDirection = defineToken({
+  rtl: { label: "Right to left", classes: "" },
+  ltr: { label: "Left to right", classes: "[animation-direction:reverse]!" },
+});
+
+export const marqueeGap = defineToken({
+  none: { label: "None",          classes: "gap-0 pr-0" },
+  sm:   { label: "Small",         classes: "gap-4 pr-4" },
+  md:   { label: "Medium",        classes: "gap-8 pr-8" },
+  lg:   { label: "Large",         classes: "gap-16 pr-16" },
+}, "md");
+
+// Vertical padding above and below the scrolling row, helpful for text marquees
+export const marqueeRowPadding = defineToken({
+  none: { label: "None",          classes: "py-0" },
+  sm:   { label: "Small",         classes: "py-4" },
+  md:   { label: "Medium",        classes: "py-8" },
+  lg:   { label: "Large",         classes: "py-12" },
+  xl:   { label: "X-Large",       classes: "py-16" },
+}, "md");
+
+export type MarqueeSpeed = TokenValue<typeof marqueeSpeed>;
+export type MarqueeDirection = TokenValue<typeof marqueeDirection>;
+export type MarqueeGap = TokenValue<typeof marqueeGap>;
+export type MarqueeRowPadding = TokenValue<typeof marqueeRowPadding>;
+
 export const bgColor = defineToken({
   background:           { label: "Background",         classes: "bg-background" },
   foreground:           { label: "Foreground",          classes: "bg-foreground" },
@@ -223,6 +257,17 @@ export const textColumns = defineToken({
 
 export type TextColumnCount = TokenValue<typeof textColumns>;
 
+export const emailCount = defineToken({
+  "1": {label: "1", classes: "emails-1"},
+  "2": {label: "2", classes: "emails-2"},
+  "3": {label: "3", classes: "emails-3"},
+  "4": {label: "4", classes: "emails-4"},
+  "5": {label: "5", classes: "emails-5"},
+  "6": {label: "6", classes: "emails-6"},
+})
+
+export type EmailCount = TokenValue<typeof emailCount>;
+
 export const layout = defineToken({
   stack: { label: "Stack", classes: "flex flex-col" },
   row:   { label: "Row",   classes: "flex flex-row flex-wrap" },
@@ -259,3 +304,9 @@ export const gridRows = defineToken({
   "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
 });
 export type GridRows = TokenValue<typeof gridRows>;
+
+export const fontFamily = defineToken({
+  inter: {label: "Inter", classes: "font-text"},
+  bebasNeue: {label: "Bebas Neue", classes: "font-display"}
+});
+export type FontFamily = TokenValue<typeof fontFamily>;
