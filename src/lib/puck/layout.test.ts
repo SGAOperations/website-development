@@ -11,7 +11,7 @@ describe("layout helpers", () => {
   it("compose group surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
-      padding: { phone: "8" as const, md: "24" as const },
+      padding: { phone: "8" as const, md: "16" as const },
       gap: { phone: "8" as const, lg: "32" as const },
       align: "end" as const,
       justify: "center" as const,
@@ -35,7 +35,7 @@ describe("layout helpers", () => {
       getGridClassName({
         columns: { phone: "1", md: "3" },
         rows: { phone: "auto", md: "2" },
-        gap: { phone: "8" },
+        gap: { phone: "16" },
         empty: true,
       }),
     ).toBe(
