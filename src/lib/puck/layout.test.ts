@@ -40,7 +40,7 @@ describe("layout helpers", () => {
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2 md:[&>*:nth-child(-n+6)]:visible md:[&>*:nth-child(n+7)]:invisible",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-4 md:[&>*:nth-child(-n+6)]:visible md:[&>*:nth-child(n+7)]:invisible",
     );
   });
 
@@ -52,7 +52,6 @@ describe("layout helpers", () => {
     // Going back to auto rows makes everything visible again.
     expect(getGridOverflowClassName({ phone: "6" }, { phone: "6", md: "auto" })).toBe(
       "[&>*:nth-child(-n+36)]:visible [&>*:nth-child(n+37)]:invisible md:[&>*:nth-child(n)]:visible",
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-4",
     );
   });
 
