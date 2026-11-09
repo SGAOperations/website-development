@@ -26,7 +26,7 @@ describe("layout helpers", () => {
       "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getGroupSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-8",
     );
   });
 
