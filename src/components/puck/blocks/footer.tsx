@@ -9,7 +9,8 @@ import {
     textAlign,
     type TextAlign,
     padding,
-    Spacing,
+    Padding,
+    Gap,
     Layout,
     CrossAxisAlign,
     Justify,
@@ -37,9 +38,9 @@ type FooterProps = {
     titleColor : Color;
     textColor : Color;
     backgroundColor : Color;
-    padding : ResponsiveValue<Spacing> 
+    padding : ResponsiveValue<Padding> 
     layout: Layout;
-    gap: ResponsiveValue<Spacing>;
+    gap: ResponsiveValue<Gap>;
     slotAlign: CrossAxisAlign;
     justify: Justify;
     numEmails: EmailCount;
