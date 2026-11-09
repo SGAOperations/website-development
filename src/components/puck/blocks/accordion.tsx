@@ -52,7 +52,13 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
               {item.title}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="prose max-w-none pb-4">{item.content}</div>
+              <div className="prose max-w-none pb-4">
+                {typeof item.content === "string" ? (
+                  <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                ) : (
+                  item.content
+                )}
+              </div>
             </AccordionContent>
           </AccordionItem>
         ))}
