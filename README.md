@@ -57,7 +57,7 @@ npm run dev
 
 ## Formatting
 
-This project uses [Prettier](https://prettier.io/) for code formatting (added on October 22, 2026). The config lives in `.prettierrc`, and files to skip are listed in `.prettierignore`.
+This project uses [Prettier](https://prettier.io/) for code formatting. The config lives in `.prettierrc`, and files to skip are listed in `.prettierignore`.
 
 To check formatting without changing any files:
 
