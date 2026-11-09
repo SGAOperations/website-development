@@ -1,46 +1,17 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { File as FileIcon, Trash2, Copy, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { uploadMediaAction, deleteMediaAction, renameMediaAction } from "../../lib/media/actions";
 import type { MediaWithUrl } from "@/components/puck/media-context";
 import { runAction } from "./runAction";
-import { ResourceCard, NewResourceCard } from "./ResourceCard";
+import { ResourceCard } from "./ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import { DropzoneUploadCard } from "@/components/media/DropzoneUploadCard";
 
-function UploadCard({
-  onFileSelected,
-  disabled,
-}: {
-  onFileSelected: (file: File) => void;
-  disabled: boolean;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  return (
-    <NewResourceCard
-      label="Upload File"
-      loadingLabel="Uploading..."
-      disabled={disabled}
-      onClick={() => inputRef.current?.click()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        hidden
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) onFileSelected(file);
-          e.target.value = "";
-        }}
-        disabled={disabled}
-      />
-    </NewResourceCard>
-  );
-}
 
 function MediaCard({
   file,
@@ -92,20 +63,21 @@ function MediaCard({
 
 export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
   const [files, setFiles] = useState(initialFiles);
   const { confirm, prompt, alert } = useDialogs();
 
-  function handleUpload(file: File) {
+  async function handleUpload(file: File) {
     const formData = new FormData();
     formData.append("file", file);
-    startTransition(async () => {
+    setIsUploading(true);
+    try {
       const result = await runAction(uploadMediaAction(formData));
-      if (result.success) {
-        setFiles((prev) => [result.data, ...prev]);
-      } else {
-        await alert(result.error);
-      }
-    });
+      if (!result.success) throw new Error(result.error);
+      setFiles((prev) => [result.data, ...prev]);
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   async function handleRename(file: MediaWithUrl) {
@@ -138,7 +110,11 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
       <h1 className="text-2xl font-bold">Media</h1>
 
       <div className="resource-card-grid grid gap-2">
-        <UploadCard onFileSelected={handleUpload} disabled={isPending} />
+        <DropzoneUploadCard
+          upload={handleUpload}
+          onError={(message) => { void alert(message); }}
+          disabled={isPending || isUploading}
+        />
 
         {files.map((file) => (
           <MediaCard
@@ -146,7 +122,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
             file={file}
             onRename={handleRename}
             onDelete={handleDelete}
-            disabled={isPending}
+            disabled={isPending || isUploading}
           />
         ))}
       </div>
