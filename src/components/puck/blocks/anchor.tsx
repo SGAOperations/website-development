@@ -15,7 +15,7 @@ import {
   type Width,
 } from "@/lib/puck/tokens";
 
-type SectionProps = {
+type AnchorProps = {
   content: Slot;
   anchorId: string;
   paddingX: ResponsiveValue<Spacing>;
@@ -37,8 +37,8 @@ const props = defineProps({
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
 });
 
-export const Section: ComponentConfig<SectionProps> = {
-  label: "Section",
+export const Anchor: ComponentConfig<AnchorProps> = {
+  label: "Anchor",
   ...props,
   render: ({
     content: Content,
