@@ -1,9 +1,4 @@
 import type { ComponentConfig, RichText } from "@puckeditor/core";
-import { cn } from "@/lib/utils";
-import { defineProps, responsive } from "@/lib/puck/define-props";
-import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
-import { padding, type Spacing } from "@/lib/puck/tokens";
-import type { ResponsiveValue } from "@/lib/puck/responsive";
 import {
   Accordion,
   AccordionContent,
@@ -21,12 +16,7 @@ type AccordionItemProps = {
 
 type AccordionProps = {
   items: AccordionItemProps[];
-  padding: ResponsiveValue<Spacing>;
 };
-
-const props = defineProps({
-  padding: responsive.select(padding, { label: "Padding", default: "md" }),
-});
 
 export const AccordionBlock: ComponentConfig<AccordionProps> = {
   label: "Accordion",
@@ -44,7 +34,6 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
         content: DEFAULT_CONTENT,
       },
     },
-    ...props.fields,
   },
   defaultProps: {
     items: [
@@ -53,14 +42,10 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
         content: DEFAULT_CONTENT,
       },
     ],
-    ...props.defaultProps,
   },
-  render: ({ items, padding: p }) => {
+  render: ({ items }) => {
     return (
-      <Accordion
-        multiple
-        className={cn("w-full", resolveResponsive(p, padding.classes))}
-      >
+      <Accordion multiple className="w-full p-3">
         {items.map((item, index) => (
           <AccordionItem key={index} value={String(index)}>
             <AccordionTrigger className="py-4 font-display text-2xl uppercase tracking-[0.08em] hover:no-underline">
