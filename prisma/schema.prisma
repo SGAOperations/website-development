@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Document {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  publishedVersionId  Int?      @unique
+  publishedVersion    Version?  @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
+  versions            Version[] @relation("DocumentVersions")
+  routes              Route[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  archivedAt          DateTime?
+}
+
+model Version {
+  id                  Int       @id @default(autoincrement())
+  documentId          Int
+  document            Document  @relation("DocumentVersions", fields: [documentId], references: [id], onDelete: Cascade)
+  publishedDocumentOf Document? @relation("PublishedVersion")
+  content             Json
+  createdAt           DateTime  @default(now())
+}
+
+model Media {
+  id          Int      @id @default(autoincrement())
+  name        String
+  storagePath String   @unique
+  size        Int
+  contentType String?
+  createdAt   DateTime @default(now())
+}
+
+model Route {
+  id          Int       @id @default(autoincrement())
+  path        String    @unique
+  documentId  Int
+  document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

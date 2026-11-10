@@ -1,17 +1,126 @@
 "use client";
 
-import Link from "next/link";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { createDocumentAction } from "../../lib/actions";
-import { getDocumentName } from "../../lib/documents";
+import { useState, useTransition } from "react";
+import { Archive, ArchiveRestore, ChevronDown, CopyPlus, FileText, Pencil } from "lucide-react";
+import {
+  archiveDocumentAction,
+  createDocumentAction,
+  duplicateDocumentAction,
+  renameDocumentAction,
+  unarchiveDocumentAction,
+} from "../../lib/documents/actions";
+import { runAction } from "./runAction";
+import { getDocumentName } from "../../lib/documents/utils";
+import { getEditorUrl } from "../../lib/editor-url";
+import { ResourceCard, NewResourceCard } from "./ResourceCard";
+import { formatRelativeTime } from "@/lib/format";
+import { Button } from "@/components/ui/button";
+import { useDialogs } from "@/components/ui/dialog-provider";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+
+type DocumentItem = { id: number; name: string | null; lastModified: Date | null };
+
+function DocumentCard({
+  id,
+  name,
+  lastModified,
+  actions,
+}: {
+  id: number;
+  name: string | null;
+  lastModified: Date | null;
+  actions?: ReactNode;
+}) {
+  const displayName = getDocumentName({ id, name });
+
+  return (
+    <ResourceCard
+      preview={<FileText className="h-10 w-10 text-muted-foreground" />}
+      name={displayName}
+      date={lastModified ? formatRelativeTime(lastModified) : "No versions"}
+      href={getEditorUrl(id, name)}
+      actions={actions}
+    />
+  );
+}
+
+function useDocumentActions() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const { prompt, alert, confirm } = useDialogs();
+
+  async function handleRename(id: number, currentName: string) {
+    const newName = await prompt({ title: `Rename "${currentName}"`, label: "New name", defaultValue: currentName });
+    if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
+    startTransition(async () => {
+      const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
+
+  async function handleArchive(id: number, displayName: string) {
+    const confirmed = await confirm({ message: `Archive "${displayName}"?`, actionLabel: "Archive" });
+    if (!confirmed) return;
+    startTransition(async () => {
+      const result = await runAction(archiveDocumentAction({ id }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
+
+  async function handleUnarchive(id: number, displayName: string) {
+    const confirmed = await confirm({ message: `Unarchive "${displayName}"?`, actionLabel: "Unarchive" });
+    if (!confirmed) return;
+    startTransition(async () => {
+      const result = await runAction(unarchiveDocumentAction({ id }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
+
+  async function handleDuplicate(id: number, displayName: string) {
+    const name = await prompt({
+      title: "Duplicate document",
+      label: "Name",
+      defaultValue: `Copy of ${displayName}`,
+    });
+    if (name === null || name.trim() === "") return;
+    startTransition(async () => {
+      const result = await runAction(duplicateDocumentAction({ id, name: name.trim() }));
+      if (result.success) {
+        router.refresh();
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
+
+  return { isPending, handleRename, handleArchive, handleUnarchive, handleDuplicate };
+}
 
 function NewDocumentCard() {
   const router = useRouter();
   const [isCreating, startTransition] = useTransition();
+  const { prompt, alert } = useDialogs();
 
   async function handleCreateDocument() {
-    const name = window.prompt("Document name");
+    const name = await prompt({ title: "Create document", label: "Name" });
 
     if (name === null) {
       return;
@@ -29,61 +138,142 @@ function NewDocumentCard() {
       });
 
       if (result.success === false) {
-        alert(result.error);
+        await alert(result.error);
         return;
       }
 
-      router.push(`/editor/${result.data.documentId}`);
+      router.push(getEditorUrl(result.data.documentId, trimmedName));
     });
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleCreateDocument}
+    <NewResourceCard
+      label="New Document"
+      loadingLabel="Creating..."
       disabled={isCreating}
-      className="flex h-48 w-32 shrink-0 cursor-pointer rounded-lg flex-col items-center justify-center border border-dashed border-gray-400 bg-white p-4 text-center text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      <span className="text-3xl leading-none">+</span>
-      <span className="mt-2 text-sm font-medium">
-        {isCreating ? "Creating..." : "New Document"}
-      </span>
-    </button>
+      onClick={handleCreateDocument}
+    />
   );
 }
 
-function DocumentCard({ id, name, lastModified }: { id: number; name: string | null; lastModified: Date | null }) {
-  return (
-    <Link href={`/editor/${id}`} className="flex flex-col bg-gray-100 w-32 h-48 shrink-0 rounded-lg">
-      <div className="p-4 text-center">
-        {getDocumentName({ id, name })}
-      </div>
-      <div className="mt-auto text-xs text-gray-600 bg-gray-200 rounded-b-lg px-2 py-1">
-        {lastModified ? lastModified.toLocaleString() : "No versions"}
-      </div>
-    </Link>
-  );
-}
+export function DocumentList({ documents }: { documents: DocumentItem[] }) {
+  const { isPending, handleRename, handleArchive, handleDuplicate } = useDocumentActions();
 
-export function DocumentList({ documents }: {
-  documents: { id: number; name: string | null; lastModified: Date | null }[];
-}) {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Documents</h1>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="resource-card-grid grid gap-2">
         <NewDocumentCard />
 
-        {documents.map((doc) => (
-          <DocumentCard
-            key={doc.id}
-            id={doc.id}
-            name={doc.name}
-            lastModified={doc.lastModified}
-          />
-        ))}
+        {documents.map((doc) => {
+          const displayName = getDocumentName(doc);
+          return (
+            <DocumentCard
+              key={doc.id}
+              id={doc.id}
+              name={doc.name}
+              lastModified={doc.lastModified}
+              actions={
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRename(doc.id, displayName);
+                    }}
+                    disabled={isPending}
+                    title="Rename"
+                  >
+                    <Pencil className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDuplicate(doc.id, displayName);
+                    }}
+                    disabled={isPending}
+                    title="Duplicate"
+                  >
+                    <CopyPlus className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleArchive(doc.id, displayName);
+                    }}
+                    disabled={isPending}
+                    title="Archive"
+                  >
+                    <Archive className="h-3 w-3" />
+                  </Button>
+                </>
+              }
+            />
+          );
+        })}
       </div>
     </div>
+  );
+}
+
+export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] }) {
+  const [open, setOpen] = useState(false);
+  const { isPending, handleUnarchive } = useDocumentActions();
+
+  if (documents.length === 0) return null;
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <div className="flex items-center gap-2">
+        <h2 className="text-2xl font-bold leading-none">Archived</h2>
+        <CollapsibleTrigger
+          render={<Button variant="ghost" size="icon-xs" />}
+        >
+          <ChevronDown
+            className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        </CollapsibleTrigger>
+      </div>
+
+      <CollapsibleContent>
+        <div className="resource-card-grid mt-4 grid gap-2">
+          {documents.map((doc) => {
+            const displayName = getDocumentName(doc);
+            return (
+              <DocumentCard
+                key={doc.id}
+                id={doc.id}
+                name={doc.name}
+                lastModified={doc.lastModified}
+                actions={
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleUnarchive(doc.id, displayName);
+                    }}
+                    disabled={isPending}
+                    title="Unarchive"
+                  >
+                    <ArchiveRestore className="h-3 w-3" />
+                  </Button>
+                }
+              />
+            );
+          })}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

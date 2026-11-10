@@ -1,4 +1,19 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@source inline("{md:,lg:,}{p,px,py}-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}gap-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}grid-cols-{1,2,3,4,5,6}");
+@source inline("{md:,lg:,}grid-rows-{none,1,2,3,4,5,6}");
+@source inline("{md:,lg:,}auto-rows-{auto,[0]}");
+@source inline("{md:,lg:,}overflow-{visible,hidden}");
+@source inline("{md:,lg:,}columns-{1,2,3,4}");
+@source inline("{md:,lg:,}gap-x-{0,1,2,4,6,8,12}");
+@source inline("{md:,lg:,}min-h-{12,16,20}");
+@source inline("{md:,lg:,}w-{fit,full}");
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --color-sga-red: #C8102E;
@@ -6,24 +21,110 @@
   --color-solid-black: #000000;
   --color-semi-transparent-white: rgba(255, 255, 255, 0.9);
   --color-sga-red-alt: #dc2626;
+  --font-display: var(--font-bebas-neue), sans-serif;
+  --font-text: var(--font-inter);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(-100%); }
+}
+
+.marquee-item > * {
+  @apply w-auto! shrink-0;
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.text-sga-red {
-  color: #C8102E !important;
-}
-
-.bg-sga-red {
-  background-color: #C8102E !important;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
 }
 
 body {
   margin: 0;
+}
+
+@theme inline {
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .resource-card-grid {
+    @apply grid-cols-[repeat(auto-fill,minmax(8rem,1fr))];
+  }
+}
+
+.prose h1 {
+  @apply font-display text-5xl;
+}
+
+.prose h2 {
+  @apply font-display text-4xl text-sga-red;
+}
+
+.prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-display;
+}
+
+.prose ul {
+  @apply list-disc pl-6;
+}
+
+.prose ol {
+  @apply list-decimal pl-6;
+}
+
+.prose p:has(br:only-child),
+.prose p:empty {
+  @apply block min-h-lh;
+}
+
+.rich-text-line-spacing .rich-text * {
+  line-height: inherit;
 }

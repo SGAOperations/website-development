@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
 import {
   createRouteAction,
   updateRouteAction,
   deleteRouteAction,
-} from "../../lib/actions";
-import type { ActionResult } from "../../lib/types";
+} from "../../lib/routes/actions";
+import { getEditorUrl } from "../../lib/editor-url";
+import { runAction } from "./runAction";
+import { useDialogs } from "@/components/ui/dialog-provider";
 
 type RouteRow = {
   id: number;
@@ -143,7 +144,7 @@ function RouteRowComponent({
       </td>
       <td className="py-1">
         <Link
-          href={`/editor/${route.documentId}`}
+          href={getEditorUrl(route.documentId, route.documentName)}
           className="text-blue-500 hover:underline"
         >
           {route.documentName}
@@ -176,39 +177,52 @@ function RouteRowComponent({
 }
 
 export function RouteTable({
-  routes,
+  routes: initialRoutes,
   documents,
 }: {
   routes: RouteRow[];
   documents: DocumentOption[];
 }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [creating, setCreating] = useState(false);
-
-  function run(action: Promise<ActionResult<unknown>>) {
-    startTransition(async () => {
-      const result = await action;
-      if (!result.success) {
-        alert(result.error);
-        return;
-      }
-      router.refresh();
-    });
-  }
+  const [routes, setRoutes] = useState(initialRoutes);
+  const { confirm, alert } = useDialogs();
 
   function handleCreate(path: string, documentId: number) {
     setCreating(false);
-    run(createRouteAction({ path, documentId }));
+    startTransition(async () => {
+      const result = await runAction(createRouteAction({ path, documentId }));
+      if (result.success) {
+        const doc = documents.find((d) => d.id === documentId)!;
+        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
+      } else {
+        await alert(result.error);
+      }
+    });
   }
 
   function handleUpdate(id: number, path: string, documentId: number) {
-    run(updateRouteAction({ id, path, documentId }));
+    startTransition(async () => {
+      const result = await runAction(updateRouteAction({ id, path, documentId }));
+      if (result.success) {
+        const doc = documents.find((d) => d.id === documentId)!;
+        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
+      } else {
+        await alert(result.error);
+      }
+    });
   }
 
-  function handleDelete(route: RouteRow) {
-    if (!window.confirm(`Delete route "${route.path}"?`)) return;
-    run(deleteRouteAction({ id: route.id }));
+  async function handleDelete(route: RouteRow) {
+    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete", destructive: true })) return;
+    startTransition(async () => {
+      const result = await runAction(deleteRouteAction({ id: route.id }));
+      if (result.success) {
+        setRoutes((prev) => prev.filter((r) => r.id !== route.id));
+      } else {
+        await alert(result.error);
+      }
+    });
   }
 
   return (

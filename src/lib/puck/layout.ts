@@ -1,0 +1,132 @@
+import { cn } from "@/lib/utils";
+import type { ResponsiveValue } from "@/lib/puck/responsive";
+import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
+import {
+  bgColor,
+  columnCount,
+  crossAxisAlign,
+  gap as gapToken,
+  gridRows,
+  justify,
+  layout as layoutToken,
+  marqueeDirection,
+  marqueeGap,
+  marqueeRowPadding,
+  marqueeSpeed,
+  padding as paddingToken,
+  radius,
+  shadow,
+  textColor,
+  width,
+  type Color,
+  type ColumnCount,
+  type Gap,
+  type CrossAxisAlign,
+  type GridRows,
+  type Justify,
+  type Layout,
+  type MarqueeDirection,
+  type MarqueeGap,
+  type MarqueeRowPadding,
+  type MarqueeSpeed,
+  type Radius,
+  type Shadow,
+  type Padding,
+  type Width,
+} from "@/lib/puck/tokens";
+
+export type GroupStyle = {
+  layout: Layout;
+  padding: ResponsiveValue<Padding>;
+  gap: ResponsiveValue<Gap>;
+  align: CrossAxisAlign;
+  justify: Justify;
+  width: Width;
+  bgColor: Color;
+  textColor: Color;
+  radius: Radius;
+  shadow: Shadow;
+};
+
+export function getGroupSurfaceClassName({
+  padding,
+  width: w,
+  bgColor: bg,
+  textColor: text,
+  radius: r,
+  shadow: s,
+}: GroupStyle) {
+  return cn(
+    width.classes[w],
+    bgColor.classes[bg],
+    textColor.classes[text],
+    radius.classes[r],
+    shadow.classes[s],
+    resolveResponsive(padding, paddingToken.classes),
+  );
+}
+
+export function getGroupSlotClassName({
+  layout: l,
+  gap,
+  align,
+  justify: j,
+}: GroupStyle) {
+  return cn(
+    "w-full",
+    layoutToken.classes[l],
+    crossAxisAlign.classes[align],
+    justify.classes[j],
+    resolveResponsive(gap, gapToken.classes),
+  );
+}
+
+export function getGridClassName({
+  columns,
+  rows,
+  gap,
+  empty = false,
+}: {
+  columns: ResponsiveValue<ColumnCount>;
+  rows: ResponsiveValue<GridRows>;
+  gap: ResponsiveValue<Gap>;
+  empty?: boolean;
+}) {
+  return cn(
+    "grid w-full",
+    empty && "min-h-[200px]",
+    resolveResponsive(columns, columnCount.classes),
+    resolveResponsive(rows, gridRows.classes),
+    resolveResponsive(gap, gapToken.classes),
+  );
+}
+
+export const marqueeClassName =
+  "group flex w-full overflow-hidden whitespace-nowrap motion-reduce:overflow-x-auto";
+
+export function getMarqueeItemClassName({
+  speed,
+  direction,
+  gap,
+  rowPadding,
+  animated = false,
+}: {
+  speed: MarqueeSpeed;
+  direction: MarqueeDirection;
+  gap: MarqueeGap;
+  rowPadding: MarqueeRowPadding;
+  animated?: boolean;
+}) {
+  return cn(
+    "marquee-item flex min-w-full shrink-0 items-center text-center",
+    marqueeGap.classes[gap],
+    marqueeRowPadding.classes[rowPadding],
+    animated && marqueeSpeed.classes[speed],
+    animated && marqueeDirection.classes[direction],
+    animated && "group-hover:[animation-play-state:paused] motion-reduce:[animation:none]",
+  );
+}
+
+export function getMaxCols(columns: ResponsiveValue<ColumnCount>): number {
+  return Math.max(...Object.values(columns).map(Number));
+}
