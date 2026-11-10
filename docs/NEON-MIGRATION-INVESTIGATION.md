@@ -1,9 +1,9 @@
 # Supabase to Neon Migration Assessment
 
-| | |
-| --- | --- |
-| Author | Shlok Patel |
-| Date | October 2, 2026 |
+|        |                  |
+| ------ | ---------------- |
+| Author | Shlok Patel      |
+| Date   | October 2, 2026  |
 | Status | Draft for review |
 
 ## 1. Purpose
@@ -23,10 +23,10 @@ Neon provides managed PostgreSQL but does not offer object storage. A full move 
 
 ## 3. Options and Estimated Effort
 
-| Option | Scope | Estimate |
-| --- | --- | --- |
-| A | Move the database to Neon; keep Supabase Storage for media | 0.5 to 1 day |
-| B | Move the database to Neon and media to a separate storage provider | 2 to 4 days |
+| Option | Scope                                                              | Estimate     |
+| ------ | ------------------------------------------------------------------ | ------------ |
+| A      | Move the database to Neon; keep Supabase Storage for media         | 0.5 to 1 day |
+| B      | Move the database to Neon and media to a separate storage provider | 2 to 4 days  |
 
 Both estimates exclude documentation updates, changes to the local development setup, and testing, which together add 0.5 to 1 day.
 
@@ -50,15 +50,15 @@ Both estimates exclude documentation updates, changes to the local development s
 
 ## 5. Risks
 
-| ID | Risk | Impact | Mitigation |
-| --- | --- | --- | --- |
-| R1 | Saved page content (`Version.content`) stores the full public URL of each image. If media moves to a new provider, existing pages, including published ones, will keep referencing Supabase. | High (Option B) | Before migrating, change the Media block to store only `mediaId` and resolve the URL at render time. Otherwise, run a one-time data migration to rewrite stored URLs. |
-| R2 | Neon has no local emulator equivalent to `supabase start`, so the local setup changes for every developer. | Medium | Document a standard local setup and validate it with the team before cutover. |
-| R3 | On the free tier, Neon suspends idle databases. The first request after a period of inactivity can take up to about one second longer. | Medium | Disable auto-suspend on a paid plan, or accept the latency for this workload. |
-| R4 | Neon's pooled connections use PgBouncer in transaction mode, which does not support Prisma migrations. | Low | Keep migrations on `DIRECT_URL`. The current configuration already separates the two connections. |
-| R5 | The Neon free tier is limited to 0.5 GB of storage. Each page save writes a full JSON copy to `Version`, so storage use grows over time. | Low | Monitor usage and consider a retention policy for old versions. |
-| R6 | Upload limits are inconsistent. The bucket accepts files up to 50 MiB, server actions are capped at 10 MB, and Vercel functions limit request bodies to about 4.5 MB. | Medium (Option B) | Align the limits. If larger files are needed, upload directly from the client to the storage provider. |
-| R7 | Planned authentication work may assume Supabase Auth. | Low | Choose the authentication provider before the migration to avoid a second move. |
+| ID  | Risk                                                                                                                                                                                         | Impact            | Mitigation                                                                                                                                                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R1  | Saved page content (`Version.content`) stores the full public URL of each image. If media moves to a new provider, existing pages, including published ones, will keep referencing Supabase. | High (Option B)   | Before migrating, change the Media block to store only `mediaId` and resolve the URL at render time. Otherwise, run a one-time data migration to rewrite stored URLs. |
+| R2  | Neon has no local emulator equivalent to `supabase start`, so the local setup changes for every developer.                                                                                   | Medium            | Document a standard local setup and validate it with the team before cutover.                                                                                         |
+| R3  | On the free tier, Neon suspends idle databases. The first request after a period of inactivity can take up to about one second longer.                                                       | Medium            | Disable auto-suspend on a paid plan, or accept the latency for this workload.                                                                                         |
+| R4  | Neon's pooled connections use PgBouncer in transaction mode, which does not support Prisma migrations.                                                                                       | Low               | Keep migrations on `DIRECT_URL`. The current configuration already separates the two connections.                                                                     |
+| R5  | The Neon free tier is limited to 0.5 GB of storage. Each page save writes a full JSON copy to `Version`, so storage use grows over time.                                                     | Low               | Monitor usage and consider a retention policy for old versions.                                                                                                       |
+| R6  | Upload limits are inconsistent. The bucket accepts files up to 50 MiB, server actions are capped at 10 MB, and Vercel functions limit request bodies to about 4.5 MB.                        | Medium (Option B) | Align the limits. If larger files are needed, upload directly from the client to the storage provider.                                                                |
+| R7  | Planned authentication work may assume Supabase Auth.                                                                                                                                        | Low               | Choose the authentication provider before the migration to avoid a second move.                                                                                       |
 
 ## 6. Recommendation
 

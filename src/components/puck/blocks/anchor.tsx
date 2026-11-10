@@ -60,22 +60,14 @@ export const Anchor: ComponentConfig<AnchorProps> = {
       resolveResponsive(px, paddingX.classes),
     );
 
-    const innerClasses = cn(
-      "mx-auto",
-      width.classes[w],
-    );
+    const innerClasses = cn("mx-auto", width.classes[w]);
 
-    const slotClasses = cn(
-      "flex flex-col w-full",
-      resolveResponsive(g, gapToken.classes),
-    );
+    const slotClasses = cn("flex flex-col w-full", resolveResponsive(g, gapToken.classes));
 
     return (
       <section id={anchorId || undefined} className={outerClasses}>
         <div className={innerClasses}>
-          {Content && (
-            <Content className={slotClasses} minEmptyHeight="200px" />
-          )}
+          {Content && <Content className={slotClasses} minEmptyHeight="200px" />}
         </div>
       </section>
     );

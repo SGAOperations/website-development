@@ -1,4 +1,3 @@
-
 // Tailwind's default spacing scale uses 0.25rem increments (so 4px if the
 // root font size is 16px) so divide pixel values by 4 to get the
 // Tailwind class number:
@@ -28,10 +27,7 @@ export function defineToken<const K extends string>(
   defaultValue?: NoInfer<K>,
 ): Token<K>;
 
-export function defineToken<
-  const K extends string,
-  const V extends { label: string },
->(
+export function defineToken<const K extends string, const V extends { label: string }>(
   spec: Record<K, V>,
   defaultValue?: NoInfer<K>,
 ): Token<K> & TokenColumns<K, V>;
@@ -58,16 +54,12 @@ export function defineToken<const K extends string>(
     label: (spec[k] as { label: string }).label,
   })) as TokenOption<K>[];
 
-  const columnNames = Object.keys(first as object).filter(
-    (p) => p !== "label",
-  );
+  const columnNames = Object.keys(first as object).filter((p) => p !== "label");
 
   const columns = Object.fromEntries(
     columnNames.map((col) => [
       col,
-      Object.fromEntries(
-        keys.map((k) => [k, (spec[k] as Record<string, unknown>)[col]]),
-      ),
+      Object.fromEntries(keys.map((k) => [k, (spec[k] as Record<string, unknown>)[col]])),
     ]),
   );
 
@@ -77,48 +69,48 @@ export function defineToken<const K extends string>(
 export type TokenValue<T> = T extends Token<infer K> ? K : never;
 
 export const padding = defineToken({
-  none:  { label: "None",   classes: "p-0" },
-   8:    { label: "8px",  classes: "p-2" },
-  12:    { label: "12px",  classes: "p-3" },
-  16:    { label: "16px", classes: "p-4" },
-  24:    { label: "24px",  classes: "p-6" },
-  32:    { label: "32px",     classes: "p-8" },
+  none: { label: "None", classes: "p-0" },
+  8: { label: "8px", classes: "p-2" },
+  12: { label: "12px", classes: "p-3" },
+  16: { label: "16px", classes: "p-4" },
+  24: { label: "24px", classes: "p-6" },
+  32: { label: "32px", classes: "p-8" },
 });
 
 export const paddingX = defineToken({
-  none:  { label: "None",   classes: "px-0" },
-   8:    { label: "8px",  classes: "px-2" },
-  12:    { label: "12px",  classes: "px-3" },
-  16:    { label: "16px", classes: "px-4" },
-  24:    { label: "24px",  classes: "px-6" },
-  32:    { label: "32px",     classes: "px-8" },
+  none: { label: "None", classes: "px-0" },
+  8: { label: "8px", classes: "px-2" },
+  12: { label: "12px", classes: "px-3" },
+  16: { label: "16px", classes: "px-4" },
+  24: { label: "24px", classes: "px-6" },
+  32: { label: "32px", classes: "px-8" },
 });
 
 export const paddingY = defineToken({
-  none:  { label: "None",   classes: "py-0" },
-   8:    { label: "8px",  classes: "py-2" },
-  12:    { label: "12px",  classes: "py-3" },
-  16:    { label: "16px", classes: "py-4" },
-  24:    { label: "24px",  classes: "py-6" },
-  32:    { label: "32px",     classes: "py-8" },
+  none: { label: "None", classes: "py-0" },
+  8: { label: "8px", classes: "py-2" },
+  12: { label: "12px", classes: "py-3" },
+  16: { label: "16px", classes: "py-4" },
+  24: { label: "24px", classes: "py-6" },
+  32: { label: "32px", classes: "py-8" },
 });
 
 export const gap = defineToken({
-  none:  { label: "None",   classes: "gap-0" },
-   8:    { label: "8px",  classes: "gap-2" },
-  12:    { label: "12px",  classes: "gap-3" },
-  16:    { label: "16px", classes: "gap-4" },
-  24:    { label: "24px",  classes: "gap-6" },
-  32:    { label: "32px",     classes: "gap-8" },
+  none: { label: "None", classes: "gap-0" },
+  8: { label: "8px", classes: "gap-2" },
+  12: { label: "12px", classes: "gap-3" },
+  16: { label: "16px", classes: "gap-4" },
+  24: { label: "24px", classes: "gap-6" },
+  32: { label: "32px", classes: "gap-8" },
 });
 
 export const columnGap = defineToken({
-  none:  { label: "None",   classes: "gap-x-0" },
-   8:    { label: "8px",  classes: "gap-x-2" },
-  12:    { label: "12px",  classes: "gap-x-3" },
-  16:    { label: "16px", classes: "gap-x-4" },
-  24:    { label: "24px",  classes: "gap-x-6" },
-  32:    { label: "32px",     classes: "gap-x-8" },
+  none: { label: "None", classes: "gap-x-0" },
+  8: { label: "8px", classes: "gap-x-2" },
+  12: { label: "12px", classes: "gap-x-3" },
+  16: { label: "16px", classes: "gap-x-4" },
+  24: { label: "24px", classes: "gap-x-6" },
+  32: { label: "32px", classes: "gap-x-8" },
 });
 
 export type Padding = TokenValue<typeof padding>;
@@ -127,34 +119,43 @@ export type PaddingY = TokenValue<typeof paddingY>;
 export type Gap = TokenValue<typeof gap>;
 export type ColumnGap = TokenValue<typeof columnGap>;
 
-export const marqueeSpeed = defineToken({
-  xslow: {label: "Extra Slow", classes: "[animation:marquee_120s_linear_infinite]"},
-  slow:   { label: "Slow",   classes: "[animation:marquee_60s_linear_infinite]" },
-  medium: { label: "Medium", classes: "[animation:marquee_30s_linear_infinite]" },
-  fast:   { label: "Fast",   classes: "[animation:marquee_10s_linear_infinite]" },
-  xfast: {label: "Extra Fast", classes: "[animation:marquee_2s_linear_infinite]"}
-}, "medium");
+export const marqueeSpeed = defineToken(
+  {
+    xslow: { label: "Extra Slow", classes: "[animation:marquee_120s_linear_infinite]" },
+    slow: { label: "Slow", classes: "[animation:marquee_60s_linear_infinite]" },
+    medium: { label: "Medium", classes: "[animation:marquee_30s_linear_infinite]" },
+    fast: { label: "Fast", classes: "[animation:marquee_10s_linear_infinite]" },
+    xfast: { label: "Extra Fast", classes: "[animation:marquee_2s_linear_infinite]" },
+  },
+  "medium",
+);
 
 export const marqueeDirection = defineToken({
   rtl: { label: "Right to left", classes: "" },
   ltr: { label: "Left to right", classes: "[animation-direction:reverse]!" },
 });
 
-export const marqueeGap = defineToken({
-  none: { label: "None",          classes: "gap-0 pr-0" },
-  sm:   { label: "Small",         classes: "gap-4 pr-4" },
-  md:   { label: "Medium",        classes: "gap-8 pr-8" },
-  lg:   { label: "Large",         classes: "gap-16 pr-16" },
-}, "md");
+export const marqueeGap = defineToken(
+  {
+    none: { label: "None", classes: "gap-0 pr-0" },
+    sm: { label: "Small", classes: "gap-4 pr-4" },
+    md: { label: "Medium", classes: "gap-8 pr-8" },
+    lg: { label: "Large", classes: "gap-16 pr-16" },
+  },
+  "md",
+);
 
 // Vertical padding above and below the scrolling row, helpful for text marquees
-export const marqueeRowPadding = defineToken({
-  none: { label: "None",          classes: "py-0" },
-  sm:   { label: "Small",         classes: "py-4" },
-  md:   { label: "Medium",        classes: "py-8" },
-  lg:   { label: "Large",         classes: "py-12" },
-  xl:   { label: "X-Large",       classes: "py-16" },
-}, "md");
+export const marqueeRowPadding = defineToken(
+  {
+    none: { label: "None", classes: "py-0" },
+    sm: { label: "Small", classes: "py-4" },
+    md: { label: "Medium", classes: "py-8" },
+    lg: { label: "Large", classes: "py-12" },
+    xl: { label: "X-Large", classes: "py-16" },
+  },
+  "md",
+);
 
 export type MarqueeSpeed = TokenValue<typeof marqueeSpeed>;
 export type MarqueeDirection = TokenValue<typeof marqueeDirection>;
@@ -162,77 +163,77 @@ export type MarqueeGap = TokenValue<typeof marqueeGap>;
 export type MarqueeRowPadding = TokenValue<typeof marqueeRowPadding>;
 
 export const bgColor = defineToken({
-  background:           { label: "Background",         classes: "bg-background" },
-  foreground:           { label: "Foreground",          classes: "bg-foreground" },
-  primary:              { label: "Primary",             classes: "bg-primary" },
-  "primary-foreground": { label: "Primary Foreground",  classes: "bg-primary-foreground" },
-  muted:                { label: "Muted",               classes: "bg-muted" },
-  "muted-foreground":   { label: "Muted Foreground",    classes: "bg-muted-foreground" },
-  accent:               { label: "Accent",              classes: "bg-accent" },
-  "accent-foreground":  { label: "Accent Foreground",   classes: "bg-accent-foreground" },
-  destructive:          { label: "Destructive",         classes: "bg-destructive" },
-  "sga-red":            { label: "SGA Red",             classes: "bg-sga-red" },
+  background: { label: "Background", classes: "bg-background" },
+  foreground: { label: "Foreground", classes: "bg-foreground" },
+  primary: { label: "Primary", classes: "bg-primary" },
+  "primary-foreground": { label: "Primary Foreground", classes: "bg-primary-foreground" },
+  muted: { label: "Muted", classes: "bg-muted" },
+  "muted-foreground": { label: "Muted Foreground", classes: "bg-muted-foreground" },
+  accent: { label: "Accent", classes: "bg-accent" },
+  "accent-foreground": { label: "Accent Foreground", classes: "bg-accent-foreground" },
+  destructive: { label: "Destructive", classes: "bg-destructive" },
+  "sga-red": { label: "SGA Red", classes: "bg-sga-red" },
 });
 
 export const textColor = defineToken({
-  background:           { label: "Background",         classes: "text-background" },
-  foreground:           { label: "Foreground",          classes: "text-foreground" },
-  primary:              { label: "Primary",             classes: "text-primary" },
-  "primary-foreground": { label: "Primary Foreground",  classes: "text-primary-foreground" },
-  muted:                { label: "Muted",               classes: "text-muted" },
-  "muted-foreground":   { label: "Muted Foreground",    classes: "text-muted-foreground" },
-  accent:               { label: "Accent",              classes: "text-accent" },
-  "accent-foreground":  { label: "Accent Foreground",   classes: "text-accent-foreground" },
-  destructive:          { label: "Destructive",         classes: "text-destructive" },
-  "sga-red":            { label: "SGA Red",             classes: "text-sga-red" },
+  background: { label: "Background", classes: "text-background" },
+  foreground: { label: "Foreground", classes: "text-foreground" },
+  primary: { label: "Primary", classes: "text-primary" },
+  "primary-foreground": { label: "Primary Foreground", classes: "text-primary-foreground" },
+  muted: { label: "Muted", classes: "text-muted" },
+  "muted-foreground": { label: "Muted Foreground", classes: "text-muted-foreground" },
+  accent: { label: "Accent", classes: "text-accent" },
+  "accent-foreground": { label: "Accent Foreground", classes: "text-accent-foreground" },
+  destructive: { label: "Destructive", classes: "text-destructive" },
+  "sga-red": { label: "SGA Red", classes: "text-sga-red" },
 });
 
 export type Color = TokenValue<typeof bgColor>;
 
 export const radius = defineToken({
-  none: { label: "Square",      classes: "rounded-none" },
-  sm:   { label: "Soft",        classes: "rounded-sm" },
-  md:   { label: "Rounded",     classes: "rounded-md" },
-  lg:   { label: "Large",       classes: "rounded-lg" },
-  xl:   { label: "Extra Large", classes: "rounded-xl" },
-  full: { label: "Pill",        classes: "rounded-full" },
+  none: { label: "Square", classes: "rounded-none" },
+  sm: { label: "Soft", classes: "rounded-sm" },
+  md: { label: "Rounded", classes: "rounded-md" },
+  lg: { label: "Large", classes: "rounded-lg" },
+  xl: { label: "Extra Large", classes: "rounded-xl" },
+  full: { label: "Pill", classes: "rounded-full" },
 });
 
 export type Radius = TokenValue<typeof radius>;
 
 export const shadow = defineToken({
-  none: { label: "None",     classes: "shadow-none" },
-  sm:   { label: "Soft",     classes: "shadow-sm" },
-  md:   { label: "Medium",   classes: "shadow-md" },
-  lg:   { label: "Large",    classes: "shadow-lg" },
-  xl:   { label: "Dramatic", classes: "shadow-xl" },
+  none: { label: "None", classes: "shadow-none" },
+  sm: { label: "Soft", classes: "shadow-sm" },
+  md: { label: "Medium", classes: "shadow-md" },
+  lg: { label: "Large", classes: "shadow-lg" },
+  xl: { label: "Dramatic", classes: "shadow-xl" },
 });
 
 export type Shadow = TokenValue<typeof shadow>;
 
 export const textAlign = defineToken({
-  left:   { label: "Left",   classes: "text-left" },
+  left: { label: "Left", classes: "text-left" },
   center: { label: "Center", classes: "text-center" },
-  right:  { label: "Right",  classes: "text-right" },
+  right: { label: "Right", classes: "text-right" },
 });
 
 export type TextAlign = TokenValue<typeof textAlign>;
 
 export const lineSpacing = defineToken({
   default: { label: "Default", classes: "" },
-  tight:   { label: "Tight",   classes: "rich-text-line-spacing leading-tight" },
-  snug:    { label: "Snug",    classes: "rich-text-line-spacing leading-snug" },
-  normal:  { label: "Normal",  classes: "rich-text-line-spacing leading-normal" },
+  tight: { label: "Tight", classes: "rich-text-line-spacing leading-tight" },
+  snug: { label: "Snug", classes: "rich-text-line-spacing leading-snug" },
+  normal: { label: "Normal", classes: "rich-text-line-spacing leading-normal" },
   relaxed: { label: "Relaxed", classes: "rich-text-line-spacing leading-relaxed" },
-  loose:   { label: "Loose",   classes: "rich-text-line-spacing leading-loose" },
+  loose: { label: "Loose", classes: "rich-text-line-spacing leading-loose" },
 });
 
 export type LineSpacing = TokenValue<typeof lineSpacing>;
 
 export const crossAxisAlign = defineToken({
-  start:  { label: "Start",  classes: "items-start" },
+  start: { label: "Start", classes: "items-start" },
   center: { label: "Center", classes: "items-center" },
-  end:    { label: "End",    classes: "items-end" },
+  end: { label: "End", classes: "items-end" },
 });
 
 export type CrossAxisAlign = TokenValue<typeof crossAxisAlign>;
@@ -258,36 +259,36 @@ export const textColumns = defineToken({
 export type TextColumnCount = TokenValue<typeof textColumns>;
 
 export const emailCount = defineToken({
-  "1": {label: "1", classes: "emails-1"},
-  "2": {label: "2", classes: "emails-2"},
-  "3": {label: "3", classes: "emails-3"},
-  "4": {label: "4", classes: "emails-4"},
-  "5": {label: "5", classes: "emails-5"},
-  "6": {label: "6", classes: "emails-6"},
-})
+  "1": { label: "1", classes: "emails-1" },
+  "2": { label: "2", classes: "emails-2" },
+  "3": { label: "3", classes: "emails-3" },
+  "4": { label: "4", classes: "emails-4" },
+  "5": { label: "5", classes: "emails-5" },
+  "6": { label: "6", classes: "emails-6" },
+});
 
 export type EmailCount = TokenValue<typeof emailCount>;
 
 export const layout = defineToken({
   stack: { label: "Stack", classes: "flex flex-col" },
-  row:   { label: "Row",   classes: "flex flex-row flex-wrap" },
+  row: { label: "Row", classes: "flex flex-row flex-wrap" },
 });
 export type Layout = TokenValue<typeof layout>;
 
 export const justify = defineToken({
-  start:   { label: "Start",   classes: "justify-start" },
-  center:  { label: "Center",  classes: "justify-center" },
-  end:     { label: "End",     classes: "justify-end" },
+  start: { label: "Start", classes: "justify-start" },
+  center: { label: "Center", classes: "justify-center" },
+  end: { label: "End", classes: "justify-end" },
   between: { label: "Between", classes: "justify-between" },
 });
 export type Justify = TokenValue<typeof justify>;
 
 export const width = defineToken({
-  full:        { label: "Full",     classes: "w-full" },
-  prose:       { label: "Prose",    classes: "w-full max-w-prose" },
-  "screen-sm": { label: "640px",   classes: "w-full max-w-screen-sm" },
-  "screen-md": { label: "768px",   classes: "w-full max-w-screen-md" },
-  "screen-lg": { label: "1024px",  classes: "w-full max-w-screen-lg" },
+  full: { label: "Full", classes: "w-full" },
+  prose: { label: "Prose", classes: "w-full max-w-prose" },
+  "screen-sm": { label: "640px", classes: "w-full max-w-screen-sm" },
+  "screen-md": { label: "768px", classes: "w-full max-w-screen-md" },
+  "screen-lg": { label: "1024px", classes: "w-full max-w-screen-lg" },
   "screen-xl": { label: "X-Large", classes: "w-full max-w-screen-xl" },
 });
 export type Width = TokenValue<typeof width>;
@@ -296,17 +297,17 @@ export type Width = TokenValue<typeof width>;
 // so a grid with more children than rows hides the overflow rather than expanding.
 export const gridRows = defineToken({
   auto: { label: "Auto", classes: "grid-rows-none auto-rows-auto overflow-visible" },
-  "1":  { label: "1",    classes: "grid-rows-1 auto-rows-[0] overflow-hidden" },
-  "2":  { label: "2",    classes: "grid-rows-2 auto-rows-[0] overflow-hidden" },
-  "3":  { label: "3",    classes: "grid-rows-3 auto-rows-[0] overflow-hidden" },
-  "4":  { label: "4",    classes: "grid-rows-4 auto-rows-[0] overflow-hidden" },
-  "5":  { label: "5",    classes: "grid-rows-5 auto-rows-[0] overflow-hidden" },
-  "6":  { label: "6",    classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
+  "1": { label: "1", classes: "grid-rows-1 auto-rows-[0] overflow-hidden" },
+  "2": { label: "2", classes: "grid-rows-2 auto-rows-[0] overflow-hidden" },
+  "3": { label: "3", classes: "grid-rows-3 auto-rows-[0] overflow-hidden" },
+  "4": { label: "4", classes: "grid-rows-4 auto-rows-[0] overflow-hidden" },
+  "5": { label: "5", classes: "grid-rows-5 auto-rows-[0] overflow-hidden" },
+  "6": { label: "6", classes: "grid-rows-6 auto-rows-[0] overflow-hidden" },
 });
 export type GridRows = TokenValue<typeof gridRows>;
 
 export const fontFamily = defineToken({
-  inter: {label: "Inter", classes: "font-text"},
-  bebasNeue: {label: "Bebas Neue", classes: "font-display"}
+  inter: { label: "Inter", classes: "font-text" },
+  bebasNeue: { label: "Bebas Neue", classes: "font-display" },
 });
 export type FontFamily = TokenValue<typeof fontFamily>;

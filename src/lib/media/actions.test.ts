@@ -19,9 +19,7 @@ vi.mock("server-only", () => ({}));
 // DATABASE_URL is an assumption: check src/lib/prisma.ts or prisma/schema.prisma
 // (datasource db, env("...")) and use the real name.
 const hasEnv = Boolean(
-  process.env.SUPABASE_URL &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY &&
-    process.env.DATABASE_URL
+  process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.DATABASE_URL,
 );
 
 // These are imported dynamically, because a normal import would run
@@ -108,7 +106,10 @@ describe.skipIf(!hasEnv)("renameMediaAction", () => {
   it("normalizes the file name (spaces and uppercase)", async () => {
     const m = await createTestMedia();
     const base = unique();
-    const result = await renameMediaAction({ id: m.id, fileName: `  ${base.toUpperCase()} Photo ` });
+    const result = await renameMediaAction({
+      id: m.id,
+      fileName: `  ${base.toUpperCase()} Photo `,
+    });
 
     expect(result.success).toBe(true);
     if (!result.success) return;

@@ -69,11 +69,7 @@ function MediaCard({
     <ResourceCard
       preview={
         isImage ? (
-          <img
-            src={file.url}
-            alt={file.name}
-            className="h-full w-full object-cover"
-          />
+          <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
         ) : (
           <FileIcon className="h-10 w-10 text-muted-foreground" />
         )
@@ -84,13 +80,34 @@ function MediaCard({
       external
       actions={
         <>
-          <Button variant="ghost" size="icon-xs" onClick={() => onRename(file)} disabled={disabled} title="Rename">
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            onClick={() => onRename(file)}
+            disabled={disabled}
+            title="Rename"
+          >
             <Pencil className="h-3 w-3" />
           </Button>
-          <Button variant="ghost" size="icon-xs" onClick={() => { navigator.clipboard.writeText(file.url); toast.success("URL copied"); }} title="Copy URL">
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            onClick={() => {
+              navigator.clipboard.writeText(file.url);
+              toast.success("URL copied");
+            }}
+            title="Copy URL"
+          >
             <Copy className="h-3 w-3" />
           </Button>
-          <Button variant="ghost" size="icon-xs" className="hover:text-destructive" onClick={() => onDelete(file)} disabled={disabled} title="Delete">
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            className="hover:text-destructive"
+            onClick={() => onDelete(file)}
+            disabled={disabled}
+            title="Delete"
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
         </>
@@ -98,7 +115,6 @@ function MediaCard({
     />
   );
 }
-
 
 /**
  * Dialog for renaming a media item. Collects two independent values:
@@ -142,46 +158,45 @@ function RenameMediaDialog({
         <DialogHeader>
           <DialogTitle>Rename</DialogTitle>
         </DialogHeader>
-          <form
-  onSubmit={(e) => {
-    e.preventDefault();
-    if (fileNameError) return;
-    onSubmit({ name: name.trim(), fileName: normalized });
-  }}
->
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (fileNameError) return;
+            onSubmit({ name: name.trim(), fileName: normalized });
+          }}
+        >
           <div className="grid gap-4">
             <div className="grid gap-2">
               <label className="text-sm font-medium">Display name</label>
               <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
             </div>
             <div className="grid gap-2">
-  <label className="text-sm font-medium">File name</label>
-  <div className="flex items-center gap-2">
-    <Input
-      value={fileName}
-      onChange={(e) => setFileName(e.target.value)}
-      onFocus={(e) => e.target.select()}
-      aria-invalid={fileNameError !== null}
-    />
-    <span className="text-sm text-muted-foreground">{ext}</span>
-  </div>
-  {fileNameError && (
-    <p className="text-sm text-destructive">{fileNameError}</p>
-  )}
-</div>
+              <label className="text-sm font-medium">File name</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  onFocus={(e) => e.target.select()}
+                  aria-invalid={fileNameError !== null}
+                />
+                <span className="text-sm text-muted-foreground">{ext}</span>
+              </div>
+              {fileNameError && <p className="text-sm text-destructive">{fileNameError}</p>}
+            </div>
           </div>
           <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="submit" disabled={fileNameError !== null}>Save</Button>
+            <Button type="submit" disabled={fileNameError !== null}>
+              Save
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
-
 
 export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
@@ -203,49 +218,55 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
   }
 
   /**
- * Handles the rename dialog's Save action.
- *
- * Closes the dialog, works out what actually changed, and saves it.
- *
- * Current behavior (work in progress):
- *  - Display name changed: saved via `renameMediaAction`, and local state updated.
- *  - File name changed: NOT saved yet. `fileNameChanged` is computed but unused
- *    until `renameMediaAction` accepts a file name (it must move the object in
- *    Supabase Storage and update `storagePath`).
- */
+   * Handles the rename dialog's Save action.
+   *
+   * Closes the dialog, works out what actually changed, and saves it.
+   *
+   * Current behavior (work in progress):
+   *  - Display name changed: saved via `renameMediaAction`, and local state updated.
+   *  - File name changed: NOT saved yet. `fileNameChanged` is computed but unused
+   *    until `renameMediaAction` accepts a file name (it must move the object in
+   *    Supabase Storage and update `storagePath`).
+   */
   async function handleRenameSubmit(
-  file: MediaWithUrl,
-  values: { name: string; fileName: string }
-) {
-  setRenamingFile(null); // close the dialog
+    file: MediaWithUrl,
+    values: { name: string; fileName: string },
+  ) {
+    setRenamingFile(null); // close the dialog
 
-  const { base } = splitStoragePath(file.storagePath);
-  const nameChanged = values.name !== "" && values.name !== file.name;
-  const fileNameChanged = values.fileName !== "" && values.fileName !== base;
+    const { base } = splitStoragePath(file.storagePath);
+    const nameChanged = values.name !== "" && values.name !== file.name;
+    const fileNameChanged = values.fileName !== "" && values.fileName !== base;
 
-  if (!nameChanged && !fileNameChanged) return;
+    if (!nameChanged && !fileNameChanged) return;
 
-  startTransition(async () => {
-    const result = await runAction(
-      renameMediaAction({
-        id: file.id,
-        // Only send what changed. The server re-checks everything anyway.
-        ...(nameChanged && { name: values.name }),
-        ...(fileNameChanged && { fileName: values.fileName }),
-      })
-    );
-    if (result.success) {
-      // Use the server's record, so storagePath and url are fresh too.
-      setFiles((prev) => prev.map((f) => (f.id === file.id ? result.data : f)));
-    } else {
-      await alert(result.error);
-    }
-  });
-}
-  
+    startTransition(async () => {
+      const result = await runAction(
+        renameMediaAction({
+          id: file.id,
+          // Only send what changed. The server re-checks everything anyway.
+          ...(nameChanged && { name: values.name }),
+          ...(fileNameChanged && { fileName: values.fileName }),
+        }),
+      );
+      if (result.success) {
+        // Use the server's record, so storagePath and url are fresh too.
+        setFiles((prev) => prev.map((f) => (f.id === file.id ? result.data : f)));
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
 
   async function handleDelete(file: MediaWithUrl) {
-    if (!await confirm({ message: `Delete "${file.name}"?`, actionLabel: "Delete", destructive: true })) return;
+    if (
+      !(await confirm({
+        message: `Delete "${file.name}"?`,
+        actionLabel: "Delete",
+        destructive: true,
+      }))
+    )
+      return;
     startTransition(async () => {
       const result = await runAction(deleteMediaAction({ id: file.id }));
       if (result.success) {
@@ -256,7 +277,7 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
     });
   }
 
-    return (
+  return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Media</h1>
 

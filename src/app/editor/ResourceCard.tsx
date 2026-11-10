@@ -18,14 +18,10 @@ export function ResourceCard({
   external?: boolean;
   actions?: ReactNode;
 }) {
-  const linkProps = external
-    ? { target: "_blank" as const, rel: "noopener noreferrer" }
-    : {};
+  const linkProps = external ? { target: "_blank" as const, rel: "noopener noreferrer" } : {};
 
   const previewContent = (
-    <div className="flex h-24 items-center justify-center bg-muted">
-      {preview}
-    </div>
+    <div className="flex h-24 items-center justify-center bg-muted">{preview}</div>
   );
 
   const nameContent = (
@@ -57,14 +53,10 @@ export function ResourceCard({
         ) : (
           nameContent
         )}
-        <span className="text-xs text-muted-foreground">
-          {date ?? "\u00A0"}
-        </span>
+        <span className="text-xs text-muted-foreground">{date ?? "\u00A0"}</span>
 
         {actions && (
-          <CardFooter className="mt-auto gap-1 border-t-0 bg-transparent p-0">
-            {actions}
-          </CardFooter>
+          <CardFooter className="mt-auto gap-1 border-t-0 bg-transparent p-0">{actions}</CardFooter>
         )}
       </CardContent>
     </Card>
@@ -102,9 +94,7 @@ export function NewResourceCard({
     >
       <div className="flex flex-1 flex-col items-center justify-center p-4">
         <span className="text-3xl leading-none">+</span>
-        <span className="mt-2 text-sm font-medium">
-          {disabled ? loadingLabel : label}
-        </span>
+        <span className="mt-2 text-sm font-medium">{disabled ? loadingLabel : label}</span>
         {children}
       </div>
     </Card>

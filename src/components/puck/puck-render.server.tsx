@@ -4,7 +4,6 @@ import { Render, type Data } from "@puckeditor/core";
 import { config } from "@/puck.config";
 import { refreshMediaUrls } from "../../lib/media/refresh-urls";
 
-
 /**
  * Renders saved Puck page data on the server.
  *

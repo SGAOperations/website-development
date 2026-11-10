@@ -29,7 +29,7 @@ function replaceUrls(value: unknown, urls: Map<number, string>): unknown {
   if (Array.isArray(value)) return value.map((v) => replaceUrls(v, urls));
   if (typeof value === "object" && value !== null) {
     const copy = Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, replaceUrls(v, urls)])
+      Object.entries(value).map(([k, v]) => [k, replaceUrls(v, urls)]),
     );
     if (isMediaRef(copy)) {
       const fresh = urls.get(copy.mediaId);
@@ -46,7 +46,7 @@ function replaceUrls(value: unknown, urls: Map<number, string>): unknown {
  * each media row and rebuild the url from its current storagePath.
  *
  * If a media row no longer exists (deleted), the saved url is left as is.
- * 
+ *
  *  * Applied before rendering in `PuckRender` (public pages and preview) and in
  * the editor page, so renamed files don't break saved pages. The saved JSON
  * keeps the old url until the page is next saved. That is harmless because the

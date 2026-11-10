@@ -11,7 +11,10 @@ import { Footer } from "@/components/puck/blocks/footer";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
+    layout: {
+      title: "Layout",
+      components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"],
+    },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },

@@ -4,16 +4,12 @@ import { prisma } from "../prisma";
 import { supabase, MEDIA_BUCKET, getMediaUrl } from "../supabase";
 import { validateName } from "../utils";
 import type { Media } from "../../generated/prisma/client";
-import type {
-  ActionResult,
-  DeleteMediaInput,
-  RenameMediaInput,
-} from "../types";
+import type { ActionResult, DeleteMediaInput, RenameMediaInput } from "../types";
 import { splitStoragePath, normalizeFileName, validateFileName } from "../media-path";
 import { wrapAction } from "../utils";
 
 export async function uploadMediaAction(
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResult<Media & { url: string }>> {
   return wrapAction(async () => {
     const file = formData.get("file");
@@ -50,7 +46,6 @@ export async function uploadMediaAction(
   });
 }
 
-
 /**
  * Renames a media item's display name, its stored file name, or both.
  *
@@ -76,7 +71,7 @@ export async function uploadMediaAction(
  * are handled by `refreshMediaUrls`.
  */
 export async function renameMediaAction(
-  input: RenameMediaInput
+  input: RenameMediaInput,
 ): Promise<ActionResult<Media & { url: string }>> {
   return wrapAction(async () => {
     // 1. Load the real record. We trust the database, not the client.
@@ -130,18 +125,14 @@ export async function renameMediaAction(
   });
 }
 
-export async function deleteMediaAction(
-  input: DeleteMediaInput
-): Promise<ActionResult<void>> {
+export async function deleteMediaAction(input: DeleteMediaInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     const media = await prisma.media.findUniqueOrThrow({
       where: { id: input.id },
       select: { storagePath: true },
     });
 
-    const { error } = await supabase.storage
-      .from(MEDIA_BUCKET)
-      .remove([media.storagePath]);
+    const { error } = await supabase.storage.from(MEDIA_BUCKET).remove([media.storagePath]);
 
     if (error) {
       throw new Error(error.message);

@@ -8,12 +8,7 @@ export function mediaField(label: string): CustomField<ImageValue> {
     type: "custom",
     label,
     render: ({ value, onChange, readOnly }) => (
-      <MediaFieldClient
-        label={label}
-        value={value}
-        onChange={onChange}
-        readOnly={readOnly}
-      />
+      <MediaFieldClient label={label} value={value} onChange={onChange} readOnly={readOnly} />
     ),
   };
 }

@@ -6,9 +6,7 @@ export type Version = {
   createdAt: Date;
 };
 
-export type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+export type ActionResult<T = void> = { success: true; data: T } | { success: false; error: string };
 
 export type CreateDocumentInput = {
   name: string;
@@ -58,7 +56,6 @@ export type DuplicateDocumentInput = {
   name: string;
 };
 
-
 /**
  * Input for `renameMediaAction`. Both fields are optional so the client only
  * sends what changed.
@@ -70,6 +67,6 @@ export type DuplicateDocumentInput = {
  */
 export type RenameMediaInput = {
   id: number;
-  name?: string;    
-  fileName?: string; 
+  name?: string;
+  fileName?: string;
 };

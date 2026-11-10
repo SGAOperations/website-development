@@ -50,8 +50,7 @@ describe("layout helpers", () => {
       gap: "sm" as const,
       rowPadding: "lg" as const,
     };
-    const item =
-      "marquee-item flex min-w-full shrink-0 items-center text-center gap-4 pr-4 py-12";
+    const item = "marquee-item flex min-w-full shrink-0 items-center text-center gap-4 pr-4 py-12";
 
     expect(getMarqueeItemClassName(style)).toBe(item); // static
     expect(getMarqueeItemClassName({ ...style, animated: true })).toBe(

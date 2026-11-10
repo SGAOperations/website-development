@@ -36,10 +36,12 @@ export function normalizeFileName(input: string) {
  */
 export function validateFileName(name: string): string | null {
   if (name === "") return "File name can't be empty.";
-  if (name.length > MAX_FILE_NAME_LENGTH) return `File name must be ${MAX_FILE_NAME_LENGTH} characters or fewer.`;
+  if (name.length > MAX_FILE_NAME_LENGTH)
+    return `File name must be ${MAX_FILE_NAME_LENGTH} characters or fewer.`;
   if (name.startsWith(".")) return "File name can't start with a dot.";
   if (name.endsWith(".")) return "File name can't end with a dot.";
   if (name.includes("..")) return "File name can't contain two dots in a row.";
-  if (!/^[a-z0-9._-]+$/.test(name)) return "Use only letters, numbers, hyphens, underscores, and dots.";
+  if (!/^[a-z0-9._-]+$/.test(name))
+    return "Use only letters, numbers, hyphens, underscores, and dots.";
   return null;
 }
