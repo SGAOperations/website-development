@@ -15,7 +15,6 @@ export type MediaWithUrl = Media & { url: string };
 type MediaContextValue = {
   media: MediaWithUrl[];
   imageMedia: MediaWithUrl[];
-  videoMedia: MediaWithUrl[];
   addMedia: (item: MediaWithUrl) => void;
   getMedia: (id: number) => MediaWithUrl | undefined;
   getUrl: (id: number) => string | undefined;
@@ -44,10 +43,6 @@ export function MediaProvider({
     () => media.filter((item) => item.contentType?.startsWith("image/")),
     [media],
   );
-  const videoMedia = useMemo(
-    () => media.filter((item) => item.contentType?.startsWith("video/")),
-    [media],
-  );
   const getMedia = useCallback(
     (id: number) => mediaById.get(id),
     [mediaById],
@@ -58,7 +53,7 @@ export function MediaProvider({
   );
 
   return (
-    <MediaContext value={{ media, imageMedia, videoMedia, addMedia, getMedia, getUrl }}>
+    <MediaContext value={{ media, imageMedia, addMedia, getMedia, getUrl }}>
       {children}
     </MediaContext>
   );
