@@ -11,6 +11,7 @@ import { useDialogs } from "@/components/ui/dialog-provider";
 import { useDocumentContext } from "./document-context";
 
 const usePuck = createUsePuck();
+const VERSION_NAME_MAX_LENGTH = 25;
 
 const SAVE_KEYBINDS = [
   { key: "s", ctrlKey: true },
@@ -80,7 +81,8 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
 
     const input = await prompt({
       title: "Save Version",
-      label: "Version name",
+      label: `Version name (max ${VERSION_NAME_MAX_LENGTH} characters)`,
+      maxLength: VERSION_NAME_MAX_LENGTH,
     });
 
     if (input === null) return;
@@ -89,6 +91,11 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
 
     if (!versionName) {
       toast.error("Version name needed!");
+      return;
+    }
+
+    if (versionName.length > VERSION_NAME_MAX_LENGTH) {
+      toast.error(`Version name must be ${VERSION_NAME_MAX_LENGTH} characters or fewer.`);
       return;
     }
 

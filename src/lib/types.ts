@@ -58,3 +58,19 @@ export type DuplicateDocumentInput = {
   id: number;
   name: string;
 };
+
+
+/**
+ * Input for `renameMediaAction`. Both fields are optional so the client only
+ * sends what changed.
+ *
+ * `fileName` is the file name WITHOUT its extension. The server re-attaches
+ * the extension from the stored record and never accepts one from the client.
+ *
+ * Separate from `RenameInput`, which documents still use.
+ */
+export type RenameMediaInput = {
+  id: number;
+  name?: string;    
+  fileName?: string; 
+};
