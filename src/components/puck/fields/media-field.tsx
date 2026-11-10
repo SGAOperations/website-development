@@ -1,9 +1,9 @@
 import type { CustomField } from "@puckeditor/core";
 import { MediaFieldClient } from "./media-field-client";
 
-export type ImageValue = { mediaId: number; url: string } | null;
+export type MediaValue = { mediaId: number; url: string } | null;
 
-export function mediaField(label: string): CustomField<ImageValue> {
+export function mediaField(label: string): CustomField<MediaValue> {
   return {
     type: "custom",
     label,

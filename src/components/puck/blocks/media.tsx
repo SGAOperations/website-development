@@ -1,9 +1,12 @@
+"use client";
+
 import type { ComponentConfig } from "@puckeditor/core";
 import { cn } from "@/lib/utils";
 import { defineProps, field } from "@/lib/puck/define-props";
 import { defineToken, type TokenValue, radius, type Radius } from "@/lib/puck/tokens";
 import { ImageIcon } from "lucide-react";
 import { mediaField } from "@/components/puck/fields/media-field";
+import { useMedia } from "@/components/puck/media-context";
 
 const aspectRatio = defineToken({
   auto: { label: "Auto", classes: "" },
@@ -39,6 +42,9 @@ const props = defineProps({
 
 function MediaRenderer({ image, alt, objectFit: fit, aspectRatio: ratio, radius: r }: MediaProps) {
   const { url, mediaId } = image ?? {};
+  const { getMedia } = useMedia();
+  const media = mediaId !== undefined ? getMedia(mediaId) : undefined;
+  const isVideo = media?.contentType?.startsWith("video/");
 
   const wrapperClass = cn(
     "relative h-full w-full overflow-hidden",
@@ -50,6 +56,18 @@ function MediaRenderer({ image, alt, objectFit: fit, aspectRatio: ratio, radius:
     return (
       <div className={cn(wrapperClass, "flex min-h-32 items-center justify-center bg-muted")}>
         <ImageIcon className="size-8 text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isVideo) {
+    return (
+      <div className={wrapperClass}>
+        <video
+          src={url}
+          className={cn("h-full w-full", objectFit.classes[fit])}
+          controls
+        />
       </div>
     );
   }
