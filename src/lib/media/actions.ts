@@ -4,7 +4,6 @@ import { prisma } from "../prisma";
 import { supabase, MEDIA_BUCKET, getMediaUrl } from "../supabase";
 import { validateName } from "../utils";
 import type { Media } from "../../generated/prisma/client";
-import { wrapAction } from "../utils";
 import type {
   ActionResult,
   DeleteMediaInput,
