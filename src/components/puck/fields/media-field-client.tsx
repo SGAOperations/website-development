@@ -2,21 +2,14 @@
 
 import { useRef, useState, useTransition } from "react";
 import { FieldLabel } from "@puckeditor/core";
+import { ImageIcon, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FileIcon, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useMedia, type MediaWithUrl } from "@/components/puck/media-context";
 import { uploadMediaAction } from "@/lib/media/actions";
 import { runAction } from "@/app/editor/runAction";
 import { toast } from "sonner";
-import {
-  ResourceCard,
-  NewResourceCard,
-} from "@/app/editor/ResourceCard";
+import { ResourceCard, NewResourceCard } from "@/app/editor/ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { MediaValue } from "./media-field";

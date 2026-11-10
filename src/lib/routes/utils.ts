@@ -33,7 +33,7 @@ export function assertValidRoutePath(path: string): void {
   const isValidSegment = (segment: string) => ROUTE_SEGMENT_RE.test(segment);
   if (!segments.every(isValidSegment)) {
     throw new Error(
-      "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores"
+      "Each path segment may only contain lowercase letters, numbers, hyphens, and underscores",
     );
   }
 }

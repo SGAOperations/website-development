@@ -65,12 +65,7 @@ export function getGroupSurfaceClassName({
   );
 }
 
-export function getGroupSlotClassName({
-  layout: l,
-  gap,
-  align,
-  justify: j,
-}: GroupStyle) {
+export function getGroupSlotClassName({ layout: l, gap, align, justify: j }: GroupStyle) {
   return cn(
     "w-full",
     layoutToken.classes[l],

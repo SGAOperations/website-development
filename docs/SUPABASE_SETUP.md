@@ -49,13 +49,13 @@ These credentials are also accessible again via `npx supabase status` if you nee
 
 Copy `.env.example` to `.env` and fill in the credentials from the output above:
 
-| Variable | Source |
-| --- | --- |
-| `DATABASE_URL` | Database "URL" — used by the application layer (configure connection pooling via pgbouncer in prod) |
-| `DIRECT_URL` | Database "URL" — used by Prisma for migrations (direct connection, no pooling) |
-| `SUPABASE_URL` | "Project URL" |
-| `SUPABASE_ANON_KEY` | "Publishable" key |
-| `SUPABASE_SERVICE_ROLE_KEY` | "Secret" key (**never expose to the client**) |
+| Variable                    | Source                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`              | Database "URL" — used by the application layer (configure connection pooling via pgbouncer in prod) |
+| `DIRECT_URL`                | Database "URL" — used by Prisma for migrations (direct connection, no pooling)                      |
+| `SUPABASE_URL`              | "Project URL"                                                                                       |
+| `SUPABASE_ANON_KEY`         | "Publishable" key                                                                                   |
+| `SUPABASE_SERVICE_ROLE_KEY` | "Secret" key (**never expose to the client**)                                                       |
 
 > Locally there is no connection pooling, so `DATABASE_URL` and `DIRECT_URL` will be the same.
 

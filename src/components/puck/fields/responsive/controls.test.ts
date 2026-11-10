@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  fromResponsiveSelectValue,
-  toResponsiveSelectValue,
-} from "./select-control";
-import {
-  formatResponsiveNumberValue,
-  getResponsiveNumberChange,
-} from "./number-control";
+import { fromResponsiveSelectValue, toResponsiveSelectValue } from "./select-control";
+import { formatResponsiveNumberValue, getResponsiveNumberChange } from "./number-control";
 
 describe("responsive select control helpers", () => {
   it("translates inherited select values at the UI boundary", () => {
@@ -30,20 +24,14 @@ describe("responsive number control helpers", () => {
     expect(getResponsiveNumberChange("", { isPhone: true })).toEqual({
       kind: "ignore",
     });
-    expect(
-      getResponsiveNumberChange("4", { isPhone: true, min: 1, max: 6 }),
-    ).toEqual({
+    expect(getResponsiveNumberChange("4", { isPhone: true, min: 1, max: 6 })).toEqual({
       kind: "set",
       value: 4,
     });
-    expect(
-      getResponsiveNumberChange("0", { isPhone: true, min: 1, max: 6 }),
-    ).toEqual({
+    expect(getResponsiveNumberChange("0", { isPhone: true, min: 1, max: 6 })).toEqual({
       kind: "ignore",
     });
-    expect(
-      getResponsiveNumberChange("9", { isPhone: false, min: 1, max: 6 }),
-    ).toEqual({
+    expect(getResponsiveNumberChange("9", { isPhone: false, min: 1, max: 6 })).toEqual({
       kind: "ignore",
     });
   });

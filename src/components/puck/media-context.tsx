@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useMemo, useCallback, type ReactNode } from "react";
 import type { Media } from "../../generated/prisma/client";
 
 export type MediaWithUrl = Media & { url: string };
@@ -36,10 +29,7 @@ export function MediaProvider({
     setMedia((prev) => [item, ...prev]);
   }, []);
 
-  const mediaById = useMemo(
-    () => new Map(media.map((item) => [item.id, item])),
-    [media],
-  );
+  const mediaById = useMemo(() => new Map(media.map((item) => [item.id, item])), [media]);
   const imageMedia = useMemo(
     () => media.filter((item) => item.contentType?.startsWith("image/")),
     [media],

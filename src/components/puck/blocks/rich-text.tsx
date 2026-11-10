@@ -37,9 +37,15 @@ const props = defineProps({
     { type: "richtext", contentEditable: true },
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   ),
-  textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
+  textColor: field.select(textColor, {
+    label: "Text color",
+    default: "foreground",
+  }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
-  lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
+  lineSpacing: field.select(lineSpacing, {
+    label: "Line spacing",
+    default: "default",
+  }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
   columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
   padding: field.select(padding, {label: "Padding", default: "md"}),

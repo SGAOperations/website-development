@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useRef, useTransition, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useTransition,
+  type ReactNode,
+} from "react";
 import { createUsePuck } from "@puckeditor/core";
 import { toast } from "sonner";
 import { getEditorUrl, getPreviewUrl } from "../../../../lib/editor-url";
@@ -68,7 +75,8 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
   };
 
   const save = useCallback(() => {
-    const { canSave, isArchived, isSaving, isDirty, data, documentId, documentName } = saveStateRef.current;
+    const { canSave, isArchived, isSaving, isDirty, data, documentId, documentName } =
+      saveStateRef.current;
 
     if (!canSave) {
       if (!isArchived && !isSaving && !isDirty) {
@@ -87,7 +95,11 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
       }
 
       addVersion(result.data.version);
-      window.history.replaceState(window.history.state, "", getEditorUrl(documentId, documentName, result.data.version.id));
+      window.history.replaceState(
+        window.history.state,
+        "",
+        getEditorUrl(documentId, documentName, result.data.version.id),
+      );
 
       const previewUrl = getPreviewUrl(documentId, documentName, result.data.version.id);
       toast.success("Saved", {

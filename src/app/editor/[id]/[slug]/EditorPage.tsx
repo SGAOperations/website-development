@@ -28,7 +28,7 @@ export default async function EditorPage({
   }
 
   const data = targetVersionId
-    ? (await getVersionContent(targetVersionId)) ?? createEmptyPuckData()
+    ? ((await getVersionContent(targetVersionId)) ?? createEmptyPuckData())
     : createEmptyPuckData();
 
   const versions = document.versions.map((v) => ({

@@ -1,7 +1,14 @@
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
-import { columnCount, gap, gridRows, type ColumnCount, type Spacing, type GridRows } from "@/lib/puck/tokens";
+import {
+  columnCount,
+  gap,
+  gridRows,
+  type ColumnCount,
+  type Spacing,
+  type GridRows,
+} from "@/lib/puck/tokens";
 import { getGridClassName } from "@/lib/puck/layout";
 
 type GridProps = {

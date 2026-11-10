@@ -24,7 +24,6 @@ export default async function EditorIndexPage() {
 
   return (
     <div className="p-6 flex flex-col gap-6">
-
       <RouteTable
         routes={routes.map((route) => ({
           id: route.id,

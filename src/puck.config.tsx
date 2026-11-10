@@ -7,15 +7,17 @@ import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Marquee } from "@/components/puck/blocks/marquee";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { NavBar } from "@/components/puck/blocks/nav-bar";
 import { Footer } from "@/components/puck/blocks/footer";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
+    layout: { title: "Layout", components: ["NavBar", "Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
     content: { title: "Content", components: ["Text", "Image"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
+    NavBar,
     Anchor,
     Group,
     Columns,

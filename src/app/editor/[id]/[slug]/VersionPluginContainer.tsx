@@ -13,14 +13,24 @@ import { toast } from "sonner";
 
 export function VersionPluginContainer() {
   const router = useRouter();
-  const { documentId, documentName, versionId, publishedVersionId, versions, isArchived, setPublishedVersionId } = useDocumentContext();
+  const {
+    documentId,
+    documentName,
+    versionId,
+    publishedVersionId,
+    versions,
+    isArchived,
+    setPublishedVersionId,
+  } = useDocumentContext();
   const { confirmDiscardChanges } = useUnsavedChangesContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
 
   const handlePublishVersion = (targetVersionId: number) => {
     startTransition(async () => {
-      const result = await runAction(publishVersionAction({ documentId, versionId: targetVersionId }));
+      const result = await runAction(
+        publishVersionAction({ documentId, versionId: targetVersionId }),
+      );
 
       if (result.success === false) {
         await alert(result.error);

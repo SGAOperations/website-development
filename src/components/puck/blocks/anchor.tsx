@@ -29,12 +29,21 @@ type AnchorProps = {
 const props = defineProps({
   content: field.slot(),
   anchorId: field.raw({ type: "text", label: "Anchor ID" }, ""),
-  paddingX: responsive.select(paddingX, { label: "Horizontal padding", default: "md" }),
-  paddingY: responsive.select(paddingY, { label: "Vertical padding", default: "lg" }),
+  paddingX: responsive.select(paddingX, {
+    label: "Horizontal padding",
+    default: "md",
+  }),
+  paddingY: responsive.select(paddingY, {
+    label: "Vertical padding",
+    default: "lg",
+  }),
   gap: responsive.select(gapToken, { label: "Gap", default: "md" }),
   width: field.select(width, { label: "Max width", default: "screen-lg" }),
   bgColor: field.select(bgColor, { label: "Background" }),
-  textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
+  textColor: field.select(textColor, {
+    label: "Text color",
+    default: "foreground",
+  }),
 });
 
 export const Anchor: ComponentConfig<AnchorProps> = {
@@ -58,22 +67,14 @@ export const Anchor: ComponentConfig<AnchorProps> = {
       resolveResponsive(px, paddingX.classes),
     );
 
-    const innerClasses = cn(
-      "mx-auto",
-      width.classes[w],
-    );
+    const innerClasses = cn("mx-auto", width.classes[w]);
 
-    const slotClasses = cn(
-      "flex flex-col w-full",
-      resolveResponsive(g, gapToken.classes),
-    );
+    const slotClasses = cn("flex flex-col w-full", resolveResponsive(g, gapToken.classes));
 
     return (
       <section id={anchorId || undefined} className={outerClasses}>
         <div className={innerClasses}>
-          {Content && (
-            <Content className={slotClasses} minEmptyHeight="200px" />
-          )}
+          {Content && <Content className={slotClasses} minEmptyHeight="200px" />}
         </div>
       </section>
     );

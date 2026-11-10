@@ -68,16 +68,8 @@ function PromptDialogContent({
         }}
       >
         <div className="grid gap-2">
-          {label && (
-            <label className="text-sm font-medium text-foreground">
-              {label}
-            </label>
-          )}
-          <Input
-            ref={inputRef}
-            defaultValue={defaultValue}
-            autoFocus
-          />
+          {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+          <Input ref={inputRef} defaultValue={defaultValue} autoFocus />
         </div>
         <DialogFooter className="mt-4">
           <Button type="button" variant="outline" onClick={() => onResolve(null)}>
@@ -105,37 +97,41 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     </AlertDialog>
   ));
 
-  const [confirmDialog, confirm] = useDialogPromise<ConfirmInput, boolean>(({ message, actionLabel, destructive }, resolve) => (
-    <AlertDialog open onOpenChange={() => resolve(false)}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription>{message}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => resolve(false)}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            variant={destructive ? "destructive" : "default"}
-            onClick={() => resolve(true)}
-          >
-            {actionLabel ?? "Confirm"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  ));
+  const [confirmDialog, confirm] = useDialogPromise<ConfirmInput, boolean>(
+    ({ message, actionLabel, destructive }, resolve) => (
+      <AlertDialog open onOpenChange={() => resolve(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>{message}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => resolve(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant={destructive ? "destructive" : "default"}
+              onClick={() => resolve(true)}
+            >
+              {actionLabel ?? "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    ),
+  );
 
-  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, label, defaultValue }, resolve, key) => (
-    <Dialog open onOpenChange={() => resolve(null)}>
-      <PromptDialogContent
-        key={key}
-        title={title}
-        label={label}
-        defaultValue={defaultValue}
-        onResolve={resolve}
-      />
-    </Dialog>
-  ));
+  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(
+    ({ title, label, defaultValue }, resolve, key) => (
+      <Dialog open onOpenChange={() => resolve(null)}>
+        <PromptDialogContent
+          key={key}
+          title={title}
+          label={label}
+          defaultValue={defaultValue}
+          onResolve={resolve}
+        />
+      </Dialog>
+    ),
+  );
 
   return (
     <DialogContext value={{ alert, confirm, prompt }}>

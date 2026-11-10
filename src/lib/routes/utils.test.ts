@@ -3,17 +3,12 @@ import { assertValidRoutePath } from "./utils";
 
 describe("assertValidRoutePath", () => {
   describe("valid paths", () => {
-    it.each([
-      "/",
-      "/about",
-      "/blog/my-post",
-      "/a/b/c",
-      "/page-1",
-      "/under_score",
-      "/123",
-    ])("accepts %j", (path) => {
-      expect(() => assertValidRoutePath(path)).not.toThrow();
-    });
+    it.each(["/", "/about", "/blog/my-post", "/a/b/c", "/page-1", "/under_score", "/123"])(
+      "accepts %j",
+      (path) => {
+        expect(() => assertValidRoutePath(path)).not.toThrow();
+      },
+    );
   });
 
   describe("invalid paths", () => {

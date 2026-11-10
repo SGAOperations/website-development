@@ -16,7 +16,10 @@ type KeybindCallback = (event: KeyboardEvent, keybind: Keybind) => void;
 function useStableTargetList<T>(values: readonly T[]) {
   const ref = useRef(values);
 
-  if (ref.current.length !== values.length || ref.current.some((value, index) => value !== values[index])) {
+  if (
+    ref.current.length !== values.length ||
+    ref.current.some((value, index) => value !== values[index])
+  ) {
     ref.current = values;
   }
 
@@ -67,7 +70,9 @@ export function useKeybind(
     }
 
     const fallbackTarget = typeof document === "undefined" ? null : document;
-    const resolved = [...new Set(stableTargets.map((node) => node ?? fallbackTarget).filter(Boolean))] as EventTarget[];
+    const resolved = [
+      ...new Set(stableTargets.map((node) => node ?? fallbackTarget).filter(Boolean)),
+    ] as EventTarget[];
 
     if (resolved.length === 0) {
       return;

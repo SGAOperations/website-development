@@ -9,18 +9,18 @@ import { mediaField } from "@/components/puck/fields/media-field";
 import { useMedia } from "@/components/puck/media-context";
 
 const aspectRatio = defineToken({
-  auto:   { label: "Auto", classes: "" },
+  auto: { label: "Auto", classes: "" },
   square: { label: "Square (1:1)", classes: "aspect-square" },
-  photo:  { label: "Photo (4:3)", classes: "aspect-[4/3]" },
-  video:  { label: "Video (16:9)", classes: "aspect-video" },
-  wide:   { label: "Wide (21:9)", classes: "aspect-[21/9]" },
+  photo: { label: "Photo (4:3)", classes: "aspect-[4/3]" },
+  video: { label: "Video (16:9)", classes: "aspect-video" },
+  wide: { label: "Wide (21:9)", classes: "aspect-[21/9]" },
 });
 type AspectRatio = TokenValue<typeof aspectRatio>;
 
 const objectFit = defineToken({
-  cover:   { label: "Cover", classes: "object-cover" },
+  cover: { label: "Cover", classes: "object-cover" },
   contain: { label: "Contain", classes: "object-contain" },
-  fill:    { label: "Fill", classes: "object-fill" },
+  fill: { label: "Fill", classes: "object-fill" },
 });
 type ObjectFit = TokenValue<typeof objectFit>;
 
@@ -40,13 +40,7 @@ const props = defineProps({
   radius: field.select(radius, { label: "Corners" }),
 });
 
-function MediaRenderer({
-  image,
-  alt,
-  objectFit: fit,
-  aspectRatio: ratio,
-  radius: r,
-}: MediaProps) {
+function MediaRenderer({ image, alt, objectFit: fit, aspectRatio: ratio, radius: r }: MediaProps) {
   const { url, mediaId } = image ?? {};
   const { getMedia } = useMedia();
   const media = mediaId !== undefined ? getMedia(mediaId) : undefined;
@@ -60,12 +54,7 @@ function MediaRenderer({
 
   if (!url) {
     return (
-      <div
-        className={cn(
-          wrapperClass,
-          "flex min-h-32 items-center justify-center bg-muted",
-        )}
-      >
+      <div className={cn(wrapperClass, "flex min-h-32 items-center justify-center bg-muted")}>
         <ImageIcon className="size-8 text-muted-foreground" />
       </div>
     );
@@ -85,11 +74,7 @@ function MediaRenderer({
 
   return (
     <div className={wrapperClass}>
-      <img
-        src={url}
-        alt={alt}
-        className={cn("h-full w-full", objectFit.classes[fit])}
-      />
+      <img src={url} alt={alt} className={cn("h-full w-full", objectFit.classes[fit])} />
     </div>
   );
 }

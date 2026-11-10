@@ -18,7 +18,7 @@ const padding = defineToken({
   md: { label: "Medium", classes: "p-4" },
 });
 
-padding.classes // → { sm: "p-2", md: "p-4" }
+padding.classes; // → { sm: "p-2", md: "p-4" }
 ```
 
 You can add extra columns beyond `classes` — any property besides `label` becomes a `Record<K, V>` on the token:
@@ -29,8 +29,8 @@ const spacing = defineToken({
   lg: { label: "Large", classes: "gap-6", px: 24 },
 });
 
-spacing.classes // → { sm: "gap-2", lg: "gap-6" }
-spacing.px      // → { sm: 8, lg: 24 }
+spacing.classes; // → { sm: "gap-2", lg: "gap-6" }
+spacing.px; // → { sm: 8, lg: 24 }
 ```
 
 **Plain tokens** use simple string values (key = value, string = editor label). Useful when there are no Tailwind classes to map to:
@@ -38,15 +38,15 @@ spacing.px      // → { sm: 8, lg: 24 }
 ```ts
 const variant = defineToken({ default: "Default", outline: "Outline" });
 
-variant.options      // → [{ value: "default", label: "Default" }, ...]
-variant.defaultValue // → "default"
+variant.options; // → [{ value: "default", label: "Default" }, ...]
+variant.defaultValue; // → "default"
 ```
 
 The first key is the default unless you pass an explicit second argument:
 
 ```ts
 const size = defineToken({ sm: "Small", md: "Medium", lg: "Large" }, "md");
-size.defaultValue // → "md"
+size.defaultValue; // → "md"
 ```
 
 Use `TokenValue<T>` to extract a token's value union for type annotations:
@@ -69,12 +69,12 @@ type ResponsiveValue<T> = { phone: T } & Partial<Record<"md" | "lg", T>>;
 
 **Helper functions** for working with responsive values:
 
-| Function | Purpose |
-|---|---|
-| `resolveAt(value, breakpoint)` | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ phone: "sm", lg: "lg" }, "md")` → `"sm"` |
-| `hasOverride(value)` | Returns `true` if any non-phone overrides are set |
-| `map(value, fn)` | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())` |
-| `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override |
+| Function                           | Purpose                                                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `resolveAt(value, breakpoint)`     | Returns the effective value at a breakpoint, falling back to the nearest smaller one. `resolveAt({ phone: "sm", lg: "lg" }, "md")` → `"sm"` |
+| `hasOverride(value)`               | Returns `true` if any non-phone overrides are set                                                                                           |
+| `map(value, fn)`                   | Transforms each set breakpoint. `map(value, (v) => v.toUpperCase())`                                                                        |
+| `setAt(value, breakpoint, newVal)` | Returns a new `ResponsiveValue` with one breakpoint changed. Pass `undefined` to clear an override                                          |
 
 These helpers are for component logic — see [Rendering](#4-rendering) for how responsive values become Tailwind classes.
 
@@ -90,8 +90,8 @@ const props = defineProps({
   content: field.slot(),
 
   // Static select / radio — token-backed, single value
-  radius:  field.select(radius, { label: "Corners" }),
-  layout:  field.radio(layout, { label: "Layout" }),
+  radius: field.select(radius, { label: "Corners" }),
+  layout: field.radio(layout, { label: "Layout" }),
 
   // Responsive — per-breakpoint picker, also token-backed
   padding: responsive.select(padding, { label: "Padding" }),
@@ -106,24 +106,24 @@ const props = defineProps({
   }),
 
   // Raw — any Puck field descriptor, for things tokens don't cover
-  url:     field.raw({ type: "text", label: "URL" }, ""),
+  url: field.raw({ type: "text", label: "URL" }, ""),
 });
 ```
 
 **Defaults.** Every builder falls back to the token's first key if no `default` is given. You can override with a scalar or a full responsive object:
 
 ```ts
-responsive.select(columnCount, { label: "Columns", default: "3" })
-responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "3" } })
-responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 })
-responsive.number({ label: "Rows", default: { phone: 1, md: 3 } })
+responsive.select(columnCount, { label: "Columns", default: "3" });
+responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "3" } });
+responsive.number({ label: "Rows", default: 2, min: 1, max: 6, step: 1 });
+responsive.number({ label: "Rows", default: { phone: 1, md: 3 } });
 ```
 
 **Slots** accept an optional allow/disallow list to restrict which child components can be dropped in:
 
 ```ts
-field.slot({ allow: ["Card", "Button"] })
-field.slot({ disallow: ["Anchor"] })
+field.slot({ allow: ["Card", "Button"] });
+field.slot({ disallow: ["Anchor"] });
 ```
 
 The same token definition works for both static and responsive use. Numeric responsive fields do not need a token.
@@ -145,7 +145,7 @@ To add a new responsive field kind:
 
 1. Add the descriptor type and factory to `kinds.ts`.
 2. Add a `<kind>-field.tsx` renderer and register it in `client.tsx`.
-4. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
+3. Optionally add a convenience builder in `src/lib/puck/define-props.ts`.
 
 ### 4. Rendering
 
@@ -153,10 +153,10 @@ Static tokens look up the class map directly. Responsive tokens go through `reso
 
 ```ts
 // Static — direct lookup
-radius.classes[r]             // → "rounded-md"
+radius.classes[r]; // → "rounded-md"
 
 // Responsive — produces prefixed classes for each set breakpoint
-resolveResponsive(padding, paddingToken.classes)
+resolveResponsive(padding, paddingToken.classes);
 // { base: "sm", md: "lg" } → "p-2 md:p-6"
 ```
 
@@ -168,8 +168,8 @@ Combine everything with `cn()` (re-exported from `src/lib/utils`):
 ```ts
 const classes = cn(
   "w-full",
-  bgColor.classes[bg],           // static
-  resolveResponsive(py, paddingY.classes),  // responsive
+  bgColor.classes[bg], // static
+  resolveResponsive(py, paddingY.classes), // responsive
 );
 ```
 
@@ -198,9 +198,9 @@ If you need a new token, add it to `tokens.ts` and export a type alias:
 
 ```ts
 export const fontSize = defineToken({
-  sm:   { label: "Small",  classes: "text-sm" },
-  base: { label: "Base",   classes: "text-base" },
-  lg:   { label: "Large",  classes: "text-lg" },
+  sm: { label: "Small", classes: "text-sm" },
+  base: { label: "Base", classes: "text-base" },
+  lg: { label: "Large", classes: "text-lg" },
 });
 
 export type FontSize = TokenValue<typeof fontSize>;
@@ -227,7 +227,13 @@ type CardProps = {
 const props = defineProps({
   content: field.slot(),
   padding: responsive.select(padding, { label: "Padding", default: "md" }),
-  columns: responsive.number({ label: "Columns", default: { base: 1, md: 2 }, min: 1, max: 4, step: 1 }),
+  columns: responsive.number({
+    label: "Columns",
+    default: { base: 1, md: 2 },
+    min: 1,
+    max: 4,
+    step: 1,
+  }),
   bgColor: field.select(bgColor, { label: "Background" }),
   title: field.raw({ type: "text", label: "Title" }, ""),
 });
