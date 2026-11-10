@@ -3,6 +3,7 @@ import {
   getGroupSlotClassName,
   getGroupSurfaceClassName,
   getGridClassName,
+  getMarqueeItemClassName,
   getMaxCols,
 } from "./layout";
 
@@ -10,8 +11,8 @@ describe("layout helpers", () => {
   it("compose group surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
-      padding: { phone: "8" as const, md: "24" as const },
-      gap: { phone: "8" as const, lg: "32" as const },
+      padding: { phone: "8" as const, md: "16" as const },
+      gap: { phone: "16" as const, lg: "32" as const },
       align: "end" as const,
       justify: "center" as const,
       width: "prose" as const,
@@ -22,10 +23,10 @@ describe("layout helpers", () => {
     };
 
     expect(getGroupSurfaceClassName(style)).toBe(
-      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-6",
+      "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getGroupSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-2 lg:gap-8",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-8",
     );
   });
 
@@ -34,11 +35,27 @@ describe("layout helpers", () => {
       getGridClassName({
         columns: { phone: "1", md: "3" },
         rows: { phone: "auto", md: "2" },
-        gap: { phone: "8" },
+        gap: { phone: "16" },
         empty: true,
       }),
     ).toBe(
-      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-2",
+      "grid w-full min-h-[200px] grid-cols-1 md:grid-cols-3 grid-rows-none auto-rows-auto overflow-visible md:grid-rows-2 md:auto-rows-[0] md:overflow-hidden gap-4",
+    );
+  });
+
+  it("builds marquee item classes", () => {
+    const style = {
+      speed: "medium" as const,
+      direction: "ltr" as const,
+      gap: "sm" as const,
+      rowPadding: "lg" as const,
+    };
+    const item =
+      "marquee-item flex min-w-full shrink-0 items-center text-center gap-4 pr-4 py-12";
+
+    expect(getMarqueeItemClassName(style)).toBe(item); // static
+    expect(getMarqueeItemClassName({ ...style, animated: true })).toBe(
+      `${item} [animation:marquee_30s_linear_infinite] [animation-direction:reverse]! group-hover:[animation-play-state:paused] motion-reduce:[animation:none]`,
     );
   });
 

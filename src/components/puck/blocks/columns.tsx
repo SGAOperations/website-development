@@ -28,7 +28,7 @@ const columnSlotDefaults = Object.fromEntries(
 
 const props = defineProps({
   columns: responsive.select(columnCount, { label: "Columns", default: { phone: "1", md: "2" } }),
-  gap: responsive.select(gap, { label: "Gap", default: "md" }),
+  gap: responsive.select(gap, { label: "Gap", default: "16" }),
 });
 
 export const Columns: ComponentConfig<ColumnsProps> = {
