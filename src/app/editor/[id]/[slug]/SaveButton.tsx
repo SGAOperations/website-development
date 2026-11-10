@@ -5,9 +5,9 @@ import { useDocumentContext } from "./document-context";
 import { useEditorSaveContext } from "./editor-save-context";
 
 export function SaveButton() {
-  const { isArchived } = useDocumentContext();
+  const { isArchived, isVersionArchived } = useDocumentContext();
   const { canSave, isSaving, save } = useEditorSaveContext();
-  const isDisabled = isSaving || isArchived;
+  const isDisabled = isSaving || isArchived || isVersionArchived;
 
   return (
     <button
@@ -18,7 +18,7 @@ export function SaveButton() {
         canSave ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-600 hover:bg-gray-700",
       )}
     >
-      {isArchived ? "Archived" : isSaving ? "Saving..." : "Save"}
+      {isArchived || isVersionArchived ? "Archived" : isSaving ? "Saving..." : "Save"}
     </button>
   );
 }

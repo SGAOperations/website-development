@@ -8,6 +8,7 @@ import { validateName } from "../utils";
 import type {
   ActionResult,
   ArchiveDocumentInput,
+  ArchiveVersionInput,
   CreateDocumentInput,
   DuplicateDocumentInput,
   RenameInput,
@@ -40,21 +41,16 @@ async function createVersion(documentId: number, content: Data) {
   });
 }
 
-async function publishVersion(
-  documentId: number,
-  versionId: number
-): Promise<void> {
+async function publishVersion(documentId: number, versionId: number): Promise<void> {
   const version = await prisma.version.findFirst({
-    where: {
-      id: versionId,
-      documentId: documentId,
-    },
+    where: { id: versionId, documentId },
   });
-
   if (!version) {
     throw new Error("Version not found or does not belong to the specified document");
   }
-
+  if (version.archivedAt !== null) {
+    throw new Error("Cannot publish an archived version");
+  }
   await prisma.document.update({
     where: { id: documentId },
     data: { publishedVersionId: versionId },
@@ -111,6 +107,7 @@ export async function saveVersionAction(
         id: result.id,
         documentId: result.documentId,
         createdAt: result.createdAt,
+        archivedAt: result.archivedAt,
       },
     };
   });
@@ -122,6 +119,51 @@ export async function publishVersionAction(
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
     await publishVersion(input.documentId, input.versionId);
+  });
+}
+
+async function fetchVersionForDocument(documentId: number, versionId: number) {
+  const version = await prisma.version.findFirst({
+    where: { id: versionId, documentId },
+    select: { archivedAt: true },
+  });
+
+  if (!version) {
+    throw new Error("Version not found or does not belong to the specified document");
+  }
+
+  return version;
+}
+
+export async function archiveVersionAction(
+  input: ArchiveVersionInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await fetchAndAssertNotArchived(input.documentId);
+    const version = await fetchVersionForDocument(input.documentId, input.versionId);
+    if (version.archivedAt !== null) {
+      throw new Error("Version is already archived");
+    }
+    await prisma.version.update({
+      where: { id: input.versionId },
+      data: { archivedAt: new Date() },
+    });
+  });
+}
+
+export async function unarchiveVersionAction(
+  input: ArchiveVersionInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await fetchAndAssertNotArchived(input.documentId);
+    const version = await fetchVersionForDocument(input.documentId, input.versionId);
+    if (version.archivedAt === null) {
+      throw new Error("Version is not archived");
+    }
+    await prisma.version.update({
+      where: { id: input.versionId },
+      data: { archivedAt: null },
+    });
   });
 }
 

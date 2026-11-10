@@ -1,4 +1,5 @@
-import { Eye } from "lucide-react";
+import { Archive, ArchiveRestore, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { cn } from "../../../../lib/utils";
 import type { Version } from "../../../../lib/types";
 import { formatRelativeTime } from "@/lib/format";
@@ -10,9 +11,9 @@ export interface VersionListPanelProps {
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
-  getPreviewUrlForVersion: (versionId: number) => string;
-  isPublishing?: boolean;
-  isPublishDisabled?: boolean;
+  onArchiveVersion: (versionId: number) => void;
+  onUnarchiveVersion: (versionId: number) => void;
+  isArchiveDisabled?: boolean;
 }
 
 function formatVersionLabel(version: Version) {
@@ -30,18 +31,18 @@ function VersionEntry({
   isPublished,
   onLoad,
   onPublish,
-  getPreviewUrlForVersion,
-  isPublishing,
-  isPublishDisabled,
+  onArchive,
+  onUnarchive,
+  isArchiveDisabled,
 }: {
   version: Version;
   isCurrent: boolean;
   isPublished: boolean;
   onLoad: () => void;
   onPublish: () => void;
-  getPreviewUrlForVersion: (versionId: number) => string;
-  isPublishing?: boolean;
-  isPublishDisabled?: boolean;
+  onArchive: () => void;
+  onUnarchive: () => void;
+  isArchiveDisabled?: boolean;
 }) {
   const { relative, absolute } = formatVersionLabel(version);
 
@@ -71,26 +72,32 @@ function VersionEntry({
             </span>
           ) : (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onPublish();
-              }}
-              disabled={isPublishing || isPublishDisabled}
+              onClick={(e) => { e.stopPropagation(); onPublish(); }}
+              disabled={isArchiveDisabled || version.archivedAt !== null}
               className="px-2 py-0.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               Publish
             </button>
           )}
-          <a
-            href={getPreviewUrlForVersion(version.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 transition"
-            title="Preview"
-          >
-            <Eye size={14} />
-          </a>
+          {version.archivedAt === null ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); onArchive(); }}
+              disabled={isArchiveDisabled}
+              className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+              title="Archive"
+            >
+              <Archive size={14} />
+            </button>
+          ) : (
+            <button
+              onClick={(e) => { e.stopPropagation(); onUnarchive(); }}
+              disabled={isArchiveDisabled}
+              className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+              title="Unarchive"
+            >
+              <ArchiveRestore size={14} />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -104,15 +111,32 @@ export function VersionListPanel({
   publishedVersionId,
   onLoadVersion,
   onPublishVersion,
-  getPreviewUrlForVersion,
-  isPublishing,
-  isPublishDisabled,
+  onArchiveVersion,
+  onUnarchiveVersion,
+  isArchiveDisabled,
 }: VersionListPanelProps) {
+  const [showArchived, setShowArchived] = useState(false);
+  const activeVersions = versions.filter((version) => version.archivedAt === null);
+  const archivedVersions = versions.filter((version) => version.archivedAt !== null);
+
+  const renderVersion = (version: Version) => (
+    <VersionEntry
+      key={version.id}
+      version={version}
+      isCurrent={version.id === currentVersionId}
+      isPublished={version.id === publishedVersionId}
+      onLoad={() => onLoadVersion(version.id)}
+      onPublish={() => onPublishVersion(version.id)}
+      onArchive={() => onArchiveVersion(version.id)}
+      onUnarchive={() => onUnarchiveVersion(version.id)}
+      isArchiveDisabled={isArchiveDisabled}
+    />
+  );
 
   return (
     <div className="">
       <div className="text-xs font-semibold text-gray-600 mb-2">
-        Versions ({versions.length})
+        Versions ({activeVersions.length})
       </div>
 
       {isLoading ?
@@ -127,19 +151,20 @@ export function VersionListPanel({
       ) :
       (
         <div className="space-y-1 max-h-96">
-          {versions.map((version) => (
-            <VersionEntry
-              key={version.id}
-              version={version}
-              isCurrent={version.id === currentVersionId}
-              isPublished={version.id === publishedVersionId}
-              onLoad={() => onLoadVersion(version.id)}
-              onPublish={() => onPublishVersion(version.id)}
-              getPreviewUrlForVersion={getPreviewUrlForVersion}
-              isPublishing={isPublishing}
-              isPublishDisabled={isPublishDisabled}
-            />
-          ))}
+          {activeVersions.map(renderVersion)}
+          {archivedVersions.length > 0 && (
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowArchived((open) => !open)}
+                className="flex items-center gap-1 text-xs font-semibold text-gray-500"
+              >
+                <ChevronDown className={cn("h-3 w-3 transition-transform", showArchived && "rotate-180")} />
+                Archived ({archivedVersions.length})
+              </button>
+              {showArchived && <div className="mt-1 space-y-1">{archivedVersions.map(renderVersion)}</div>}
+            </div>
+          )}
         </div>
       )}
     </div>

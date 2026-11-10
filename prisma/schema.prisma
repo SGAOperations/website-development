@@ -26,6 +26,7 @@ model Version {
   publishedDocumentOf Document? @relation("PublishedVersion")
   content             Json
   createdAt           DateTime  @default(now())
+  archivedAt          DateTime?
 }
 
 model Media {
