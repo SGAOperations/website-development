@@ -27,6 +27,7 @@ type PromptInput = {
   title: string;
   label?: string;
   defaultValue?: string;
+  maxLength?: number;
 };
 
 type ConfirmInput = {
@@ -47,11 +48,13 @@ function PromptDialogContent({
   title,
   label,
   defaultValue,
+  maxLength,
   onResolve,
 }: {
   title: string;
   label?: string;
   defaultValue?: string;
+  maxLength?: number;
   onResolve: (value: string | null) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,6 +79,7 @@ function PromptDialogContent({
           <Input
             ref={inputRef}
             defaultValue={defaultValue}
+            maxLength={maxLength}
             autoFocus
           />
         </div>
@@ -125,13 +129,14 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     </AlertDialog>
   ));
 
-  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, label, defaultValue }, resolve, key) => (
+  const [promptDialog, prompt] = useDialogPromise<PromptInput, string | null>(({ title, label, defaultValue, maxLength }, resolve, key) => (
     <Dialog open onOpenChange={() => resolve(null)}>
       <PromptDialogContent
         key={key}
         title={title}
         label={label}
         defaultValue={defaultValue}
+        maxLength={maxLength}
         onResolve={resolve}
       />
     </Dialog>
