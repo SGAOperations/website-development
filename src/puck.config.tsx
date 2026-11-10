@@ -8,11 +8,12 @@ import { PuckButton } from "@/components/puck/blocks/button";
 import { Marquee } from "@/components/puck/blocks/marquee";
 import { Anchor } from "@/components/puck/blocks/anchor";
 import { Footer } from "@/components/puck/blocks/footer";
+import { AccordionBlock } from "@/components/puck/blocks/accordion";
 
 export const config = {
   categories: {
     layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
-    content: { title: "Content", components: ["Text", "Image"] },
+    content: { title: "Content", components: ["Text", "Image", "Accordion"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
@@ -24,6 +25,7 @@ export const config = {
     Footer,
     Text: RichTextComponent,
     Image: Media,
+    Accordion: AccordionBlock,
     Button: PuckButton,
   },
 } satisfies Config;
