@@ -11,8 +11,8 @@ describe("layout helpers", () => {
   it("compose group surface and slot classes from token selections", () => {
     const style = {
       layout: "row" as const,
-      padding: { phone: "sm" as const, md: "lg" as const },
-      gap: { phone: "sm" as const, lg: "xl" as const },
+      padding: { phone: "8" as const, md: "16" as const },
+      gap: { phone: "16" as const, lg: "32" as const },
       align: "end" as const,
       justify: "center" as const,
       width: "prose" as const,
@@ -26,7 +26,7 @@ describe("layout helpers", () => {
       "w-full max-w-prose bg-background text-foreground rounded-md shadow-sm p-2 md:p-4",
     );
     expect(getGroupSlotClassName(style)).toBe(
-      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-14",
+      "w-full flex flex-row flex-wrap items-end justify-center gap-4 lg:gap-8",
     );
   });
 
@@ -35,7 +35,7 @@ describe("layout helpers", () => {
       getGridClassName({
         columns: { phone: "1", md: "3" },
         rows: { phone: "auto", md: "2" },
-        gap: { phone: "sm" },
+        gap: { phone: "16" },
         empty: true,
       }),
     ).toBe(

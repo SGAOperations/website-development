@@ -9,7 +9,8 @@ import {
     textAlign,
     type TextAlign,
     padding,
-    Spacing,
+    Padding,
+    Gap,
     Layout,
     CrossAxisAlign,
     Justify,
@@ -37,9 +38,9 @@ type FooterProps = {
     titleColor : Color;
     textColor : Color;
     backgroundColor : Color;
-    padding : ResponsiveValue<Spacing> 
+    padding : ResponsiveValue<Padding> 
     layout: Layout;
-    gap: ResponsiveValue<Spacing>;
+    gap: ResponsiveValue<Gap>;
     slotAlign: CrossAxisAlign;
     justify: Justify;
     numEmails: EmailCount;
@@ -62,11 +63,11 @@ const props = defineProps({
     titleColor : field.select(textColor, {label: "Title Text Color", default: "sga-red"}),
     textColor: field.select(textColor, {label: "Body Text Color", default: "background"}),
     backgroundColor: field.select(bgColor, {label: "Background Color", default: "foreground"}),
-    padding: responsive.select(padding, { label: "Padding", default: "md"}),
+    padding: responsive.select(padding, { label: "Padding", default: "16"}),
     layout : field.radio(layout, {label: "Layout", default: "row"}),
     justify : field.radio(justify, {label: "Justify", default: "center"}),
     slotAlign : field.radio(crossAxisAlign, {label: "Align items"}),
-    gap: responsive.select(gapToken, { label: "Icon Gap", default: "md" }),
+    gap: responsive.select(gapToken, { label: "Icon Gap", default: "16" }),
     numEmails : field.select(emailCount, {label: "Number of Emails", default: "3"}),
     email1: field.raw({type: "text", label: "First email", contentEditable: true },"Contact: sga@northeastern.edu"),
     email2: field.raw({type: "text", label: "Second email", contentEditable: true}, "Media Inquiries: sgaExternalAffairs@northeastern.edu"),
