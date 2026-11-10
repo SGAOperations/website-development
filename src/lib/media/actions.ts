@@ -11,8 +11,6 @@ import type {
 } from "../types";
 import { wrapAction } from "../utils";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB
-
 export async function uploadMediaAction(
   formData: FormData
 ): Promise<ActionResult<Media & { url: string }>> {
@@ -25,10 +23,6 @@ export async function uploadMediaAction(
 
     if (file.size === 0) {
       throw new Error("File is empty");
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      throw new Error(`File size exceeds 1GB limit. File size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
     }
 
     const ext = file.name.includes(".") ? `.${file.name.split(".").pop()}` : "";
