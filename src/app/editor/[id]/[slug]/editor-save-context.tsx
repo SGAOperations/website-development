@@ -11,6 +11,7 @@ import { useDialogs } from "@/components/ui/dialog-provider";
 import { useDocumentContext } from "./document-context";
 
 const usePuck = createUsePuck();
+const VERSION_NAME_MAX_LENGTH = 25;
 
 const SAVE_KEYBINDS = [
   { key: "s", ctrlKey: true },
@@ -44,7 +45,7 @@ function useSaveHotkey(save: () => void, target?: Document | null, enabled = tru
 export function EditorSaveProvider({ children }: { children: ReactNode }) {
   const data = usePuck((s) => s.appState.data);
   const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
-  const { alert } = useDialogs();
+  const { alert, prompt} = useDialogs();
   const [isSaving, startTransition] = useTransition();
   const canSave = !isArchived && !isSaving && isDirty;
   const saveStateRef = useRef({
@@ -67,7 +68,7 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
     documentName,
   };
 
-  const save = useCallback(() => {
+  const save = useCallback(async () => {
     const { canSave, isArchived, isSaving, isDirty, data, documentId, documentName } = saveStateRef.current;
 
     if (!canSave) {
@@ -78,8 +79,28 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const input = await prompt({
+      title: "Save Version",
+      label: `Version name (max ${VERSION_NAME_MAX_LENGTH} characters)`,
+      maxLength: VERSION_NAME_MAX_LENGTH,
+    });
+
+    if (input === null) return;
+
+    const versionName = input.trim();
+
+    if (!versionName) {
+      toast.error("Version name needed!");
+      return;
+    }
+
+    if (versionName.length > VERSION_NAME_MAX_LENGTH) {
+      toast.error(`Version name must be ${VERSION_NAME_MAX_LENGTH} characters or fewer.`);
+      return;
+    }
+
     startTransition(async () => {
-      const result = await runAction(saveVersionAction({ documentId, content: data }));
+      const result = await runAction(saveVersionAction({ documentId, content: data,}));
 
       if (result.success === false) {
         await alert(result.error);
@@ -99,7 +120,7 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
         },
       });
     });
-  }, [addVersion, alert, startTransition]);
+  }, [addVersion, alert, prompt, startTransition]);
 
   useSaveHotkey(save);
 
