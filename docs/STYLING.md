@@ -157,7 +157,7 @@ radius.classes[r]; // → "rounded-md"
 
 // Responsive — produces prefixed classes for each set breakpoint
 resolveResponsive(padding, paddingToken.classes);
-// { base: "sm", md: "lg" } → "p-2 md:p-6"
+// { phone: "sm", md: "lg" } → "p-2 md:p-6"
 ```
 
 Multi-class values get each utility prefixed individually:
@@ -199,7 +199,7 @@ If you need a new token, add it to `tokens.ts` and export a type alias:
 ```ts
 export const fontSize = defineToken({
   sm: { label: "Small", classes: "text-sm" },
-  base: { label: "Base", classes: "text-base" },
+  phone: { label: "Phone", classes: "text-phone" },
   lg: { label: "Large", classes: "text-lg" },
 });
 
@@ -229,7 +229,7 @@ const props = defineProps({
   padding: responsive.select(padding, { label: "Padding", default: "md" }),
   columns: responsive.number({
     label: "Columns",
-    default: { base: 1, md: 2 },
+    default: { phone: 1, md: 2 },
     min: 1,
     max: 4,
     step: 1,
@@ -254,7 +254,7 @@ export const Card: ComponentConfig<CardProps> = {
   render: ({ content: Content, padding: pad, columns, bgColor: bg, title }) => (
     <div
       className={cn(bgColor.classes[bg], resolveResponsive(pad, padding.classes))}
-      style={{ columns: resolveAt(columns, "base") }}
+      style={{ columns: resolveAt(columns, "phone") }}
     >
       {title && <h3>{title}</h3>}
       {Content && <Content />}

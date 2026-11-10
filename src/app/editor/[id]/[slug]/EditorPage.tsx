@@ -6,6 +6,7 @@ import { getVersionContent } from "../../../../lib/documents/queries";
 import { resolveEditorVersionId } from "../../../../lib/documents/version-selection";
 import { getMediaFiles } from "../../../../lib/media/queries";
 import { createEmptyPuckData } from "../../../../lib/puck/utils";
+import { refreshMediaUrls } from "../../../../lib/media/refresh-urls";
 
 export default async function EditorPage({
   documentId,
@@ -27,10 +28,14 @@ export default async function EditorPage({
     notFound();
   }
 
-  const data = targetVersionId
+  const savedData = targetVersionId
     ? ((await getVersionContent(targetVersionId)) ?? createEmptyPuckData())
     : createEmptyPuckData();
 
+  // Saved image URLs go stale when a media file is renamed. Rebuild them from
+  // mediaId here, on the server, so the client editor never sees stale URLs.
+  // (The client can't do this itself: it needs Prisma.)
+  const data = await refreshMediaUrls(savedData);
   const versions = document.versions.map((v) => ({
     id: v.id,
     documentId: v.documentId,

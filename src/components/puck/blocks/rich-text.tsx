@@ -16,7 +16,8 @@ import {
   type LineSpacing,
   type TextAlign,
   type TextColumnCount,
-  type Spacing,
+  type ColumnGap,
+  type Padding,
 } from "@/lib/puck/tokens";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 
@@ -26,8 +27,8 @@ type RichTextProps = {
   align: TextAlign;
   lineSpacing: LineSpacing;
   columns: ResponsiveValue<TextColumnCount>;
-  columnGap: ResponsiveValue<Spacing>;
-  padding: Spacing;
+  columnGap: ResponsiveValue<ColumnGap>;
+  padding: ResponsiveValue<Padding>;
   backgroundColor: Color;
   fontFamily: FontFamily;
 };
@@ -37,18 +38,12 @@ const props = defineProps({
     { type: "richtext", contentEditable: true },
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   ),
-  textColor: field.select(textColor, {
-    label: "Text color",
-    default: "foreground",
-  }),
+  textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
   align: field.radio(textAlign, { label: "Text align", default: "left" }),
-  lineSpacing: field.select(lineSpacing, {
-    label: "Line spacing",
-    default: "default",
-  }),
+  lineSpacing: field.select(lineSpacing, { label: "Line spacing", default: "default" }),
   columns: responsive.select(textColumns, { label: "Columns", default: "1" }),
-  columnGap: responsive.select(columnGap, { label: "Column gap", default: "md" }),
-  padding: field.select(padding, { label: "Padding", default: "md" }),
+  columnGap: responsive.select(columnGap, { label: "Column gap", default: "16" }),
+  padding: responsive.select(padding, { label: "Padding", default: "12" }),
   backgroundColor: field.select(bgColor, { label: "Background Color", default: "background" }),
   fontFamily: field.select(fontFamily, { label: "Font", default: "inter" }),
 });
@@ -74,7 +69,7 @@ export const RichTextComponent: ComponentConfig<RichTextProps> = {
           textColor.classes[tc],
           textAlign.classes[align],
           lineSpacing.classes[ls],
-          padding.classes[p],
+          resolveResponsive(p, padding.classes),
           bgColor.classes[bg],
           fontFamily.classes[f],
           resolveResponsive(columns, textColumns.classes),

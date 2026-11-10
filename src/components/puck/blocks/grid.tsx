@@ -6,7 +6,7 @@ import {
   gap,
   gridRows,
   type ColumnCount,
-  type Spacing,
+  type Gap,
   type GridRows,
 } from "@/lib/puck/tokens";
 import { getGridClassName } from "@/lib/puck/layout";
@@ -15,14 +15,14 @@ type GridProps = {
   content: Slot;
   columns: ResponsiveValue<ColumnCount>;
   rows: ResponsiveValue<GridRows>;
-  gap: ResponsiveValue<Spacing>;
+  gap: ResponsiveValue<Gap>;
 };
 
 const props = defineProps({
   content: field.slot(),
   columns: responsive.select(columnCount, { label: "Columns", default: "3" }),
   rows: responsive.select(gridRows, { label: "Rows", default: "auto" }),
-  gap: responsive.select(gap, { label: "Gap", default: "md" }),
+  gap: responsive.select(gap, { label: "Gap", default: "16" }),
 });
 
 export const Grid: ComponentConfig<GridProps> = {

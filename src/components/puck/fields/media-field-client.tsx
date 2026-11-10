@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { FieldLabel } from "@puckeditor/core";
-import { FileIcon, X } from "lucide-react";
+import { ImageIcon, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useMedia, type MediaWithUrl } from "@/components/puck/media-context";
 import { uploadMediaAction } from "@/lib/media/actions";
@@ -11,17 +11,7 @@ import { toast } from "sonner";
 import { ResourceCard, NewResourceCard } from "@/app/editor/ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { MediaValue } from "./media-field";
-
-function MediaPreview({ media }: { media: MediaWithUrl }) {
-  const isVideo = media.contentType?.startsWith("video/");
-
-  if (isVideo) {
-    return <video src={media.url} className="h-full w-full object-cover" controls />;
-  }
-
-  return <img src={media.url} alt={media.name} className="h-full w-full object-cover" />;
-}
+import type { ImageValue } from "./media-field";
 
 function MediaPickerDialog({
   open,
@@ -32,20 +22,11 @@ function MediaPickerDialog({
   onSelect: (media: MediaWithUrl) => void;
   onClose: () => void;
 }) {
-  const { media, addMedia } = useMedia();
+  const { imageMedia, addMedia } = useMedia();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, startTransition] = useTransition();
 
   function handleUpload(file: File) {
-    const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB
-
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error(
-        `File size exceeds 1GB limit. File size: ${(file.size / (1024 * 1024)).toFixed(2)}MB`,
-      );
-      return;
-    }
-
     const formData = new FormData();
     formData.append("file", file);
     startTransition(async () => {
@@ -63,7 +44,7 @@ function MediaPickerDialog({
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Choose media</DialogTitle>
+          <DialogTitle>Choose image</DialogTitle>
         </DialogHeader>
 
         <div className="resource-card-grid grid max-h-96 gap-2 overflow-y-auto p-0.5">
@@ -76,7 +57,7 @@ function MediaPickerDialog({
             <input
               ref={inputRef}
               type="file"
-              accept="image/*,video/*"
+              accept="image/*"
               hidden
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -86,7 +67,7 @@ function MediaPickerDialog({
             />
           </NewResourceCard>
 
-          {media.map((m) => {
+          {imageMedia.map((m) => {
             const date = `${formatRelativeTime(new Date(m.createdAt))} · ${formatFileSize(m.size)}`;
 
             return (
@@ -96,7 +77,11 @@ function MediaPickerDialog({
                 onClick={() => onSelect(m)}
                 className="cursor-pointer rounded-xl text-left ring-2 ring-transparent transition hover:ring-primary focus-visible:ring-primary"
               >
-                <ResourceCard preview={<MediaPreview media={m} />} name={m.name} date={date} />
+                <ResourceCard
+                  preview={<img src={m.url} alt={m.name} className="h-full w-full object-cover" />}
+                  name={m.name}
+                  date={date}
+                />
               </button>
             );
           })}
@@ -113,8 +98,8 @@ export function MediaFieldClient({
   readOnly,
 }: {
   label: string;
-  value: MediaValue;
-  onChange: (value: MediaValue) => void;
+  value: ImageValue;
+  onChange: (value: ImageValue) => void;
   readOnly?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -123,8 +108,7 @@ export function MediaFieldClient({
   const hasValue = value !== null;
   const media = mediaId !== undefined ? getMedia(mediaId) : undefined;
   const unresolved = hasValue && !media;
-  const isVideo = media?.contentType?.startsWith("video/");
-  const displayName = media?.name ?? (unresolved ? "Unknown media" : "Choose media...");
+  const displayName = media?.name ?? (unresolved ? "Unknown image" : "Choose image...");
 
   return (
     <FieldLabel label={label} el="div" readOnly={readOnly}>
@@ -136,13 +120,9 @@ export function MediaFieldClient({
       >
         <div className="flex w-10 shrink-0 items-center justify-center overflow-hidden bg-muted">
           {url ? (
-            isVideo ? (
-              <video src={url} className="h-full w-full object-cover" />
-            ) : (
-              <img src={url} alt="" className="h-full w-full object-cover" />
-            )
+            <img src={url} alt="" className="h-full w-full object-cover" />
           ) : (
-            <FileIcon className="size-4 text-muted-foreground" />
+            <ImageIcon className="size-4 text-muted-foreground" />
           )}
         </div>
         <button

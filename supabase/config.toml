@@ -33,11 +33,11 @@ enabled = false
 
 [storage]
 enabled = true
-file_size_limit = "1GiB"
+file_size_limit = "50MiB"
 
 [storage.buckets.media]
 public = true
-file_size_limit = "1GiB"
+file_size_limit = "50MiB"
 
 [storage.s3_protocol]
 enabled = false
