@@ -261,3 +261,12 @@ export const fontFamily = defineToken({
   bebasNeue: {label: "Bebas Neue", classes: "font-display"}
 });
 export type FontFamily = TokenValue<typeof fontFamily>;
+
+export const bannerTextSize = defineToken({
+  xs: { label: "XS", classes: "2px"},
+  sm: { label: "Small", classes: "12px"},
+  md: { label: "Medium", classes: "20px"},
+  lg: { label: "Large", classes: "28px"},
+  xl: { label: "Extra Large", classes: "40px"},
+});
+export type TextSize = TokenValue<typeof bannerTextSize>
