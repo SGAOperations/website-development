@@ -270,3 +270,11 @@ export const bannerTextSize = defineToken({
   xl: { label: "Extra Large", classes: "40px"},
 });
 export type TextSize = TokenValue<typeof bannerTextSize>
+
+export const bannerImgHeight = defineToken({
+  "5": { label: "5", classes: "5vh" },
+  "10": { label: "10", classes: "10vh" },
+  "20": { label: "20", classes: "20vh" },
+  "30": { label: "30", classes: "30vh" },
+  "40": { label: "40", classes: "40vh" },});
+export type BannerImgHeight = TokenValue<typeof bannerImgHeight>
