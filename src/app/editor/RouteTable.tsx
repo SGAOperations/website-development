@@ -88,7 +88,7 @@ function EditableRouteRow({
           ))}
         </select>
       </td>
-          <td className="py-1">
+        <td className="py-1">
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -115,7 +115,7 @@ function EditableRouteRow({
 }
 
 function RouteRowComponent({
-    route,
+  route,
   documents,
   isPending,
   onUpdate,
@@ -163,39 +163,39 @@ function RouteRowComponent({
         </Link>
       </td>
       
-<td className="py-1">
-  <div className="flex items-center gap-1">
-    <button
-      type="button"
-      onClick={() => setEditing(true)}
-      disabled={isPending}
-      title="Edit route"
-      className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
-    >
-      <SquarePen size={14} />
-    </button>
+    <td className="py-1">
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          disabled={isPending}
+          title="Edit route"
+          className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
+        >
+          <SquarePen size={14} />
+        </button>
 
-    <button
-      type="button"
-      onClick={() => onAddChild(route)}
-      disabled={isPending}
-      title="Add child route"
-      className="text-gray-400 hover:text-blue-600 disabled:opacity-60"
-    >
-      + Child
-    </button>
+        <button
+          type="button"
+          onClick={() => onAddChild(route)}
+          disabled={isPending}
+          title="Add child route"
+          className="text-gray-400 hover:text-blue-600 disabled:opacity-60"
+        >
+          + Child
+        </button>
 
-    <button
-      type="button"
-      onClick={() => onDelete(route)}
-      disabled={isPending}
-      title="Delete route"
-      className="text-gray-400 hover:text-red-600 disabled:opacity-60"
-    >
-      <Trash2 size={14} />
-    </button>
-  </div>
-</td>
+        <button
+          type="button"
+          onClick={() => onDelete(route)}
+          disabled={isPending}
+          title="Delete route"
+          className="text-gray-400 hover:text-red-600 disabled:opacity-60"
+        >
+          <Trash2 size={14} />
+        </button>
+      </div>
+    </td>
 
     </tr>
   );
@@ -215,42 +215,42 @@ export function RouteTable({
   const { confirm, alert } = useDialogs();
 
   function handleAddChild(route: RouteRow) {
-  setCreating(false);
-  setCreatingChildOf(route.id);
-}
+    setCreating(false);
+    setCreatingChildOf(route.id);
+  }
 
   function handleCreate(
-  path: string,
-  documentId: number,
-  parentId?: number
-) 
-{
-  setCreating(false);
-  setCreatingChildOf(null);
+    path: string,
+    documentId: number,
+    parentId?: number
+  ) 
+  {
+    setCreating(false);
+    setCreatingChildOf(null);
 
-  startTransition(async () => {
-    const result = await runAction(
-      createRouteAction({ path, documentId, parentId })
-    );
+    startTransition(async () => {
+      const result = await runAction(
+        createRouteAction({ path, documentId, parentId })
+      );
 
-    if (result.success) {
-      const doc = documents.find((d) => d.id === documentId)!;
+      if (result.success) {
+        const doc = documents.find((d) => d.id === documentId)!;
 
-      setRoutes((prev) => [
-        ...prev,
-        {
-          id: result.data.routeId,
-          path,
-          documentId,
-          documentName: doc.name,
-          parentId: parentId ?? null,
-        },
-      ]);
-    } else {
-      await alert(result.error);
-    }
-  });
-}
+        setRoutes((prev) => [
+          ...prev,
+          {
+            id: result.data.routeId,
+            path,
+            documentId,
+            documentName: doc.name,
+            parentId: parentId ?? null,
+          },
+        ]);
+      } else {
+        await alert(result.error);
+      }
+    });
+  }
 
   function handleUpdate(id: number, path: string, documentId: number) {
     startTransition(async () => {
@@ -301,29 +301,29 @@ export function RouteTable({
         <tbody>
           {routes.map((route) => (
            <RouteRowComponent
-  key={route.id}
-  route={route}
-  documents={documents}
-  isPending={isPending}
-  onUpdate={handleUpdate}
-  onDelete={handleDelete}
-  onAddChild={handleAddChild}
-/>
+            key={route.id}
+            route={route}
+            documents={documents}
+            isPending={isPending}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            onAddChild={handleAddChild}
+          />
           ))}
           {(creating || creatingChildOf !== null) && (
-  <EditableRouteRow
-    defaultDocumentId={documents[0]?.id}
-    documents={documents}
-    isPending={isPending}
-    parentId={creatingChildOf ?? undefined}
-    parentPath={ routes.find((route) => route.id === creatingChildOf)?.path}
-    onSubmit={handleCreate}
-    onCancel={() => {
-      setCreating(false);
-      setCreatingChildOf(null);
-    }}
-  />
-)}
+            <EditableRouteRow
+              defaultDocumentId={documents[0]?.id}
+              documents={documents}
+              isPending={isPending}
+              parentId={creatingChildOf ?? undefined}
+              parentPath={ routes.find((route) => route.id === creatingChildOf)?.path}
+              onSubmit={handleCreate}
+              onCancel={() => {
+                setCreating(false);
+                setCreatingChildOf(null);
+              }}
+            />
+          )}
           {routes.length === 0 && !creating && (
             <tr>
               <td colSpan={3} className="py-4 text-center text-gray-500">
