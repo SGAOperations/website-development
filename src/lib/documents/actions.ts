@@ -1,6 +1,7 @@
 "use server";
 
 import { Data } from "@puckeditor/core";
+import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
 import type { Prisma } from "../../generated/prisma/client";
 import { createEmptyPuckData } from "../puck/utils";
@@ -16,6 +17,16 @@ import type {
   Version,
 } from "../types";
 import { wrapAction } from "../utils";
+
+async function revalidateDocumentRoutes(documentId: number): Promise<void> {
+  const routes = await prisma.route.findMany({
+    where: { documentId },
+    select: { path: true },
+  });
+  for (const route of routes) {
+    revalidatePath(route.path);
+  }
+}
 
 function assertNotArchived(doc: { archivedAt: Date | null }): void {
   if (doc.archivedAt !== null) {
@@ -122,6 +133,7 @@ export async function publishVersionAction(
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
     await publishVersion(input.documentId, input.versionId);
+    await revalidateDocumentRoutes(input.documentId);
   });
 }
 
