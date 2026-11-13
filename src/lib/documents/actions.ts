@@ -11,6 +11,7 @@ import type {
   ArchiveDocumentInput,
   CreateDocumentInput,
   DuplicateDocumentInput,
+  MoveDocumentInput,
   RenameInput,
   SaveVersionInput,
   PublishVersionInput,
@@ -75,11 +76,12 @@ async function publishVersion(
 async function createDocumentWithVersion(
   name: string,
   content: Data,
-  publish: boolean = false
+  publish: boolean = false,
+  folderId?: number | null,
 ) {
   return await prisma.$transaction(async (tx) => {
     const document = await tx.document.create({
-      data: { name },
+      data: { name, folderId: folderId ?? null },
     });
 
     const version = await tx.version.create({
@@ -106,7 +108,7 @@ export async function createDocumentAction(
   return wrapAction(async () => {
     const name = validateName(input.name);
     const content = input.content ?? createEmptyPuckData();
-    const document = await createDocumentWithVersion(name, content, false);
+    const document = await createDocumentWithVersion(name, content, false, input.folderId);
     return { documentId: document.id };
   });
 }
@@ -175,7 +177,8 @@ export async function duplicateDocumentAction(
     const newDoc = await createDocumentWithVersion(
       name,
       doc.publishedVersion.content as Data,
-      false
+      false,
+      doc.folderId
     );
     return { documentId: newDoc.id };
   });
@@ -190,6 +193,18 @@ export async function renameDocumentAction(
     await prisma.document.update({
       where: { id: input.id },
       data: { name },
+    });
+  });
+}
+
+export async function moveDocumentAction(
+  input: MoveDocumentInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await fetchAndAssertNotArchived(input.id);
+    await prisma.document.update({
+      where: { id: input.id },
+      data: { folderId: input.folderId },
     });
   });
 }
