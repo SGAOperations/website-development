@@ -263,11 +263,11 @@ export const fontFamily = defineToken({
 export type FontFamily = TokenValue<typeof fontFamily>;
 
 export const bannerTextSize = defineToken({
-  xs: { label: "XS", classes: "2px"},
-  sm: { label: "Small", classes: "12px"},
-  md: { label: "Medium", classes: "20px"},
-  lg: { label: "Large", classes: "28px"},
-  xl: { label: "Extra Large", classes: "40px"},
+  xs: { label: "XS", classes: "10px"},
+  sm: { label: "Small", classes: "25px"},
+  md: { label: "Medium", classes: "40px"},
+  lg: { label: "Large", classes: "60px"},
+  xl: { label: "Extra Large", classes: "80px"},
 });
 export type TextSize = TokenValue<typeof bannerTextSize>
 

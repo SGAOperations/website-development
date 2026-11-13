@@ -16,6 +16,8 @@ textAlign,
 padding,
 BannerImgHeight,
 bannerImgHeight,
+type FontFamily,
+fontFamily
 } from '@/lib/puck/tokens';
 import { mediaField } from "@/components/puck/fields/media-field";
 
@@ -28,6 +30,7 @@ type BannerProps={
     align : TextAlign;
     textSize : TextSize;
     height: BannerImgHeight;
+    fontFamily: FontFamily;
 }
 
 const props = defineProps({
@@ -38,14 +41,15 @@ const props = defineProps({
     textColor: field.select(textColor, {label: "Text Color", default: "foreground"}),
     align: field.radio(textAlign, {label:"Text align", default: "center"}),
     padding: responsive.select(padding, { label: "Padding", default: "md"}),
-    height: field.select(bannerImgHeight, {label: "Height", default: "10"}),
+    height: field.select(bannerImgHeight, {label: "Height", default: "20"}),
+    fontFamily: field.select(fontFamily, {label: "Font", default: "bebasNeue"}),
 })
 
 export const Banner: ComponentConfig<BannerProps> = {
     label: "Banner",
     ...props,
 
-    render: ({text, image, backgroundColor: bc, textColor : tc, textSize : ts, align, padding : p, height : h}) => {
+    render: ({text, image, backgroundColor: bc, textColor : tc, textSize : ts, align, padding : p, height : h, fontFamily : f}) => {
         return (
             <div className = {cn(
 
@@ -66,6 +70,7 @@ export const Banner: ComponentConfig<BannerProps> = {
                     "relative z-10 w-full",
                     textAlign.classes[align],
                     textColor.classes[tc],
+                    fontFamily.classes[f],
                 )}
                 >
                     {text}
@@ -74,7 +79,3 @@ export const Banner: ComponentConfig<BannerProps> = {
         )
     }
 }
-
-//to-do for the future:
-//edit the text sizing to be actually large and attention-grabbing even with no padding
-//pick a good default height
