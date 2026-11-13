@@ -28,6 +28,7 @@ export type PublishVersionInput = {
 export type CreateRouteInput = {
   path: string;
   documentId: number;
+  parentId?: number; 
 };
 
 export type UpdateRouteInput = {
