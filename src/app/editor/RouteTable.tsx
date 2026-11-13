@@ -88,7 +88,7 @@ function EditableRouteRow({
           ))}
         </select>
       </td>
-        <td className="py-1">
+      <td className="py-1">
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -163,39 +163,39 @@ function RouteRowComponent({
         </Link>
       </td>
       
-    <td className="py-1">
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          disabled={isPending}
-          title="Edit route"
-          className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
-        >
-          <SquarePen size={14} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onAddChild(route)}
-          disabled={isPending}
-          title="Add child route"
-          className="text-gray-400 hover:text-blue-600 disabled:opacity-60"
-        >
-          + Child
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onDelete(route)}
-          disabled={isPending}
-          title="Delete route"
-          className="text-gray-400 hover:text-red-600 disabled:opacity-60"
-        >
-          <Trash2 size={14} />
-        </button>
-      </div>
-    </td>
+      <td className="py-1">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            disabled={isPending}
+            title="Edit route"
+            className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
+          >
+            <SquarePen size={14} />
+          </button>
+  
+          <button
+            type="button"
+            onClick={() => onAddChild(route)}
+            disabled={isPending}
+            title="Add child route"
+            className="text-gray-400 hover:text-blue-600 disabled:opacity-60"
+          >
+            + Child
+          </button>
+  
+          <button
+            type="button"
+            onClick={() => onDelete(route)}
+            disabled={isPending}
+            title="Delete route"
+            className="text-gray-400 hover:text-red-600 disabled:opacity-60"
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      </td>
 
     </tr>
   );
@@ -301,14 +301,14 @@ export function RouteTable({
         <tbody>
           {routes.map((route) => (
            <RouteRowComponent
-            key={route.id}
-            route={route}
-            documents={documents}
-            isPending={isPending}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onAddChild={handleAddChild}
-          />
+              key={route.id}
+              route={route}
+              documents={documents}
+              isPending={isPending}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              onAddChild={handleAddChild}
+            />
           ))}
           {(creating || creatingChildOf !== null) && (
             <EditableRouteRow
