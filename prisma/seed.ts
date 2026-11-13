@@ -47,6 +47,8 @@ async function main() {
       const version = await tx.version.create({
         data: {
           documentId: document.id,
+          name: "Version Name",
+          author: "SGA Webmaster",
           content: data as Prisma.InputJsonValue,
         },
       });

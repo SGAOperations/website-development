@@ -3,6 +3,8 @@ import type { Data } from "@puckeditor/core";
 export type Version = {
   id: number;
   documentId: number;
+  name: string;
+  author: string;
   createdAt: Date;
 };
 
@@ -18,6 +20,13 @@ export type CreateDocumentInput = {
 export type SaveVersionInput = {
   documentId: number;
   content: Data;
+  name?: string;
+};
+
+export type RenameVersionInput = {
+  documentId: number;
+  versionId: number;
+  name: string;
 };
 
 export type PublishVersionInput = {
