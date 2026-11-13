@@ -71,22 +71,20 @@ export function MoveToFolderDialog({
 
       return (
         <div key={folder.id}>
-          <button
-            type="button"
-            className={`flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-sm hover:bg-muted ${
+          {/* Toggle and select are sibling buttons: a <button> inside a <button> is invalid HTML. */}
+          <div
+            className={`flex w-full items-center gap-1.5 rounded text-sm hover:bg-muted ${
               isSelected ? "bg-primary/10 font-medium text-primary" : ""
             }`}
-            style={{ paddingLeft: `${depth * 1.25 + 0.5}rem` }}
-            onClick={() => setSelected(folder.id)}
+            style={{ paddingLeft: `${depth * 1.25}rem` }}
           >
             {hasChildren ? (
               <button
                 type="button"
-                className="shrink-0 rounded p-0.5 hover:bg-muted-foreground/20"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleExpanded(folder.id);
-                }}
+                className="ml-2 shrink-0 rounded p-0.5 hover:bg-muted-foreground/20"
+                aria-expanded={isExpanded}
+                aria-label={`${isExpanded ? "Collapse" : "Expand"} ${folder.name}`}
+                onClick={() => toggleExpanded(folder.id)}
               >
                 {isExpanded ? (
                   <ChevronDown className="h-3 w-3" />
@@ -95,11 +93,18 @@ export function MoveToFolderDialog({
                 )}
               </button>
             ) : (
-              <span className="w-4" />
+              <span className="ml-2 w-4 shrink-0" />
             )}
-            <FolderIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-            <span className="truncate">{folder.name}</span>
-          </button>
+            <button
+              type="button"
+              className="flex min-w-0 flex-1 items-center gap-1.5 py-1 pr-2 text-left"
+              aria-pressed={isSelected}
+              onClick={() => setSelected(folder.id)}
+            >
+              <FolderIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <span className="truncate">{folder.name}</span>
+            </button>
+          </div>
           {isExpanded && renderTree(folder.id, depth + 1)}
         </div>
       );
@@ -119,6 +124,7 @@ export function MoveToFolderDialog({
             className={`flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-sm hover:bg-muted ${
               selected === null ? "bg-primary/10 font-medium text-primary" : ""
             }`}
+            aria-pressed={selected === null}
             onClick={() => setSelected(null)}
           >
             <span className="w-4" />

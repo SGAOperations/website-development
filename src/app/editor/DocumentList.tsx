@@ -1,8 +1,8 @@
 "use client";
 
 import { Fragment, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
 import {
   Archive,
   ArchiveRestore,
@@ -266,6 +266,9 @@ function FolderCard({
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => {
+        // Ignore keys bubbling up from the action buttons inside the card,
+        // otherwise Enter on "Rename" opens the folder instead.
+        if (e.target !== e.currentTarget) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onOpen();
@@ -376,9 +379,26 @@ export function DocumentList({
   folders: FolderSummary[];
 }) {
   const router = useRouter();
-  const [currentFolderId, setCurrentFolderId] = useState<number | null>(null);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [moveTarget, setMoveTarget] = useState<MoveTarget | null>(null);
   const [isMoving, startMoveTransition] = useTransition();
+
+  // The open folder lives in the URL (?folder=ID) so Back from the editor,
+  // a refresh, or a shared link returns to it. Unknown or deleted folders
+  // fall back to the root.
+  const folderParam = Number(searchParams.get("folder"));
+  const currentFolderId = folders.some((f) => f.id === folderParam)
+    ? folderParam
+    : null;
+
+  function navigateToFolder(folderId: number | null) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (folderId === null) params.delete("folder");
+    else params.set("folder", String(folderId));
+    const query = params.toString();
+    window.history.pushState(null, "", query ? `${pathname}?${query}` : pathname);
+  }
 
   const { isPending, handleRename, handleArchive, handleDuplicate } =
     useDocumentActions();
@@ -386,19 +406,9 @@ export function DocumentList({
     isPending: isFolderPending,
     handleRenameFolder,
     handleDeleteFolder,
-  } = useFolderActions(setCurrentFolderId);
+  } = useFolderActions(navigateToFolder);
 
   const { alert } = useDialogs();
-
-  // Reset to root if current folder no longer exists (e.g. after deletion)
-  useEffect(() => {
-    if (
-      currentFolderId !== null &&
-      !folders.some((f) => f.id === currentFolderId)
-    ) {
-      setCurrentFolderId(null);
-    }
-  }, [currentFolderId, folders]);
 
   const currentDocuments = documents.filter(
     (d) => d.folderId === currentFolderId
@@ -425,11 +435,14 @@ export function DocumentList({
 
   return (
     <div className="flex flex-col gap-4">
-      <FolderBreadcrumbs
-        folders={folders}
-        currentFolderId={currentFolderId}
-        onNavigate={setCurrentFolderId}
-      />
+      <h1 className="text-2xl font-bold">Documents</h1>
+      {currentFolderId !== null && (
+        <FolderBreadcrumbs
+          folders={folders}
+          currentFolderId={currentFolderId}
+          onNavigate={navigateToFolder}
+        />
+      )}
 
       <div className="resource-card-grid grid gap-2">
         <NewDocumentCard folderId={currentFolderId} />
@@ -439,7 +452,7 @@ export function DocumentList({
           <FolderCard
             key={`folder-${folder.id}`}
             folder={folder}
-            onOpen={() => setCurrentFolderId(folder.id)}
+            onOpen={() => navigateToFolder(folder.id)}
             actions={
               <>
                 <Button

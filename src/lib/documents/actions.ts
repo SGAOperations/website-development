@@ -177,7 +177,8 @@ export async function duplicateDocumentAction(
     const newDoc = await createDocumentWithVersion(
       name,
       doc.publishedVersion.content as Data,
-      false
+      false,
+      doc.folderId
     );
     return { documentId: newDoc.id };
   });
