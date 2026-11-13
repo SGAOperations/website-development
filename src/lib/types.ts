@@ -29,6 +29,7 @@ export type PublishVersionInput = {
 export type CreateRouteInput = {
   path: string;
   documentId: number;
+  parentId?: number; 
 };
 
 export type UpdateRouteInput = {
@@ -81,4 +82,19 @@ export type DeleteFolderInput = {
 export type MoveDocumentInput = {
   id: number;
   folderId: number | null;
+};
+
+/**
+ * Input for `renameMediaAction`. Both fields are optional so the client only
+ * sends what changed.
+ *
+ * `fileName` is the file name WITHOUT its extension. The server re-attaches
+ * the extension from the stored record and never accepts one from the client.
+ *
+ * Separate from `RenameInput`, which documents still use.
+ */
+export type RenameMediaInput = {
+  id: number;
+  name?: string;    
+  fileName?: string; 
 };
