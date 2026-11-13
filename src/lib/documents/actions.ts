@@ -1,6 +1,7 @@
 "use server";
 
 import { Data } from "@puckeditor/core";
+import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
 import type { Prisma } from "../../generated/prisma/client";
 import { createEmptyPuckData } from "../puck/utils";
@@ -10,12 +11,23 @@ import type {
   ArchiveDocumentInput,
   CreateDocumentInput,
   DuplicateDocumentInput,
+  MoveDocumentInput,
   RenameInput,
   SaveVersionInput,
   PublishVersionInput,
   Version,
 } from "../types";
 import { wrapAction } from "../utils";
+
+async function revalidateDocumentRoutes(documentId: number): Promise<void> {
+  const routes = await prisma.route.findMany({
+    where: { documentId },
+    select: { path: true },
+  });
+  for (const route of routes) {
+    revalidatePath(route.path);
+  }
+}
 
 function assertNotArchived(doc: { archivedAt: Date | null }): void {
   if (doc.archivedAt !== null) {
@@ -64,11 +76,12 @@ async function publishVersion(
 async function createDocumentWithVersion(
   name: string,
   content: Data,
-  publish: boolean = false
+  publish: boolean = false,
+  folderId?: number | null,
 ) {
   return await prisma.$transaction(async (tx) => {
     const document = await tx.document.create({
-      data: { name },
+      data: { name, folderId: folderId ?? null },
     });
 
     const version = await tx.version.create({
@@ -95,7 +108,7 @@ export async function createDocumentAction(
   return wrapAction(async () => {
     const name = validateName(input.name);
     const content = input.content ?? createEmptyPuckData();
-    const document = await createDocumentWithVersion(name, content, false);
+    const document = await createDocumentWithVersion(name, content, false, input.folderId);
     return { documentId: document.id };
   });
 }
@@ -122,6 +135,7 @@ export async function publishVersionAction(
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
     await publishVersion(input.documentId, input.versionId);
+    await revalidateDocumentRoutes(input.documentId);
   });
 }
 
@@ -163,7 +177,8 @@ export async function duplicateDocumentAction(
     const newDoc = await createDocumentWithVersion(
       name,
       doc.publishedVersion.content as Data,
-      false
+      false,
+      doc.folderId
     );
     return { documentId: newDoc.id };
   });
@@ -178,6 +193,18 @@ export async function renameDocumentAction(
     await prisma.document.update({
       where: { id: input.id },
       data: { name },
+    });
+  });
+}
+
+export async function moveDocumentAction(
+  input: MoveDocumentInput
+): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await fetchAndAssertNotArchived(input.id);
+    await prisma.document.update({
+      where: { id: input.id },
+      data: { folderId: input.folderId },
     });
   });
 }
