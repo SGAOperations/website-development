@@ -31,11 +31,11 @@ export async function updateRouteAction(
   input: UpdateRouteInput
 ): Promise<ActionResult<void>> {
   return wrapAction(async () => {
+    assertValidRoutePath(input.path);
     const oldRoute = await prisma.route.findUniqueOrThrow({
       where: { id: input.id },
       select: { path: true },
     });
-    assertValidRoutePath(input.path);
     await prisma.route.update({
       where: { id: input.id },
       data: {
