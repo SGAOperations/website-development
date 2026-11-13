@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useRef } from "react";
-import { useKeybind, type Keybind } from "./useKeybind";
+import { useEffect, useRef } from "react";
 import { createUsePuck } from "@puckeditor/core";
-import type { ComponentData } from "@puckeditor/core";
+import type { ComponentData, Config } from "@puckeditor/core";
 
 const usePuck = createUsePuck();
 const CLIPBOARD_MARKER = "_puckClipboard";
@@ -14,51 +13,31 @@ type ClipboardPayload = {
   component: ComponentData;
 };
 
-const EDITOR_KEYBINDS = {
-  undo: [
-    { key: "z", ctrlKey: true },
-    { key: "z", metaKey: true },
-  ],
-  redo: [
-    { key: "z", ctrlKey: true, shiftKey: true },
-    { key: "z", metaKey: true, shiftKey: true },
-    { key: "y", ctrlKey: true },
-    { key: "y", metaKey: true },
-  ],
-  cut: [
-    { key: "x", ctrlKey: true },
-    { key: "x", metaKey: true },
-  ],
-  copy: [
-    { key: "c", ctrlKey: true },
-    { key: "c", metaKey: true },
-  ],
-  paste: [
-    { key: "v", ctrlKey: true },
-    { key: "v", metaKey: true },
-  ],
-  delete: [{ key: "Delete" }],
-  save: [
-    { key: "s", ctrlKey: true },
-    { key: "s", metaKey: true },
-  ],
-} as Record<string, Keybind[]>;
+// Undo, redo and Delete/Backspace are not handled here: Puck already binds
+// them (and its Delete skips text being edited). Cmd/Ctrl+S is handled by
+// useEditorSaveHotkey. This hook only adds copy, cut and paste for blocks.
+//
+// It listens to the browser's copy/cut/paste events rather than raw key
+// presses, so normal text editing keeps working:
+// - copy/cut act on the selected block only when no text is highlighted
+// - paste inserts a block only when the clipboard holds a copied block
+// Reading the clipboard from the paste event also avoids the permission
+// prompt that navigator.clipboard.readText() triggers.
 
-async function copyComponent(component: ComponentData): Promise<void> {
+function serializeComponent(component: ComponentData): string {
   const payload: ClipboardPayload = {
     [CLIPBOARD_MARKER]: true,
     version: 1,
     component: structuredClone(component),
   };
-  await navigator.clipboard.writeText(JSON.stringify(payload));
+  return JSON.stringify(payload);
 }
 
-async function readFromClipboard(): Promise<ComponentData | null> {
+function parseComponent(text: string): ComponentData | null {
   try {
-    const text = await navigator.clipboard.readText();
     const parsed = JSON.parse(text);
     if (
-      parsed[CLIPBOARD_MARKER] &&
+      parsed?.[CLIPBOARD_MARKER] &&
       parsed.version === 1 &&
       parsed.component?.type &&
       parsed.component?.props?.id
@@ -66,12 +45,12 @@ async function readFromClipboard(): Promise<ComponentData | null> {
       return parsed.component as ComponentData;
     }
   } catch {
-    return null;
+    // Not a copied block: let the browser paste it as text.
   }
   return null;
 }
 
-function regenerateIds(component: ComponentData, config: any): ComponentData {
+function regenerateIds(component: ComponentData, config: Config): ComponentData {
   const clone = structuredClone(component);
   clone.props.id = crypto.randomUUID();
 
@@ -91,50 +70,73 @@ function regenerateIds(component: ComponentData, config: any): ComponentData {
   return clone;
 }
 
-function useUndo() {
-  const back = usePuck((s) => s.history.back);
-  return useCallback(() => back(), [back]);
+// True when the user is working with text, so the browser should handle the
+// clipboard: focus in a form field, or text highlighted on the canvas.
+function isWorkingWithText(doc: Document): boolean {
+  const tag = doc.activeElement?.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+  const selection = doc.getSelection();
+  return Boolean(selection && !selection.isCollapsed && selection.toString());
 }
 
-function useRedo() {
-  const forward = usePuck((s) => s.history.forward);
-  return useCallback(() => forward(), [forward]);
+function takeOverEvent(event: ClipboardEvent) {
+  event.preventDefault();
+  // Stop the canvas rich-text editor from also handling it.
+  event.stopImmediatePropagation();
 }
 
-function useCopy() {
-  const selectedItem = usePuck((s) => s.selectedItem);
-  return useCallback(async () => {
-    if (!selectedItem) return;
-    try {
-      await copyComponent(selectedItem);
-    } catch (err) {
-      console.warn("Failed to copy component:", err);
-    }
-  }, [selectedItem]);
-}
-
-function usePaste() {
+export function useEditorKeybindings(
+  target: Document | null | undefined,
+  enabled = true,
+) {
   const selectedItem = usePuck((s) => s.selectedItem);
   const config = usePuck((s) => s.config);
   const dispatch = usePuck((s) => s.dispatch);
   const getSelectorForId = usePuck((s) => s.getSelectorForId);
-  const isPastingRef = useRef(false);
 
-  return useCallback(async () => {
-    if (isPastingRef.current || !selectedItem) return;
-    isPastingRef.current = true;
+  // Listeners are attached once per document; they read the latest editor
+  // state from this ref.
+  const puckRef = useRef({ selectedItem, config, dispatch, getSelectorForId });
+  useEffect(() => {
+    puckRef.current = { selectedItem, config, dispatch, getSelectorForId };
+  }, [selectedItem, config, dispatch, getSelectorForId]);
 
-    try {
+  useEffect(() => {
+    if (!enabled || !target) return;
+
+    function removeSelected() {
+      const { selectedItem, dispatch, getSelectorForId } = puckRef.current;
+      if (!selectedItem) return;
+      const selector = getSelectorForId(selectedItem.props.id);
+      if (!selector) return;
+      dispatch({
+        type: "remove",
+        index: selector.index,
+        zone: selector.zone ?? "default-zone",
+      });
+    }
+
+    function onCopyOrCut(event: ClipboardEvent) {
+      const { selectedItem } = puckRef.current;
+      if (!selectedItem || !event.clipboardData || isWorkingWithText(target!)) {
+        return;
+      }
+      event.clipboardData.setData("text/plain", serializeComponent(selectedItem));
+      takeOverEvent(event);
+      if (event.type === "cut") removeSelected();
+    }
+
+    function onPaste(event: ClipboardEvent) {
+      const { selectedItem, config, dispatch, getSelectorForId } = puckRef.current;
+      const raw = parseComponent(event.clipboardData?.getData("text/plain") ?? "");
+      if (!raw || !selectedItem) return;
+      takeOverEvent(event);
+
+      if (!config.components?.[raw.type]) return;
       const selector = getSelectorForId(selectedItem.props.id);
       if (!selector) return;
 
-      const raw = await readFromClipboard();
-      if (!raw) return;
-
       const component = regenerateIds(raw, config);
-
-      if (!config.components?.[component.type]) return;
-
       const zone = selector.zone ?? "default-zone";
       const index = selector.index + 1;
 
@@ -145,7 +147,6 @@ function usePaste() {
         destinationZone: zone,
         id: component.props.id,
       });
-
       try {
         dispatch({
           type: "replace",
@@ -156,81 +157,15 @@ function usePaste() {
       } catch {
         dispatch({ type: "remove", index, zone });
       }
-    } finally {
-      isPastingRef.current = false;
     }
-  }, [selectedItem, config, dispatch, getSelectorForId]);
-}
 
-function useCut() {
-  const selectedItem = usePuck((s) => s.selectedItem);
-  const dispatch = usePuck((s) => s.dispatch);
-  const getSelectorForId = usePuck((s) => s.getSelectorForId);
-  const copy = useCopy();
-
-  return useCallback(async () => {
-    if (!selectedItem) return;
-    await copy();
-
-    const selector = getSelectorForId(selectedItem.props.id);
-    if (!selector) return;
-
-    dispatch({
-      type: "remove",
-      index: selector.index,
-      zone: selector.zone ?? "default-zone",
-    });
-  }, [selectedItem, dispatch, getSelectorForId, copy]);
-}
-
-function useDelete() {
-  const selectedItem = usePuck((s) => s.selectedItem);
-  const dispatch = usePuck((s) => s.dispatch);
-  const getSelectorForId = usePuck((s) => s.getSelectorForId);
-
-  return useCallback(() => {
-    if (!selectedItem) return;
-
-    const selector = getSelectorForId(selectedItem.props.id);
-    if (!selector) return;
-
-    dispatch({
-      type: "remove",
-      index: selector.index,
-      zone: selector.zone ?? "default-zone",
-    });
-  }, [selectedItem, dispatch, getSelectorForId]);
-}
-
-export function useEditorKeybindings(
-  target: Document | HTMLElement | Window | null | undefined = null,
-  enabled = true,
-) {
-  const undo = useUndo();
-  const redo = useRedo();
-  const copy = useCopy();
-  const paste = usePaste();
-  const cut = useCut();
-  const deleteItem = useDelete();
-
-  const actions = [
-    { keybind: "undo", handler: undo },
-    { keybind: "redo", handler: redo },
-    { keybind: "copy", handler: copy },
-    { keybind: "paste", handler: paste },
-    { keybind: "cut", handler: cut },
-    { keybind: "delete", handler: deleteItem },
-  ];
-
-  actions.forEach(({ keybind, handler }) => {
-    useKeybind(
-      EDITOR_KEYBINDS[keybind],
-      (event) => {
-        event.preventDefault();
-        handler();
-      },
-      [target],
-      { capture: true, enabled },
-    );
-  });
+    target.addEventListener("copy", onCopyOrCut, true);
+    target.addEventListener("cut", onCopyOrCut, true);
+    target.addEventListener("paste", onPaste, true);
+    return () => {
+      target.removeEventListener("copy", onCopyOrCut, true);
+      target.removeEventListener("cut", onCopyOrCut, true);
+      target.removeEventListener("paste", onPaste, true);
+    };
+  }, [target, enabled]);
 }
