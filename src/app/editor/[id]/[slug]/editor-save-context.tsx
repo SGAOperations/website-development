@@ -45,7 +45,7 @@ function useSaveHotkey(save: () => void, target?: Document | null, enabled = tru
 export function EditorSaveProvider({ children }: { children: ReactNode }) {
   const data = usePuck((s) => s.appState.data);
   const { documentId, documentName, isArchived, isDirty, addVersion } = useDocumentContext();
-  const { alert, prompt} = useDialogs();
+  const { alert, prompt } = useDialogs();
   const [isSaving, startTransition] = useTransition();
   const canSave = !isArchived && !isSaving && isDirty;
   const saveStateRef = useRef({
@@ -100,7 +100,7 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
     }
 
     startTransition(async () => {
-      const result = await runAction(saveVersionAction({ documentId, content: data,}));
+      const result = await runAction(saveVersionAction({ documentId, content: data, versionName }));
 
       if (result.success === false) {
         await alert(result.error);

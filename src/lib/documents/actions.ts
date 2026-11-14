@@ -43,11 +43,12 @@ async function fetchAndAssertNotArchived(documentId: number): Promise<void> {
   assertNotArchived(doc);
 }
 
-async function createVersion(documentId: number, content: Data) {
+async function createVersion(documentId: number, content: Data, versionName: string) {
   return await prisma.version.create({
     data: {
       documentId,
       content: content as Prisma.InputJsonValue,
+      name: versionName, 
     },
   });
 }
@@ -118,7 +119,7 @@ export async function saveVersionAction(
 ): Promise<ActionResult<{ version: Version }>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
-    const result = await createVersion(input.documentId, input.content);
+    const result = await createVersion(input.documentId, input.content, input.versionName);
     return {
       version: {
         id: result.id,
