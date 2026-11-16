@@ -15,6 +15,7 @@ export type ActionResult<T = void> =
 export type CreateDocumentInput = {
   name: string;
   content?: Data;
+  folderId?: number | null;
 };
 
 export type SaveVersionInput = {
@@ -68,6 +69,29 @@ export type DuplicateDocumentInput = {
   name: string;
 };
 
+export type CreateFolderInput = {
+  name: string;
+  parentId?: number | null;
+};
+
+export type RenameFolderInput = {
+  id: number;
+  name: string;
+};
+
+export type MoveFolderInput = {
+  id: number;
+  parentId: number | null;
+};
+
+export type DeleteFolderInput = {
+  id: number;
+};
+
+export type MoveDocumentInput = {
+  id: number;
+  folderId: number | null;
+};
 
 /**
  * Input for `renameMediaAction`. Both fields are optional so the client only

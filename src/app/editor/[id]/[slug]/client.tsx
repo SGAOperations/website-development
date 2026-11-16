@@ -13,6 +13,7 @@ import type { Version } from "../../../../lib/types";
 import { useUnsavedChangesGuard } from "./useUnsavedChangesGuard";
 import { DocumentContext } from "./document-context";
 import { UnsavedChangesContext } from "./unsaved-changes-context";
+import { useEditorKeybindings } from "@/hooks/useEditorKeybindings";
 import { House } from "lucide-react";
 
 export function Client({
@@ -96,6 +97,7 @@ function EditorIframeOverride({
   document?: Document;
 }) {
   useEditorSaveHotkey(document, Boolean(document));
+  useEditorKeybindings(document, Boolean(document));
 
   return <>{children}</>;
 }
