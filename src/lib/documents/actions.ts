@@ -33,8 +33,9 @@ async function fetchAndAssertNotArchived(documentId: number): Promise<void> {
 }
 
 // TODO: replace with real values once users and versions exist
-const STUB_VERSION_AUTHOR = "SGA Webmaster";
-const STUB_VERSION_NAME = "Version Name";
+// null means author unknown, used for backfilling database
+const STUB_VERSION_AUTHOR: string | null = null;
+const STUB_VERSION_NAME = "VersionName";
 
 async function createVersion(
   documentId: number,

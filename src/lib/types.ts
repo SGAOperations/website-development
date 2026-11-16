@@ -4,7 +4,7 @@ export type Version = {
   id: number;
   documentId: number;
   name: string;
-  author: string;
+  author: string | null;
   createdAt: Date;
 };
 
