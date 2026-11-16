@@ -6,17 +6,30 @@ import {
   type GroupStyle,
 } from "@/lib/puck/layout";
 import { defineProps, responsive, field } from "@/lib/puck/define-props";
-import { defineToken, type TokenValue, padding, gap, bgColor, textColor, radius, shadow, crossAxisAlign, layout, justify, width } from "@/lib/puck/tokens";
+import {
+  defineToken,
+  type TokenValue,
+  padding,
+  gap,
+  bgColor,
+  textColor,
+  radius,
+  shadow,
+  crossAxisAlign,
+  layout,
+  justify,
+  width,
+} from "@/lib/puck/tokens";
 
 const tag = defineToken({
-  div:     "<div>",
+  div: "<div>",
   section: "<section>",
   article: "<article>",
-  header:  "<header>",
-  footer:  "<footer>",
-  aside:   "<aside>",
-  main:    "<main>",
-  nav:     "<nav>",
+  header: "<header>",
+  footer: "<footer>",
+  aside: "<aside>",
+  main: "<main>",
+  nav: "<nav>",
 });
 type Tag = TokenValue<typeof tag>;
 
@@ -48,16 +61,8 @@ export const Group: ComponentConfig<GroupProps> = {
     const Tag = t as ElementType;
 
     return (
-      <Tag
-        ref={puck.dragRef}
-        className={getGroupSurfaceClassName(style)}
-      >
-        {Content && (
-          <Content
-            className={getGroupSlotClassName(style)}
-            minEmptyHeight="200px"
-          />
-        )}
+      <Tag ref={puck.dragRef} className={getGroupSurfaceClassName(style)}>
+        {Content && <Content className={getGroupSlotClassName(style)} minEmptyHeight="200px" />}
       </Tag>
     );
   },

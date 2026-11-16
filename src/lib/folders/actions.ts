@@ -12,7 +12,7 @@ import type {
 } from "../types";
 
 export async function createFolderAction(
-  input: CreateFolderInput
+  input: CreateFolderInput,
 ): Promise<ActionResult<{ folderId: number }>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
@@ -26,9 +26,7 @@ export async function createFolderAction(
   });
 }
 
-export async function renameFolderAction(
-  input: RenameFolderInput
-): Promise<ActionResult<void>> {
+export async function renameFolderAction(input: RenameFolderInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     const name = validateName(input.name);
     await prisma.folder.update({
@@ -38,9 +36,7 @@ export async function renameFolderAction(
   });
 }
 
-export async function moveFolderAction(
-  input: MoveFolderInput
-): Promise<ActionResult<void>> {
+export async function moveFolderAction(input: MoveFolderInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     if (input.parentId === input.id) {
       throw new Error("A folder cannot be moved into itself");
@@ -60,9 +56,7 @@ export async function moveFolderAction(
   });
 }
 
-export async function deleteFolderAction(
-  input: DeleteFolderInput
-): Promise<ActionResult<void>> {
+export async function deleteFolderAction(input: DeleteFolderInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     const folder = await prisma.folder.findUniqueOrThrow({
       where: { id: input.id },
@@ -90,10 +84,7 @@ export async function deleteFolderAction(
   });
 }
 
-async function checkIsDescendant(
-  candidateId: number,
-  ancestorId: number
-): Promise<boolean> {
+async function checkIsDescendant(candidateId: number, ancestorId: number): Promise<boolean> {
   const result = await prisma.$queryRaw<{ id: number }[]>`
     WITH RECURSIVE ancestors AS (
       SELECT "id", "parentId" FROM "Folder" WHERE "id" = ${candidateId}

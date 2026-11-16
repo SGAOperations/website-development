@@ -14,9 +14,7 @@ type ColumnsProps = {
 };
 
 const slotField = { type: "slot" } as const;
-const columnSlotKeys = columnCount.options.map(
-  ({ value }) => `column${value}` as SlotKey,
-);
+const columnSlotKeys = columnCount.options.map(({ value }) => `column${value}` as SlotKey);
 
 const columnSlotFields = Object.fromEntries(
   columnSlotKeys.map((key) => [key, slotField]),

@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
-import {
-  createRouteAction,
-  updateRouteAction,
-  deleteRouteAction,
-} from "../../lib/routes/actions";
+import { createRouteAction, updateRouteAction, deleteRouteAction } from "../../lib/routes/actions";
 import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
@@ -48,16 +44,16 @@ function EditableRouteRow({
   const [documentId, setDocumentId] = useState(defaultDocumentId);
 
   function handleSubmit() {
-  const enteredPath = inputRef.current?.value.trim();
+    const enteredPath = inputRef.current?.value.trim();
 
-  if (enteredPath) {
-    const path = parentPath
-      ? `${parentPath.replace(/\/+$/, "")}/${enteredPath.replace(/^\/+/, "")}`
-      : enteredPath;
+    if (enteredPath) {
+      const path = parentPath
+        ? `${parentPath.replace(/\/+$/, "")}/${enteredPath.replace(/^\/+/, "")}`
+        : enteredPath;
 
-    onSubmit(path, documentId, parentId);
+      onSubmit(path, documentId, parentId);
+    }
   }
-}
 
   return (
     <tr className="border-t">
@@ -162,7 +158,7 @@ function RouteRowComponent({
           {route.documentName}
         </Link>
       </td>
-      
+
       <td className="py-1">
         <div className="flex items-center gap-1">
           <button
@@ -174,7 +170,7 @@ function RouteRowComponent({
           >
             <SquarePen size={14} />
           </button>
-  
+
           <button
             type="button"
             onClick={() => onAddChild(route)}
@@ -184,7 +180,7 @@ function RouteRowComponent({
           >
             + Child
           </button>
-  
+
           <button
             type="button"
             onClick={() => onDelete(route)}
@@ -196,7 +192,6 @@ function RouteRowComponent({
           </button>
         </div>
       </td>
-
     </tr>
   );
 }
@@ -219,19 +214,12 @@ export function RouteTable({
     setCreatingChildOf(route.id);
   }
 
-  function handleCreate(
-    path: string,
-    documentId: number,
-    parentId?: number
-  ) 
-  {
+  function handleCreate(path: string, documentId: number, parentId?: number) {
     setCreating(false);
     setCreatingChildOf(null);
 
     startTransition(async () => {
-      const result = await runAction(
-        createRouteAction({ path, documentId, parentId })
-      );
+      const result = await runAction(createRouteAction({ path, documentId, parentId }));
 
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
@@ -257,7 +245,9 @@ export function RouteTable({
       const result = await runAction(updateRouteAction({ id, path, documentId }));
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
+        setRoutes((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)),
+        );
       } else {
         await alert(result.error);
       }
@@ -265,7 +255,14 @@ export function RouteTable({
   }
 
   async function handleDelete(route: RouteRow) {
-    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete", destructive: true })) return;
+    if (
+      !(await confirm({
+        message: `Delete route "${route.path}"?`,
+        actionLabel: "Delete",
+        destructive: true,
+      }))
+    )
+      return;
     startTransition(async () => {
       const result = await runAction(deleteRouteAction({ id: route.id }));
       if (result.success) {
@@ -300,7 +297,7 @@ export function RouteTable({
         </thead>
         <tbody>
           {routes.map((route) => (
-           <RouteRowComponent
+            <RouteRowComponent
               key={route.id}
               route={route}
               documents={documents}
@@ -316,7 +313,7 @@ export function RouteTable({
               documents={documents}
               isPending={isPending}
               parentId={creatingChildOf ?? undefined}
-              parentPath={ routes.find((route) => route.id === creatingChildOf)?.path}
+              parentPath={routes.find((route) => route.id === creatingChildOf)?.path}
               onSubmit={handleCreate}
               onCancel={() => {
                 setCreating(false);

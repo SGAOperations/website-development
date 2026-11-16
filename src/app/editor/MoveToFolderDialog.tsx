@@ -37,7 +37,8 @@ export function MoveToFolderDialog({
     // Auto-expand the path to the current folder
     const set = new Set<number>();
     const folderMap = new Map(folders.map((f) => [f.id, f]));
-    let current = target.currentFolderId !== null ? folderMap.get(target.currentFolderId) : undefined;
+    let current =
+      target.currentFolderId !== null ? folderMap.get(target.currentFolderId) : undefined;
     while (current) {
       if (current.parentId !== null) set.add(current.parentId);
       current = current.parentId !== null ? folderMap.get(current.parentId) : undefined;
@@ -57,14 +58,13 @@ export function MoveToFolderDialog({
   }
 
   function renderTree(parentId: number | null, depth: number) {
-    const children = folders
-      .filter((f) => f.parentId === parentId && !excludeFolderIds.has(f.id));
+    const children = folders.filter((f) => f.parentId === parentId && !excludeFolderIds.has(f.id));
 
     if (children.length === 0) return null;
 
     return children.map((folder) => {
       const hasChildren = folders.some(
-        (f) => f.parentId === folder.id && !excludeFolderIds.has(f.id)
+        (f) => f.parentId === folder.id && !excludeFolderIds.has(f.id),
       );
       const isExpanded = expanded.has(folder.id);
       const isSelected = selected === folder.id;
@@ -147,10 +147,7 @@ export function MoveToFolderDialog({
   );
 }
 
-export function getDescendantIds(
-  folders: FolderSummary[],
-  folderId: number
-): Set<number> {
+export function getDescendantIds(folders: FolderSummary[], folderId: number): Set<number> {
   const result = new Set<number>([folderId]);
   let added = true;
   while (added) {

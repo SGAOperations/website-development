@@ -14,19 +14,13 @@ const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>
       <body>
-        <DialogProvider>
-          {children}
-        </DialogProvider>
+        <DialogProvider>{children}</DialogProvider>
         <Toaster />
       </body>
     </html>
-  )
+  );
 }
