@@ -10,7 +10,7 @@ export const getDocumentById = async (id: number) => {
         select: {
           id: true,
           documentId: true,
-          name: true,
+          versionName: true,
           author: true,
           createdAt: true,
         },

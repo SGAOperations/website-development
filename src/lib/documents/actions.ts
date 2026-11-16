@@ -51,7 +51,7 @@ const STUB_VERSION_NAME = "VersionName";
 
 function newVersionFields(content: Data, name: string = STUB_VERSION_NAME) {
   return {
-    name,
+    versionName: name,
     author: STUB_VERSION_AUTHOR,
     content: content as Prisma.InputJsonValue,
   };
@@ -139,7 +139,7 @@ export async function saveVersionAction(
       version: {
         id: result.id,
         documentId: result.documentId,
-        name: result.name,
+        name: result.versionName,
         author: result.author,
         createdAt: result.createdAt,
       },
@@ -155,7 +155,7 @@ export async function renameVersionAction(
     const name = validateName(input.name);
     const { count } = await prisma.version.updateMany({
       where: { id: input.versionId, documentId: input.documentId },
-      data: { name },
+      data: { versionName: name },
     });
     if (count === 0) {
       throw new Error(
