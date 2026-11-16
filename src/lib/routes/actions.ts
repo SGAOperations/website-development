@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "../prisma";
 import type { ActionResult, CreateRouteInput, DeleteRouteInput, UpdateRouteInput } from "../types";
 import { wrapAction } from "../utils";
@@ -14,8 +15,10 @@ export async function createRouteAction(
       data: {
         path: input.path,
         documentId: input.documentId,
+        parentId: input.parentId ?? null,
       },
     });
+    revalidatePath(input.path);
     return { routeId: route.id };
   });
 }
@@ -23,6 +26,10 @@ export async function createRouteAction(
 export async function updateRouteAction(input: UpdateRouteInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     assertValidRoutePath(input.path);
+    const oldRoute = await prisma.route.findUniqueOrThrow({
+      where: { id: input.id },
+      select: { path: true },
+    });
     await prisma.route.update({
       where: { id: input.id },
       data: {
@@ -30,13 +37,20 @@ export async function updateRouteAction(input: UpdateRouteInput): Promise<Action
         documentId: input.documentId,
       },
     });
+    revalidatePath(oldRoute.path);
+    revalidatePath(input.path);
   });
 }
 
 export async function deleteRouteAction(input: DeleteRouteInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
+    const route = await prisma.route.findUniqueOrThrow({
+      where: { id: input.id },
+      select: { path: true },
+    });
     await prisma.route.delete({
       where: { id: input.id },
     });
+    revalidatePath(route.path);
   });
 }

@@ -11,6 +11,7 @@ export type ActionResult<T = void> = { success: true; data: T } | { success: fal
 export type CreateDocumentInput = {
   name: string;
   content?: Data;
+  folderId?: number | null;
 };
 
 export type SaveVersionInput = {
@@ -26,6 +27,7 @@ export type PublishVersionInput = {
 export type CreateRouteInput = {
   path: string;
   documentId: number;
+  parentId?: number;
 };
 
 export type UpdateRouteInput = {
@@ -54,6 +56,30 @@ export type ArchiveDocumentInput = {
 export type DuplicateDocumentInput = {
   id: number;
   name: string;
+};
+
+export type CreateFolderInput = {
+  name: string;
+  parentId?: number | null;
+};
+
+export type RenameFolderInput = {
+  id: number;
+  name: string;
+};
+
+export type MoveFolderInput = {
+  id: number;
+  parentId: number | null;
+};
+
+export type DeleteFolderInput = {
+  id: number;
+};
+
+export type MoveDocumentInput = {
+  id: number;
+  folderId: number | null;
 };
 
 /**
