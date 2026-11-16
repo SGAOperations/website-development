@@ -49,18 +49,21 @@ async function fetchAndAssertNotArchived(documentId: number): Promise<void> {
 const STUB_VERSION_AUTHOR: string | null = null;
 const STUB_VERSION_NAME = "VersionName";
 
+function newVersionFields(content: Data, name: string = STUB_VERSION_NAME) {
+  return {
+    name,
+    author: STUB_VERSION_AUTHOR,
+    content: content as Prisma.InputJsonValue,
+  };
+}
+
 async function createVersion(
   documentId: number,
   content: Data,
-  name: string = STUB_VERSION_NAME
+  name?: string
 ) {
   return await prisma.version.create({
-    data: {
-      documentId,
-      name,
-      author: STUB_VERSION_AUTHOR,
-      content: content as Prisma.InputJsonValue,
-    },
+    data: { documentId, ...newVersionFields(content, name) },
   });
 }
 
@@ -97,12 +100,7 @@ async function createDocumentWithVersion(
     });
 
     const version = await tx.version.create({
-      data: {
-        documentId: document.id,
-        name: STUB_VERSION_NAME,
-        author: STUB_VERSION_AUTHOR,
-        content: content as Prisma.InputJsonValue,
-      },
+      data: { documentId: document.id, ...newVersionFields(content) },
     });
 
     if (publish) {
