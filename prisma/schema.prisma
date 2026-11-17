@@ -27,6 +27,8 @@ model Version {
   document            Document  @relation("DocumentVersions", fields: [documentId], references: [id], onDelete: Cascade)
   publishedDocumentOf Document? @relation("PublishedVersion")
   content             Json
+  versionName                String    @default("VersionName")
+  author              String? 
   createdAt           DateTime  @default(now())
 }
 
