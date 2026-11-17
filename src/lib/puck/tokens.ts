@@ -105,15 +105,6 @@ export const paddingBottom = defineToken({
   "2xl": { label: "2XL", classes: "pb-10" },
 });
 
-export const accordionTitleSize = defineToken({
-  sm: { label: "Small", classes: "text-lg tracking-widest" },
-  md: { label: "Medium", classes: "text-xl tracking-widest" },
-  lg: { label: "Large", classes: "text-2xl tracking-widest" },
-  xl: { label: "XL", classes: "text-3xl tracking-widest" },
-});
-
-export type AccordionTitleSize = TokenValue<typeof accordionTitleSize>;
-
 export const gap = defineToken({
   none: { label: "None", classes: "gap-0" },
   8: { label: "8px", classes: "gap-2" },
@@ -135,6 +126,7 @@ export const columnGap = defineToken({
 export type Padding = TokenValue<typeof padding>;
 export type PaddingX = TokenValue<typeof paddingX>;
 export type PaddingY = TokenValue<typeof paddingY>;
+export type PaddingBottom = TokenValue<typeof paddingBottom>;
 export type Gap = TokenValue<typeof gap>;
 export type ColumnGap = TokenValue<typeof columnGap>;
 

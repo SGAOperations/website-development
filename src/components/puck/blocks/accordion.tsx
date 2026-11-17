@@ -3,13 +3,15 @@ import { cn } from "@/lib/utils";
 import { resolveResponsive } from "@/lib/puck/responsive-tailwind";
 import type { ResponsiveValue } from "@/lib/puck/responsive";
 import {
-  accordionTitleSize,
+  defineToken,
   fontFamily,
   padding,
   paddingBottom,
   paddingY,
-  type AccordionTitleSize,
-  type Spacing,
+  type Padding,
+  type PaddingBottom,
+  type PaddingY,
+  type TokenValue,
 } from "@/lib/puck/tokens";
 import {
   Accordion,
@@ -21,8 +23,17 @@ import {
 const DEFAULT_CONTENT =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
-const containerPadding: ResponsiveValue<Spacing> = { phone: "sm", md: "md" };
-const rowPadding: ResponsiveValue<Spacing> = {
+const accordionTitleSize = defineToken({
+  sm: { label: "Small", classes: "text-lg tracking-widest" },
+  md: { label: "Medium", classes: "text-xl tracking-widest" },
+  lg: { label: "Large", classes: "text-2xl tracking-widest" },
+  xl: { label: "XL", classes: "text-3xl tracking-widest" },
+});
+type AccordionTitleSize = TokenValue<typeof accordionTitleSize>;
+
+const containerPadding: ResponsiveValue<Padding> = { phone: "8", md: "12" };
+const rowPaddingY: ResponsiveValue<PaddingY> = { phone: "8", md: "12", lg: "16" };
+const rowPaddingBottom: ResponsiveValue<PaddingBottom> = {
   phone: "sm",
   md: "md",
   lg: "lg",
@@ -80,7 +91,7 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
                 "font-normal hover:no-underline",
                 fontFamily.classes.bebasNeue,
                 resolveResponsive(titleSize, accordionTitleSize.classes),
-                resolveResponsive(rowPadding, paddingY.classes),
+                resolveResponsive(rowPaddingY, paddingY.classes),
               )}
             >
               {item.title}
@@ -89,7 +100,7 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
               <div
                 className={cn(
                   "prose max-w-none",
-                  resolveResponsive(rowPadding, paddingBottom.classes),
+                  resolveResponsive(rowPaddingBottom, paddingBottom.classes),
                 )}
               >
                 {typeof item.content === "string" ? (
