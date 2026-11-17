@@ -71,10 +71,7 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
     return (
       <Accordion
         multiple
-        className={cn(
-          "w-full",
-          resolveResponsive(containerPadding, padding.classes),
-        )}
+        className={cn("w-full", resolveResponsive(containerPadding, padding.classes))}
       >
         {items.map((item, index) => (
           <AccordionItem key={index} value={String(index)}>
