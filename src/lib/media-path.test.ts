@@ -3,13 +3,21 @@ import { splitStoragePath, normalizeFileName, validateFileName } from "./media-p
 
 describe("splitStoragePath", () => {
   it("splits folder, base and extension", () => {
-    expect(splitStoragePath("blog/hero.png")).toEqual({ folder: "blog", base: "hero", ext: ".png" });
+    expect(splitStoragePath("blog/hero.png")).toEqual({
+      folder: "blog",
+      base: "hero",
+      ext: ".png",
+    });
   });
   it("handles files at the root", () => {
     expect(splitStoragePath("a1b2.webp")).toEqual({ folder: "", base: "a1b2", ext: ".webp" });
   });
   it("handles no extension", () => {
-    expect(splitStoragePath("uploads/README")).toEqual({ folder: "uploads", base: "README", ext: "" });
+    expect(splitStoragePath("uploads/README")).toEqual({
+      folder: "uploads",
+      base: "README",
+      ext: "",
+    });
   });
   it("splits on the last dot", () => {
     expect(splitStoragePath("my.photo.jpg")).toEqual({ folder: "", base: "my.photo", ext: ".jpg" });

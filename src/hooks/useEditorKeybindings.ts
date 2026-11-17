@@ -60,9 +60,7 @@ function regenerateIds(component: ComponentData, config: Config): ComponentData 
     if (Array.isArray(val)) {
       const fieldDef = config.components?.[clone.type]?.fields?.[key];
       if (fieldDef?.type === "slot") {
-        clone.props[key] = val.map((child: ComponentData) =>
-          regenerateIds(child, config)
-        );
+        clone.props[key] = val.map((child: ComponentData) => regenerateIds(child, config));
       }
     }
   }
@@ -85,10 +83,7 @@ function takeOverEvent(event: ClipboardEvent) {
   event.stopImmediatePropagation();
 }
 
-export function useEditorKeybindings(
-  target: Document | null | undefined,
-  enabled = true,
-) {
+export function useEditorKeybindings(target: Document | null | undefined, enabled = true) {
   const selectedItem = usePuck((s) => s.selectedItem);
   const config = usePuck((s) => s.config);
   const dispatch = usePuck((s) => s.dispatch);

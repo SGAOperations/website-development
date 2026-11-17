@@ -40,11 +40,7 @@ import { formatRelativeTime } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useDialogs } from "@/components/ui/dialog-provider";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 type DocumentItem = {
   id: number;
@@ -64,9 +60,7 @@ function FolderBreadcrumbs({
   currentFolderId: number | null;
   onNavigate: (folderId: number | null) => void;
 }) {
-  const path: { id: number | null; name: string }[] = [
-    { id: null, name: "Documents" },
-  ];
+  const path: { id: number | null; name: string }[] = [{ id: null, name: "Documents" }];
 
   if (currentFolderId !== null) {
     const folderMap = new Map(folders.map((f) => [f.id, f]));
@@ -74,10 +68,7 @@ function FolderBreadcrumbs({
     let current = folderMap.get(currentFolderId);
     while (current) {
       segments.unshift({ id: current.id, name: current.name });
-      current =
-        current.parentId !== null
-          ? folderMap.get(current.parentId)
-          : undefined;
+      current = current.parentId !== null ? folderMap.get(current.parentId) : undefined;
     }
     path.push(...segments);
   }
@@ -86,9 +77,7 @@ function FolderBreadcrumbs({
     <nav className="flex items-center gap-1 text-sm">
       {path.map((segment, i) => (
         <Fragment key={segment.id ?? "root"}>
-          {i > 0 && (
-            <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" />
-          )}
+          {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" />}
           {i < path.length - 1 ? (
             <button
               className="text-muted-foreground hover:text-foreground hover:underline"
@@ -142,12 +131,9 @@ function useDocumentActions() {
       label: "New name",
       defaultValue: currentName,
     });
-    if (newName === null || newName.trim() === "" || newName.trim() === currentName)
-      return;
+    if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
     startTransition(async () => {
-      const result = await runAction(
-        renameDocumentAction({ id, name: newName.trim() })
-      );
+      const result = await runAction(renameDocumentAction({ id, name: newName.trim() }));
       if (result.success) {
         router.refresh();
       } else {
@@ -196,9 +182,7 @@ function useDocumentActions() {
     });
     if (name === null || name.trim() === "") return;
     startTransition(async () => {
-      const result = await runAction(
-        duplicateDocumentAction({ id, name: name.trim() })
-      );
+      const result = await runAction(duplicateDocumentAction({ id, name: name.trim() }));
       if (result.success) {
         router.refresh();
       } else {
@@ -207,7 +191,13 @@ function useDocumentActions() {
     });
   }
 
-  return { isPending, handleRename, handleArchive, handleUnarchive, handleDuplicate };
+  return {
+    isPending,
+    handleRename,
+    handleArchive,
+    handleUnarchive,
+    handleDuplicate,
+  };
 }
 
 function NewDocumentCard({ folderId }: { folderId: number | null }) {
@@ -284,9 +274,7 @@ function FolderCard({
         </span>
         <span className="text-xs text-muted-foreground">{"\u00A0"}</span>
         {actions && (
-          <CardFooter className="mt-auto gap-1 border-t-0 bg-transparent p-0">
-            {actions}
-          </CardFooter>
+          <CardFooter className="mt-auto gap-1 border-t-0 bg-transparent p-0">{actions}</CardFooter>
         )}
       </CardContent>
     </Card>
@@ -302,9 +290,7 @@ function NewFolderCard({ parentId }: { parentId: number | null }) {
     const name = await prompt({ title: "Create folder", label: "Name" });
     if (name === null || name.trim() === "") return;
     startTransition(async () => {
-      const result = await runAction(
-        createFolderAction({ name: name.trim(), parentId })
-      );
+      const result = await runAction(createFolderAction({ name: name.trim(), parentId }));
       if (result.success) {
         router.refresh();
       } else {
@@ -334,12 +320,9 @@ function useFolderActions(onNavigate: (id: number | null) => void) {
       label: "New name",
       defaultValue: currentName,
     });
-    if (newName === null || newName.trim() === "" || newName.trim() === currentName)
-      return;
+    if (newName === null || newName.trim() === "" || newName.trim() === currentName) return;
     startTransition(async () => {
-      const result = await runAction(
-        renameFolderAction({ id, name: newName.trim() })
-      );
+      const result = await runAction(renameFolderAction({ id, name: newName.trim() }));
       if (result.success) {
         router.refresh();
       } else {
@@ -388,9 +371,7 @@ export function DocumentList({
   // a refresh, or a shared link returns to it. Unknown or deleted folders
   // fall back to the root.
   const folderParam = Number(searchParams.get("folder"));
-  const currentFolderId = folders.some((f) => f.id === folderParam)
-    ? folderParam
-    : null;
+  const currentFolderId = folders.some((f) => f.id === folderParam) ? folderParam : null;
 
   function navigateToFolder(folderId: number | null) {
     const params = new URLSearchParams(searchParams.toString());
@@ -400,8 +381,7 @@ export function DocumentList({
     window.history.pushState(null, "", query ? `${pathname}?${query}` : pathname);
   }
 
-  const { isPending, handleRename, handleArchive, handleDuplicate } =
-    useDocumentActions();
+  const { isPending, handleRename, handleArchive, handleDuplicate } = useDocumentActions();
   const {
     isPending: isFolderPending,
     handleRenameFolder,
@@ -410,12 +390,8 @@ export function DocumentList({
 
   const { alert } = useDialogs();
 
-  const currentDocuments = documents.filter(
-    (d) => d.folderId === currentFolderId
-  );
-  const currentSubfolders = folders.filter(
-    (f) => f.parentId === currentFolderId
-  );
+  const currentDocuments = documents.filter((d) => d.folderId === currentFolderId);
+  const currentSubfolders = folders.filter((f) => f.parentId === currentFolderId);
 
   function handleMoveConfirm(target: MoveTarget, folderId: number | null) {
     startMoveTransition(async () => {
@@ -580,9 +556,7 @@ export function DocumentList({
           target={moveTarget}
           folders={folders}
           excludeFolderIds={
-            moveTarget.type === "folder"
-              ? getDescendantIds(folders, moveTarget.id)
-              : new Set()
+            moveTarget.type === "folder" ? getDescendantIds(folders, moveTarget.id) : new Set()
           }
           onSelect={(folderId) => {
             handleMoveConfirm(moveTarget, folderId);
@@ -595,11 +569,7 @@ export function DocumentList({
   );
 }
 
-export function ArchivedDocumentList({
-  documents,
-}: {
-  documents: DocumentItem[];
-}) {
+export function ArchivedDocumentList({ documents }: { documents: DocumentItem[] }) {
   const [open, setOpen] = useState(false);
   const { isPending, handleUnarchive } = useDocumentActions();
 
@@ -609,12 +579,8 @@ export function ArchivedDocumentList({
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-2">
         <h2 className="text-2xl font-bold leading-none">Archived</h2>
-        <CollapsibleTrigger
-          render={<Button variant="ghost" size="icon-xs" />}
-        >
-          <ChevronDown
-            className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
-          />
+        <CollapsibleTrigger render={<Button variant="ghost" size="icon-xs" />}>
+          <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
       </div>
 

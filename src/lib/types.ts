@@ -8,9 +8,7 @@ export type Version = {
   createdAt: Date;
 };
 
-export type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+export type ActionResult<T = void> = { success: true; data: T } | { success: false; error: string };
 
 export type CreateDocumentInput = {
   name: string;
@@ -38,7 +36,7 @@ export type PublishVersionInput = {
 export type CreateRouteInput = {
   path: string;
   documentId: number;
-  parentId?: number; 
+  parentId?: number;
 };
 
 export type UpdateRouteInput = {
@@ -104,6 +102,6 @@ export type MoveDocumentInput = {
  */
 export type RenameMediaInput = {
   id: number;
-  name?: string;    
-  fileName?: string; 
+  name?: string;
+  fileName?: string;
 };

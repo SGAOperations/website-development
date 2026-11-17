@@ -2,8 +2,7 @@ import { Input } from "@/components/ui/input";
 import type { ResponsiveFieldControlProps } from "./frame";
 
 export type ResponsiveNumberChange =
-  | { kind: "ignore" }
-  | { kind: "set"; value: number | undefined };
+  { kind: "ignore" } | { kind: "set"; value: number | undefined };
 
 export function formatResponsiveNumberValue(value: number | undefined): string {
   return value === undefined ? "" : String(value);

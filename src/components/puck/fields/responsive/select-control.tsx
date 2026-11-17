@@ -5,9 +5,7 @@ import type { ResponsiveFieldControlProps } from "./frame";
 // Non-phone breakpoints can clear their override and inherit from the smaller breakpoint.
 const inheritOption: TokenOption<""> = { label: "–", value: "" };
 
-function withInheritOption<T extends string>(
-  options: TokenOption<T>[],
-): TokenOption<T | "">[] {
+function withInheritOption<T extends string>(options: TokenOption<T>[]): TokenOption<T | "">[] {
   return [inheritOption, ...options];
 }
 

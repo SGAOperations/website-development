@@ -42,7 +42,7 @@ export function Client({
   const { confirmDiscardChanges } = useUnsavedChangesGuard(isDirty);
 
   const addVersion = useCallback((version: Version) => {
-    setVersions(prev => [version, ...prev]);
+    setVersions((prev) => [version, ...prev]);
     setVersionId(version.id);
     setIsDirty(false);
   }, []);
@@ -50,7 +50,17 @@ export function Client({
   return (
     <MediaProvider media={media}>
       <DocumentContext.Provider
-        value={{ documentId, documentName, versionId, publishedVersionId, versions, isArchived, isDirty, addVersion, setPublishedVersionId }}
+        value={{
+          documentId,
+          documentName,
+          versionId,
+          publishedVersionId,
+          versions,
+          isArchived,
+          isDirty,
+          addVersion,
+          setPublishedVersionId,
+        }}
       >
         <UnsavedChangesContext.Provider value={{ confirmDiscardChanges }}>
           <Puck
@@ -59,9 +69,16 @@ export function Client({
             onChange={() => setIsDirty(true)}
             ui={{ plugin: { current: "version-plugin" } }}
             plugins={[VersionPlugin, blocksPlugin(), outlinePlugin()]}
-            permissions={isArchived
-              ? { drag: false, duplicate: false, delete: false, edit: false, insert: false }
-              : { duplicate: false } // We replace this with our own, to avoid an icon collision
+            permissions={
+              isArchived
+                ? {
+                    drag: false,
+                    duplicate: false,
+                    delete: false,
+                    edit: false,
+                    insert: false,
+                  }
+                : { duplicate: false } // We replace this with our own, to avoid an icon collision
             }
             overrides={{
               actionBar: ActionBarOverride,
@@ -77,12 +94,14 @@ export function Client({
 }
 
 function HeaderActionsOverride() {
-  return <>
+  return (
+    <>
       <a href="/editor">
         <House />
       </a>
       <SaveButton />
-  </>
+    </>
+  );
 }
 
 function EditorPuckOverride({ children }: { children: ReactNode }) {

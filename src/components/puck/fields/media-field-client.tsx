@@ -3,20 +3,12 @@
 import { useRef, useState, useTransition } from "react";
 import { FieldLabel } from "@puckeditor/core";
 import { ImageIcon, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useMedia, type MediaWithUrl } from "@/components/puck/media-context";
 import { uploadMediaAction } from "@/lib/media/actions";
 import { runAction } from "@/app/editor/runAction";
 import { toast } from "sonner";
-import {
-  ResourceCard,
-  NewResourceCard,
-} from "@/app/editor/ResourceCard";
+import { ResourceCard, NewResourceCard } from "@/app/editor/ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ImageValue } from "./media-field";
@@ -86,13 +78,7 @@ function MediaPickerDialog({
                 className="cursor-pointer rounded-xl text-left ring-2 ring-transparent transition hover:ring-primary focus-visible:ring-primary"
               >
                 <ResourceCard
-                  preview={
-                    <img
-                      src={m.url}
-                      alt={m.name}
-                      className="h-full w-full object-cover"
-                    />
-                  }
+                  preview={<img src={m.url} alt={m.name} className="h-full w-full object-cover" />}
                   name={m.name}
                   date={date}
                 />
