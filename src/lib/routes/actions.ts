@@ -55,9 +55,9 @@ export async function deleteRouteAction(input: DeleteRouteInput): Promise<Action
   });
 }
 
-export async function getRouteTreeAction(
-  options?: { topLevelOnly?: boolean },
-): Promise<ActionResult<{ routes: RouteTreeNode[] }>> {
+export async function getRouteTreeAction(options?: {
+  topLevelOnly?: boolean;
+}): Promise<ActionResult<{ routes: RouteTreeNode[] }>> {
   return wrapAction(async () => {
     const routes = await getRouteTree(options);
     return { routes };
