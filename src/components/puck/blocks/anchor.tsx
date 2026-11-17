@@ -11,16 +11,18 @@ import {
   textColor,
   width,
   type Color,
-  type Spacing,
+  type PaddingX,
+  type PaddingY,
+  type Gap,
   type Width,
 } from "@/lib/puck/tokens";
 
 type AnchorProps = {
   content: Slot;
   anchorId: string;
-  paddingX: ResponsiveValue<Spacing>;
-  paddingY: ResponsiveValue<Spacing>;
-  gap: ResponsiveValue<Spacing>;
+  paddingX: ResponsiveValue<PaddingX>;
+  paddingY: ResponsiveValue<PaddingY>;
+  gap: ResponsiveValue<Gap>;
   width: Width;
   bgColor: Color;
   textColor: Color;
@@ -29,9 +31,9 @@ type AnchorProps = {
 const props = defineProps({
   content: field.slot(),
   anchorId: field.raw({ type: "text", label: "Anchor ID" }, ""),
-  paddingX: responsive.select(paddingX, { label: "Horizontal padding", default: "md" }),
-  paddingY: responsive.select(paddingY, { label: "Vertical padding", default: "lg" }),
-  gap: responsive.select(gapToken, { label: "Gap", default: "md" }),
+  paddingX: responsive.select(paddingX, { label: "Horizontal padding", default: "12" }),
+  paddingY: responsive.select(paddingY, { label: "Vertical padding", default: "16" }),
+  gap: responsive.select(gapToken, { label: "Gap", default: "12" }),
   width: field.select(width, { label: "Max width", default: "screen-lg" }),
   bgColor: field.select(bgColor, { label: "Background" }),
   textColor: field.select(textColor, { label: "Text color", default: "foreground" }),
@@ -58,22 +60,14 @@ export const Anchor: ComponentConfig<AnchorProps> = {
       resolveResponsive(px, paddingX.classes),
     );
 
-    const innerClasses = cn(
-      "mx-auto",
-      width.classes[w],
-    );
+    const innerClasses = cn("mx-auto", width.classes[w]);
 
-    const slotClasses = cn(
-      "flex flex-col w-full",
-      resolveResponsive(g, gapToken.classes),
-    );
+    const slotClasses = cn("flex flex-col w-full", resolveResponsive(g, gapToken.classes));
 
     return (
       <section id={anchorId || undefined} className={outerClasses}>
         <div className={innerClasses}>
-          {Content && (
-            <Content className={slotClasses} minEmptyHeight="200px" />
-          )}
+          {Content && <Content className={slotClasses} minEmptyHeight="200px" />}
         </div>
       </section>
     );

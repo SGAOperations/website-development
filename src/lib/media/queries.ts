@@ -8,4 +8,3 @@ export async function getMediaFiles() {
     url: getMediaUrl(m.storagePath),
   }));
 }
-

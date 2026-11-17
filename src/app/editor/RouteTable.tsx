@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
-import {
-  createRouteAction,
-  updateRouteAction,
-  deleteRouteAction,
-} from "../../lib/routes/actions";
+import { createRouteAction, updateRouteAction, deleteRouteAction } from "../../lib/routes/actions";
 import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
@@ -17,6 +13,7 @@ type RouteRow = {
   path: string;
   documentId: number;
   documentName: string;
+  parentId?: number | null;
 };
 
 type DocumentOption = {
@@ -29,6 +26,8 @@ function EditableRouteRow({
   defaultDocumentId,
   documents,
   isPending,
+  parentId,
+  parentPath,
   onSubmit,
   onCancel,
 }: {
@@ -36,16 +35,23 @@ function EditableRouteRow({
   defaultDocumentId: number;
   documents: DocumentOption[];
   isPending: boolean;
-  onSubmit: (path: string, documentId: number) => void;
+  parentId?: number;
+  parentPath?: string;
+  onSubmit: (path: string, documentId: number, parentId?: number) => void;
   onCancel: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [documentId, setDocumentId] = useState(defaultDocumentId);
 
   function handleSubmit() {
-    const path = inputRef.current?.value.trim();
-    if (path) {
-      onSubmit(path, documentId);
+    const enteredPath = inputRef.current?.value.trim();
+
+    if (enteredPath) {
+      const path = parentPath
+        ? `${parentPath.replace(/\/+$/, "")}/${enteredPath.replace(/^\/+/, "")}`
+        : enteredPath;
+
+      onSubmit(path, documentId, parentId);
     }
   }
 
@@ -110,12 +116,14 @@ function RouteRowComponent({
   isPending,
   onUpdate,
   onDelete,
+  onAddChild,
 }: {
   route: RouteRow;
   documents: DocumentOption[];
   isPending: boolean;
   onUpdate: (id: number, path: string, documentId: number) => void;
   onDelete: (route: RouteRow) => void;
+  onAddChild: (route: RouteRow) => void;
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -150,23 +158,35 @@ function RouteRowComponent({
           {route.documentName}
         </Link>
       </td>
+
       <td className="py-1">
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setEditing(true)}
             disabled={isPending}
-            className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
             title="Edit route"
+            className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
           >
             <SquarePen size={14} />
           </button>
+
+          <button
+            type="button"
+            onClick={() => onAddChild(route)}
+            disabled={isPending}
+            title="Add child route"
+            className="text-gray-400 hover:text-blue-600 disabled:opacity-60"
+          >
+            + Child
+          </button>
+
           <button
             type="button"
             onClick={() => onDelete(route)}
             disabled={isPending}
-            className="text-gray-400 hover:text-red-600 disabled:opacity-60"
             title="Delete route"
+            className="text-gray-400 hover:text-red-600 disabled:opacity-60"
           >
             <Trash2 size={14} />
           </button>
@@ -185,16 +205,35 @@ export function RouteTable({
 }) {
   const [isPending, startTransition] = useTransition();
   const [creating, setCreating] = useState(false);
+  const [creatingChildOf, setCreatingChildOf] = useState<number | null>(null);
   const [routes, setRoutes] = useState(initialRoutes);
   const { confirm, alert } = useDialogs();
 
-  function handleCreate(path: string, documentId: number) {
+  function handleAddChild(route: RouteRow) {
     setCreating(false);
+    setCreatingChildOf(route.id);
+  }
+
+  function handleCreate(path: string, documentId: number, parentId?: number) {
+    setCreating(false);
+    setCreatingChildOf(null);
+
     startTransition(async () => {
-      const result = await runAction(createRouteAction({ path, documentId }));
+      const result = await runAction(createRouteAction({ path, documentId, parentId }));
+
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
+
+        setRoutes((prev) => [
+          ...prev,
+          {
+            id: result.data.routeId,
+            path,
+            documentId,
+            documentName: doc.name,
+            parentId: parentId ?? null,
+          },
+        ]);
       } else {
         await alert(result.error);
       }
@@ -206,7 +245,9 @@ export function RouteTable({
       const result = await runAction(updateRouteAction({ id, path, documentId }));
       if (result.success) {
         const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
+        setRoutes((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)),
+        );
       } else {
         await alert(result.error);
       }
@@ -214,7 +255,14 @@ export function RouteTable({
   }
 
   async function handleDelete(route: RouteRow) {
-    if (!await confirm({ message: `Delete route "${route.path}"?`, actionLabel: "Delete", destructive: true })) return;
+    if (
+      !(await confirm({
+        message: `Delete route "${route.path}"?`,
+        actionLabel: "Delete",
+        destructive: true,
+      }))
+    )
+      return;
     startTransition(async () => {
       const result = await runAction(deleteRouteAction({ id: route.id }));
       if (result.success) {
@@ -256,15 +304,21 @@ export function RouteTable({
               isPending={isPending}
               onUpdate={handleUpdate}
               onDelete={handleDelete}
+              onAddChild={handleAddChild}
             />
           ))}
-          {creating && (
+          {(creating || creatingChildOf !== null) && (
             <EditableRouteRow
               defaultDocumentId={documents[0]?.id}
               documents={documents}
               isPending={isPending}
+              parentId={creatingChildOf ?? undefined}
+              parentPath={routes.find((route) => route.id === creatingChildOf)?.path}
               onSubmit={handleCreate}
-              onCancel={() => setCreating(false)}
+              onCancel={() => {
+                setCreating(false);
+                setCreatingChildOf(null);
+              }}
             />
           )}
           {routes.length === 0 && !creating && (
