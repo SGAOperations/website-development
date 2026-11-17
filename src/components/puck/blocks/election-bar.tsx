@@ -1,77 +1,76 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { defineProps, field } from "@/lib/puck/define-props";
-import {padding, type Spacing} from "@/lib/puck/tokens"
+import { margin, padding, textSize, type Spacing, type TokenValue } from "@/lib/puck/tokens";
+import { cn } from "@/lib/utils";
 
 type ElectionResultsProps = {
-    yes: number;
-    no: number;
-    abstain: number;
-    padding: Spacing;
-}
+  yes: number;
+  no: number;
+  abstain: number;
+  padding: Spacing;
+  margin: TokenValue<typeof margin>;
+  textSize: TokenValue<typeof textSize>;
+};
 
 const props = defineProps({
-    yes: field.raw({ type: "number", label: "Yes", min: 0, max: 100}, 33),
-    no: field.raw({ type: "number", label: "No", min: 0, max: 100}, 33), 
-    abstain: field.raw({ type: "number", label: "Abstain", min: 0, max: 100}, 34), 
-    padding: field.select(padding, {label: "Padding", default: "none", }),
-})
+  yes: field.raw({ type: "number", label: "Yes Vote(s)", min: 0, step: 1 }, 1),
+  no: field.raw({ type: "number", label: "No Vote(s)", min: 0, step: 1 }, 1),
+  abstain: field.raw({ type: "number", label: "Abstain Vote(s)", min: 0, step: 1 }, 1),
+  padding: field.select(padding, { label: "Padding", default: "none" }),
+  margin: field.select(margin, { label: "Margin", default: "none" }),
+  textSize: field.select(textSize, { label: "Text Size", default: "sm" }),
+});
 
-export const ElectionResultsComponent : ComponentConfig<ElectionResultsProps> = {
-    label: "Election Results Bar",
-    ...props,
-    render: ({yes, no, abstain, padding: p}) => {
-        const segments = [
-            {label: "Yes", value: yes, color: "rgb(175, 248, 162)"},
-            {label: "No", value: no, color: "rgb(235, 85, 40)"},
-            {label: "Abstain", value: abstain, color: "rgb(234, 51, 35)"},
-        ];
-        const total = yes + no + abstain;
-        let isValid = true;
-        for (const segment of segments) {
-            if (!Number.isFinite(segment.value) || segment.value < 0 || segment.value > 100){
-            isValid = false;
-            }
-        }
-        if (Math.abs(total - 100) > 1e-10) {
-            isValid = false;
-        }
-        if (!isValid) {
-            return (
-                <div className={padding.classes[p]}>
-                <p role="status">
-                    Enter percentages between 0 and 100 that total 100%.
-                </p>
-                </div>
-            );
-        }
+export const ElectionResultsComponent: ComponentConfig<ElectionResultsProps> = {
+  label: "Election Results Bar",
+  ...props,
+  render: ({
+    yes,
+    no,
+    abstain,
+    padding: p = "none",
+    margin: spacing = "none",
+    textSize: size = "sm",
+  }) => {
+    const segments = [
+      { label: "Yes", value: yes, color: "rgb(175, 248, 162)" },
+      { label: "No", value: no, color: "rgb(235, 85, 40)" },
+      { label: "Abstain", value: abstain, color: "rgb(234, 51, 35)" },
+    ];
+    const total = yes + no + abstain;
+    const isValid = segments.every(({ value }) => Number.isSafeInteger(value) && value >= 0);
+    const className = cn(padding.classes[p], margin.classes[spacing], textSize.classes[size]);
 
-        return (
-      <div className={padding.classes[p]}>
+    if (!isValid) {
+      return (
+        <div className={className}>
+          <p role="status">Enter whole numbers of votes, zero or greater.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className={className}>
         <div
           role="img"
-          aria-label={`Election results: Yes ${yes}%, No ${no}%, Abstain ${abstain}%`}
+          aria-label={`Election results. Yes: ${yes}, No: ${no}, Abstain: ${abstain}`}
           className="flex h-10 w-full overflow-hidden"
         >
-          {segments.map(({ label, value, color }) => (
+          {total > 0 && segments.map(({ label, value, color }) => (
             <div
-                key={label}
-                aria-hidden="true"
-                className="flex shrink-0 items-center overflow-hidden whitespace-nowrap text-sm p-5 text-black"
-                style={{
-                width: `${value}%`,
+              key={label}
+              aria-hidden="true"
+              className="flex shrink-0 items-center overflow-hidden whitespace-nowrap text-black"
+              style={{
+                width: `${(value / total) * 100}%`,
                 backgroundColor: color,
-                }}
+              }}
             >
-                {`${label}`}
+              <span className="px-5">{label} {value === 1 ? "Vote" : "Votes"}</span>
             </div>
-            ))}
+          ))}
         </div>
       </div>
     );
-    }
-
-
-
-
-
-}
+  },
+};

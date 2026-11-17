@@ -81,6 +81,23 @@ export const padding = defineToken({
   "2xl": { label: "2XL",    classes: "p-12" },
 });
 
+export const margin = defineToken({
+  none: { label: "None", classes: "m-0" },
+  xs: { label: "XS", classes: "m-1" },
+  sm: { label: "Small", classes: "m-2" },
+  md: { label: "Medium", classes: "m-4" },
+  lg: { label: "Large", classes: "m-6" },
+  xl: { label: "XL", classes: "m-8" },
+  "2xl": { label: "2XL", classes: "m-12" },
+});
+
+export const textSize = defineToken({
+  sm: { label: "Small", classes: "text-sm" },
+  md: { label: "Medium", classes: "text-base" },
+  lg: { label: "Large", classes: "text-lg" },
+  xl: { label: "XL", classes: "text-xl" },
+}, "sm");
+
 export const paddingX = defineToken({
   none:  { label: "None",   classes: "px-0" },
   xs:    { label: "XS",     classes: "px-1" },

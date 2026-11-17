@@ -11,7 +11,7 @@ import { ElectionResultsComponent } from "@/components/puck/blocks/election-bar"
 export const config = {
   categories: {
     layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid"] },
-    content: { title: "Content", components: ["Text", "Image"] },
+    content: { title: "Content", components: ["Text", "Image", "ElectionResults"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
