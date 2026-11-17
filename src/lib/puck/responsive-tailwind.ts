@@ -13,16 +13,16 @@ function prefixResponsiveClassNames(prefix: string, className: string): string[]
 
 function resolveResponsiveClassNames<T>(
   value: ResponsiveValue<T>,
-  classNameFor: (value: T) => string,
+  classNameFor: (value: T) => string | undefined,
 ): string {
   const classes = responsiveBreakpoints.flatMap((bp) => {
-    const breakpointValue = value[bp];
+    const breakpointValue = value?.[bp];
 
     if (breakpointValue === undefined) {
       return [];
     }
 
-    const className = classNameFor(breakpointValue);
+    const className = classNameFor(breakpointValue) ?? "";
 
     return bp === "phone"
       ? className.split(/\s+/).filter(Boolean)
@@ -36,5 +36,7 @@ export function resolveResponsive<const T extends string | number>(
   value: ResponsiveValue<T>,
   variantMap: Record<T, string>,
 ): string {
-  return resolveResponsiveClassNames(value, (token) => variantMap[token]);
+  return resolveResponsiveClassNames(value, (token) =>
+    Object.hasOwn(variantMap, token) ? variantMap[token] : undefined,
+  );
 }

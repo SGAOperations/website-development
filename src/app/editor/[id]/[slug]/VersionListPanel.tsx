@@ -1,4 +1,4 @@
-import { Eye } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { cn } from "../../../../lib/utils";
 import type { Version } from "../../../../lib/types";
 import { formatRelativeTime } from "@/lib/format";
@@ -10,9 +10,11 @@ export interface VersionListPanelProps {
   publishedVersionId?: number | null;
   onLoadVersion: (versionId: number) => void;
   onPublishVersion: (versionId: number) => void;
+  onRenameVersion: (version: Version) => void;
   getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
+  isRenameDisabled?: boolean;
 }
 
 function formatVersionLabel(version: Version) {
@@ -36,18 +38,22 @@ function VersionEntry({
   isPublished,
   onLoad,
   onPublish,
+  onRename,
   getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
+  isRenameDisabled,
 }: {
   version: Version;
   isCurrent: boolean;
   isPublished: boolean;
   onLoad: () => void;
   onPublish: () => void;
+  onRename: () => void;
   getPreviewUrlForVersion: (versionId: number) => string;
   isPublishing?: boolean;
   isPublishDisabled?: boolean;
+  isRenameDisabled?: boolean;
 }) {
   const { relative, absolute } = formatVersionLabel(version);
 
@@ -61,12 +67,27 @@ function VersionEntry({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
+          <div className="break-words">{version.name}</div>
+          <div className="break-words text-gray-600">{version.author || "Unknown author"}</div>
           <span>{absolute}</span>
 
           <div className="text-[11px] text-gray-400 mt-0.5">{relative}</div>
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRename();
+            }}
+            disabled={isRenameDisabled}
+            className="p-1 text-gray-400 rounded hover:text-gray-600 hover:bg-gray-100 transition disabled:opacity-50"
+            aria-label={`Rename version ${version.name}`}
+            title="Rename version"
+          >
+            <Pencil size={14} />
+          </button>
           {isPublished ? (
             <span className="px-2 py-0.5 bg-green-500 text-white rounded text-xs">Published</span>
           ) : (
@@ -104,9 +125,11 @@ export function VersionListPanel({
   publishedVersionId,
   onLoadVersion,
   onPublishVersion,
+  onRenameVersion,
   getPreviewUrlForVersion,
   isPublishing,
   isPublishDisabled,
+  isRenameDisabled,
 }: VersionListPanelProps) {
   return (
     <div className="">
@@ -126,9 +149,11 @@ export function VersionListPanel({
               isPublished={version.id === publishedVersionId}
               onLoad={() => onLoadVersion(version.id)}
               onPublish={() => onPublishVersion(version.id)}
+              onRename={() => onRenameVersion(version)}
               getPreviewUrlForVersion={getPreviewUrlForVersion}
               isPublishing={isPublishing}
               isPublishDisabled={isPublishDisabled}
+              isRenameDisabled={isRenameDisabled}
             />
           ))}
         </div>

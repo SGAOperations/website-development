@@ -108,7 +108,9 @@ export function EditorSaveProvider({ children }: { children: ReactNode }) {
     }
 
     startTransition(async () => {
-      const result = await runAction(saveVersionAction({ documentId, content: data }));
+      const result = await runAction(
+        saveVersionAction({ documentId, content: data, name: versionName }),
+      );
 
       if (result.success === false) {
         await alert(result.error);
