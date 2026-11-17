@@ -95,6 +95,16 @@ export const paddingY = defineToken({
   32: { label: "32px", classes: "py-8" },
 });
 
+export const paddingBottom = defineToken({
+  none: { label: "None", classes: "pb-0" },
+  xs: { label: "XS", classes: "pb-1" },
+  sm: { label: "Small", classes: "pb-2" },
+  md: { label: "Medium", classes: "pb-3" },
+  lg: { label: "Large", classes: "pb-4" },
+  xl: { label: "XL", classes: "pb-6" },
+  "2xl": { label: "2XL", classes: "pb-10" },
+});
+
 export const gap = defineToken({
   none: { label: "None", classes: "gap-0" },
   8: { label: "8px", classes: "gap-2" },
@@ -116,6 +126,7 @@ export const columnGap = defineToken({
 export type Padding = TokenValue<typeof padding>;
 export type PaddingX = TokenValue<typeof paddingX>;
 export type PaddingY = TokenValue<typeof paddingY>;
+export type PaddingBottom = TokenValue<typeof paddingBottom>;
 export type Gap = TokenValue<typeof gap>;
 export type ColumnGap = TokenValue<typeof columnGap>;
 
