@@ -87,12 +87,15 @@ export const margin = defineToken({
   "2xl": { label: "2XL", classes: "m-12" },
 });
 
-export const textSize = defineToken({
-  sm: { label: "Small", classes: "text-sm" },
-  md: { label: "Medium", classes: "text-base" },
-  lg: { label: "Large", classes: "text-lg" },
-  xl: { label: "XL", classes: "text-xl" },
-}, "sm");
+export const textSize = defineToken(
+  {
+    sm: { label: "Small", classes: "text-sm" },
+    md: { label: "Medium", classes: "text-base" },
+    lg: { label: "Large", classes: "text-lg" },
+    xl: { label: "XL", classes: "text-xl" },
+  },
+  "sm",
+);
 
 export const paddingX = defineToken({
   none: { label: "None", classes: "px-0" },

@@ -56,19 +56,22 @@ export const ElectionResultsComponent: ComponentConfig<ElectionResultsProps> = {
           aria-label={`Election results. Yes: ${yes}, No: ${no}, Abstain: ${abstain}`}
           className="flex h-10 w-full overflow-hidden"
         >
-          {total > 0 && segments.map(({ label, value, color }) => (
-            <div
-              key={label}
-              aria-hidden="true"
-              className="flex shrink-0 items-center overflow-hidden whitespace-nowrap text-black"
-              style={{
-                width: `${(value / total) * 100}%`,
-                backgroundColor: color,
-              }}
-            >
-              <span className="px-5">{label} {value === 1 ? "Vote" : "Votes"}</span>
-            </div>
-          ))}
+          {total > 0 &&
+            segments.map(({ label, value, color }) => (
+              <div
+                key={label}
+                aria-hidden="true"
+                className="flex shrink-0 items-center overflow-hidden whitespace-nowrap text-black"
+                style={{
+                  width: `${(value / total) * 100}%`,
+                  backgroundColor: color,
+                }}
+              >
+                <span className="px-5">
+                  {label} {value === 1 ? "Vote" : "Votes"}
+                </span>
+              </div>
+            ))}
         </div>
       </div>
     );
