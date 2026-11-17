@@ -5,7 +5,7 @@ import { prisma } from "../prisma";
 import type { ActionResult, CreateRouteInput, DeleteRouteInput, UpdateRouteInput } from "../types";
 import { wrapAction } from "../utils";
 import { assertValidRoutePath } from "./utils";
-
+import { getRouteTree, type RouteTreeNode } from "./tree";
 export async function createRouteAction(
   input: CreateRouteInput,
 ): Promise<ActionResult<{ routeId: number }>> {
@@ -52,5 +52,14 @@ export async function deleteRouteAction(input: DeleteRouteInput): Promise<Action
       where: { id: input.id },
     });
     revalidatePath(route.path);
+  });
+}
+
+export async function getRouteTreeAction(
+  options?: { topLevelOnly?: boolean },
+): Promise<ActionResult<{ routes: RouteTreeNode[] }>> {
+  return wrapAction(async () => {
+    const routes = await getRouteTree(options);
+    return { routes };
   });
 }
