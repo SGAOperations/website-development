@@ -57,11 +57,7 @@ function newVersionFields(content: Data, name: string = STUB_VERSION_NAME) {
   };
 }
 
-async function createVersion(
-  documentId: number,
-  content: Data,
-  name?: string
-) {
+async function createVersion(documentId: number, content: Data, name?: string) {
   return await prisma.version.create({
     data: { documentId, ...newVersionFields(content, name) },
   });
@@ -130,7 +126,7 @@ export async function saveVersionAction(
     const result = await createVersion(
       input.documentId,
       input.content,
-      input.name === undefined ? undefined : validateName(input.name)
+      input.name === undefined ? undefined : validateName(input.name),
     );
     return {
       version: {
@@ -144,9 +140,7 @@ export async function saveVersionAction(
   });
 }
 
-export async function renameVersionAction(
-  input: RenameVersionInput
-): Promise<ActionResult<void>> {
+export async function renameVersionAction(input: RenameVersionInput): Promise<ActionResult<void>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
     const name = validateName(input.name);
@@ -155,9 +149,7 @@ export async function renameVersionAction(
       data: { versionName: name },
     });
     if (count === 0) {
-      throw new Error(
-        "Error locating version to rename"
-      );
+      throw new Error("Error locating version to rename");
     }
   });
 }
