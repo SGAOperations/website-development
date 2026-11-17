@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, type ReactNode } from "react";
 
 export function useDialogPromise<TInput, TResult>(
-  renderDialog: (input: TInput, resolve: (value: TResult) => void, key: number) => ReactNode
+  renderDialog: (input: TInput, resolve: (value: TResult) => void, key: number) => ReactNode,
 ) {
   const [state, setState] = useState<{ input: TInput; key: number } | null>(null);
   const resolveRef = useRef<((value: TResult) => void) | null>(null);

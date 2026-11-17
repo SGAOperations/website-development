@@ -20,6 +20,7 @@ import {
   width,
   type Color,
   type ColumnCount,
+  type Gap,
   type CrossAxisAlign,
   type GridRows,
   type Justify,
@@ -30,14 +31,14 @@ import {
   type MarqueeSpeed,
   type Radius,
   type Shadow,
-  type Spacing,
+  type Padding,
   type Width,
 } from "@/lib/puck/tokens";
 
 export type GroupStyle = {
   layout: Layout;
-  padding: ResponsiveValue<Spacing>;
-  gap: ResponsiveValue<Spacing>;
+  padding: ResponsiveValue<Padding>;
+  gap: ResponsiveValue<Gap>;
   align: CrossAxisAlign;
   justify: Justify;
   width: Width;
@@ -65,12 +66,7 @@ export function getGroupSurfaceClassName({
   );
 }
 
-export function getGroupSlotClassName({
-  layout: l,
-  gap,
-  align,
-  justify: j,
-}: GroupStyle) {
+export function getGroupSlotClassName({ layout: l, gap, align, justify: j }: GroupStyle) {
   return cn(
     "w-full",
     layoutToken.classes[l],
@@ -88,7 +84,7 @@ export function getGridClassName({
 }: {
   columns: ResponsiveValue<ColumnCount>;
   rows: ResponsiveValue<GridRows>;
-  gap: ResponsiveValue<Spacing>;
+  gap: ResponsiveValue<Gap>;
   empty?: boolean;
 }) {
   return cn(

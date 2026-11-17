@@ -41,12 +41,7 @@ export const Marquee: ComponentConfig<MarqueeProps> = {
     if (puck.isEditing) {
       return (
         <div ref={puck.dragRef} className={cn(marqueeClassName, "min-h-20")}>
-          {Content && (
-            <Content
-              className={cn(itemClassName, "min-h-20")}
-              minEmptyHeight="80px"
-            />
-          )}
+          {Content && <Content className={cn(itemClassName, "min-h-20")} minEmptyHeight="80px" />}
         </div>
       );
     }

@@ -12,7 +12,10 @@ import { AccordionBlock } from "@/components/puck/blocks/accordion";
 
 export const config = {
   categories: {
-    layout: { title: "Layout", components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"] },
+    layout: {
+      title: "Layout",
+      components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"],
+    },
     content: { title: "Content", components: ["Text", "Image", "Accordion"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },

@@ -27,10 +27,7 @@ export function ResponsiveSelectField<T extends string>({
       onChange={onChange}
       readOnly={readOnly}
       renderControl={(controlProps) => (
-        <ResponsiveSelectControl
-          {...controlProps}
-          options={descriptor.options}
-        />
+        <ResponsiveSelectControl {...controlProps} options={descriptor.options} />
       )}
     />
   );

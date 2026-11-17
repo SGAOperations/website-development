@@ -7,11 +7,7 @@ import {
 } from "./kinds";
 
 export { responsiveFieldDescriptor } from "./kinds";
-export type {
-  ResponsiveNumberFieldDescriptor,
-  ResponsiveSelectFieldDescriptor,
-} from "./kinds";
-
+export type { ResponsiveNumberFieldDescriptor, ResponsiveSelectFieldDescriptor } from "./kinds";
 
 export function responsiveField<T extends string>(
   descriptor: ResponsiveSelectFieldDescriptor<T>,
@@ -35,8 +31,7 @@ export function responsiveField(
     }: {
       value: ResponsiveValue<string> | ResponsiveValue<number>;
       onChange:
-        | ((value: ResponsiveValue<string>) => void)
-        | ((value: ResponsiveValue<number>) => void);
+        ((value: ResponsiveValue<string>) => void) | ((value: ResponsiveValue<number>) => void);
       readOnly?: boolean;
     }) => (
       // Puck's custom field render callback does not preserve the descriptor/value coupling,

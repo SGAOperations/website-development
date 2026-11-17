@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  parseDocumentId,
-  parseVersionId,
-} from "../../../../lib/documents/editor-route";
+import { parseDocumentId, parseVersionId } from "../../../../lib/documents/editor-route";
 import { getDocumentName } from "../../../../lib/documents/queries";
 
 /**
@@ -41,9 +38,7 @@ export function createDocumentRoute(
     const documentId = parseDocumentId(id);
     if (!documentId) notFound();
 
-    const versionId = versionIdParam
-      ? parseVersionId(versionIdParam) || notFound()
-      : undefined;
+    const versionId = versionIdParam ? parseVersionId(versionIdParam) || notFound() : undefined;
 
     return <Component documentId={documentId} slug={slug} versionId={versionId} />;
   }
