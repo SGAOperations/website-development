@@ -1,13 +1,13 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { defineProps, field } from "@/lib/puck/define-props";
-import { margin, padding, textSize, type Spacing, type TokenValue } from "@/lib/puck/tokens";
+import { margin, padding, textSize, type TokenValue } from "@/lib/puck/tokens";
 import { cn } from "@/lib/utils";
 
 type ElectionResultsProps = {
   yes: number;
   no: number;
   abstain: number;
-  padding: Spacing;
+  padding: TokenValue<typeof padding>;
   margin: TokenValue<typeof margin>;
   textSize: TokenValue<typeof textSize>;
 };
