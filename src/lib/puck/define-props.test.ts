@@ -35,6 +35,7 @@ describe("prop builders", () => {
     const props = defineProps({
       content: field.slot(),
       size: field.select(size, { label: "Size", default: "md" }),
+      padding: responsive.select(size, { label: "Padding", default: "sm" }),
       gap: responsive.select(size, {
         label: "Gap",
         default: { base: "sm", md: "lg" },
@@ -53,6 +54,7 @@ describe("prop builders", () => {
     expect(props.fields).toEqual({
       content: { type: "slot" },
       size: { type: "select", label: "Size", options: size.options },
+      padding: expect.objectContaining({ type: "custom" }),
       gap: expect.objectContaining({ type: "custom" }),
       rows: expect.objectContaining({ type: "custom" }),
       color: { type: "radio", label: "Color", options: colorToken.options },
@@ -61,8 +63,11 @@ describe("prop builders", () => {
     expect(props.defaultProps).toEqual({
       content: [],
       size: "md",
-      gap: { base: "sm", md: "lg" },
-      rows: { base: 1, md: 2 },
+      // Responsive defaults always populate every breakpoint: a scalar default
+      // applies everywhere, and a partial one is completed from its base.
+      padding: { base: "sm", md: "sm", lg: "sm" },
+      gap: { base: "sm", md: "lg", lg: "sm" },
+      rows: { base: 1, md: 2, lg: 1 },
       color: "red",
       title: "Hello",
     });
