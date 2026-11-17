@@ -9,7 +9,16 @@ import { runAction } from "./runAction";
 import { ResourceCard, NewResourceCard } from "./ResourceCard";
 import { formatRelativeTime, formatFileSize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import { splitStoragePath, normalizeFileName, validateFileName } from "@/lib/media-path";
 
 function UploadCard({
   onFileSelected,
@@ -107,10 +116,93 @@ function MediaCard({
   );
 }
 
+/**
+ * Dialog for renaming a media item. Collects two independent values:
+ *  - `name`: the display name (the `Media.name` column, just a label)
+ *  - `fileName`: the file name WITHOUT its extension (part of `storagePath`)
+ *
+ * The extension is shown beside the file name input as static text, so users
+ * can't change it. The server must also re-attach the extension itself
+ * from the stored record, and never trust one sent by the client.
+ *
+ * This component only collects input. It never calls the server. The parent
+ * decides what to do with the values via `onSubmit`.
+ *
+ * Mount it only while a rename is in progress (see `renamingFile` in
+ * `MediaLibrary`). The inputs read their starting values from `file` once,
+ * so a fresh mount per file keeps them from showing stale values. The `key`
+ * prop on the call site enforces this.
+ *
+ * @param file     The media item being renamed.
+ * @param onSubmit Called with trimmed values when the user clicks Save.
+ * @param onCancel Called on Cancel, Escape, or clicking outside the dialog.
+ */
+function RenameMediaDialog({
+  file,
+  onSubmit,
+  onCancel,
+}: {
+  file: MediaWithUrl;
+  onSubmit: (values: { name: string; fileName: string }) => void;
+  onCancel: () => void;
+}) {
+  const { base, ext } = splitStoragePath(file.storagePath);
+  const [name, setName] = useState(file.name);
+  const [fileName, setFileName] = useState(base);
+  const normalized = normalizeFileName(fileName);
+  const fileNameError = validateFileName(normalized);
+
+  return (
+    <Dialog open onOpenChange={(isOpen) => !isOpen && onCancel()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rename</DialogTitle>
+        </DialogHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (fileNameError) return;
+            onSubmit({ name: name.trim(), fileName: normalized });
+          }}
+        >
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Display name</label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+            </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">File name</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  onFocus={(e) => e.target.select()}
+                  aria-invalid={fileNameError !== null}
+                />
+                <span className="text-sm text-muted-foreground">{ext}</span>
+              </div>
+              {fileNameError && <p className="text-sm text-destructive">{fileNameError}</p>}
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={fileNameError !== null}>
+              Save
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] }) {
   const [isPending, startTransition] = useTransition();
   const [files, setFiles] = useState(initialFiles);
-  const { confirm, prompt, alert } = useDialogs();
+  const [renamingFile, setRenamingFile] = useState<MediaWithUrl | null>(null);
+  const { confirm, alert } = useDialogs();
 
   function handleUpload(file: File) {
     const formData = new FormData();
@@ -125,19 +217,41 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
     });
   }
 
-  async function handleRename(file: MediaWithUrl) {
-    const newName = await prompt({
-      title: `Rename "${file.name}"`,
-      label: "New name",
-      defaultValue: file.name,
-    });
-    if (newName === null || newName.trim() === "" || newName.trim() === file.name) return;
+  /**
+   * Handles the rename dialog's Save action.
+   *
+   * Closes the dialog, works out what actually changed, and saves it.
+   *
+   * Current behavior (work in progress):
+   *  - Display name changed: saved via `renameMediaAction`, and local state updated.
+   *  - File name changed: NOT saved yet. `fileNameChanged` is computed but unused
+   *    until `renameMediaAction` accepts a file name (it must move the object in
+   *    Supabase Storage and update `storagePath`).
+   */
+  async function handleRenameSubmit(
+    file: MediaWithUrl,
+    values: { name: string; fileName: string },
+  ) {
+    setRenamingFile(null); // close the dialog
+
+    const { base } = splitStoragePath(file.storagePath);
+    const nameChanged = values.name !== "" && values.name !== file.name;
+    const fileNameChanged = values.fileName !== "" && values.fileName !== base;
+
+    if (!nameChanged && !fileNameChanged) return;
+
     startTransition(async () => {
-      const result = await runAction(renameMediaAction({ id: file.id, name: newName.trim() }));
+      const result = await runAction(
+        renameMediaAction({
+          id: file.id,
+          // Only send what changed. The server re-checks everything anyway.
+          ...(nameChanged && { name: values.name }),
+          ...(fileNameChanged && { fileName: values.fileName }),
+        }),
+      );
       if (result.success) {
-        setFiles((prev) =>
-          prev.map((f) => (f.id === file.id ? { ...f, name: newName.trim() } : f)),
-        );
+        // Use the server's record, so storagePath and url are fresh too.
+        setFiles((prev) => prev.map((f) => (f.id === file.id ? result.data : f)));
       } else {
         await alert(result.error);
       }
@@ -174,12 +288,21 @@ export function MediaLibrary({ files: initialFiles }: { files: MediaWithUrl[] })
           <MediaCard
             key={file.id}
             file={file}
-            onRename={handleRename}
+            onRename={(file) => setRenamingFile(file)}
             onDelete={handleDelete}
             disabled={isPending}
           />
         ))}
       </div>
+
+      {renamingFile && (
+        <RenameMediaDialog
+          key={renamingFile.id}
+          file={renamingFile}
+          onSubmit={(values) => handleRenameSubmit(renamingFile, values)}
+          onCancel={() => setRenamingFile(null)}
+        />
+      )}
     </div>
   );
 }
