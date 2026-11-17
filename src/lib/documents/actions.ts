@@ -6,6 +6,7 @@ import { prisma } from "../prisma";
 import type { Prisma } from "../../generated/prisma/client";
 import { createEmptyPuckData } from "../puck/utils";
 import { validateName } from "../utils";
+import { refreshMediaUrls } from "../media/refresh-urls";
 import type {
   ActionResult,
   ArchiveDocumentInput,
@@ -115,7 +116,11 @@ export async function saveVersionAction(
 ): Promise<ActionResult<{ version: Version }>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
-    const result = await createVersion(input.documentId, input.content);
+    // Refresh media URLs before saving so stale data is never persisted.
+    // If a media file was renamed, the saved URL will match the current storagePath.
+    // If a mediaId no longer exists (deleted), the URL is left as-is.
+    const freshContent = await refreshMediaUrls(input.content);
+    const result = await createVersion(input.documentId, freshContent);
     return {
       version: {
         id: result.id,
