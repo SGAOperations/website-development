@@ -47,6 +47,12 @@ export function Client({
     setIsDirty(false);
   }, []);
 
+  const setVersionName = useCallback((id: number, name: string) => {
+    setVersions((prev) =>
+      prev.map((version) => (version.id === id ? { ...version, name } : version)),
+    );
+  }, []);
+
   return (
     <MediaProvider media={media}>
       <DocumentContext.Provider
@@ -59,6 +65,7 @@ export function Client({
           isArchived,
           isDirty,
           addVersion,
+          setVersionName,
           setPublishedVersionId,
         }}
       >

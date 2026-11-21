@@ -13,6 +13,7 @@ import type {
   DuplicateDocumentInput,
   MoveDocumentInput,
   RenameInput,
+  RenameVersionInput,
   SaveVersionInput,
   PublishVersionInput,
   Version,
@@ -43,12 +44,22 @@ async function fetchAndAssertNotArchived(documentId: number): Promise<void> {
   assertNotArchived(doc);
 }
 
-async function createVersion(documentId: number, content: Data) {
+// TODO: replace with real values once users and versions exist
+// null means author unknown, used for backfilling database
+const STUB_VERSION_AUTHOR: string | null = null;
+const STUB_VERSION_NAME = "VersionName";
+
+function newVersionFields(content: Data, name: string = STUB_VERSION_NAME) {
+  return {
+    versionName: name,
+    author: STUB_VERSION_AUTHOR,
+    content: content as Prisma.InputJsonValue,
+  };
+}
+
+async function createVersion(documentId: number, content: Data, name?: string) {
   return await prisma.version.create({
-    data: {
-      documentId,
-      content: content as Prisma.InputJsonValue,
-    },
+    data: { documentId, ...newVersionFields(content, name) },
   });
 }
 
@@ -82,10 +93,7 @@ async function createDocumentWithVersion(
     });
 
     const version = await tx.version.create({
-      data: {
-        documentId: document.id,
-        content: content as Prisma.InputJsonValue,
-      },
+      data: { documentId: document.id, ...newVersionFields(content) },
     });
 
     if (publish) {
@@ -115,14 +123,34 @@ export async function saveVersionAction(
 ): Promise<ActionResult<{ version: Version }>> {
   return wrapAction(async () => {
     await fetchAndAssertNotArchived(input.documentId);
-    const result = await createVersion(input.documentId, input.content);
+    const result = await createVersion(
+      input.documentId,
+      input.content,
+      input.name === undefined ? undefined : validateName(input.name),
+    );
     return {
       version: {
         id: result.id,
         documentId: result.documentId,
+        name: result.versionName,
+        author: result.author,
         createdAt: result.createdAt,
       },
     };
+  });
+}
+
+export async function renameVersionAction(input: RenameVersionInput): Promise<ActionResult<void>> {
+  return wrapAction(async () => {
+    await fetchAndAssertNotArchived(input.documentId);
+    const name = validateName(input.name);
+    const { count } = await prisma.version.updateMany({
+      where: { id: input.versionId, documentId: input.documentId },
+      data: { versionName: name },
+    });
+    if (count === 0) {
+      throw new Error("Error locating version to rename");
+    }
   });
 }
 

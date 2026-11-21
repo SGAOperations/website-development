@@ -12,6 +12,7 @@ type DocumentContextType = {
   isArchived: boolean;
   isDirty: boolean;
   addVersion: (version: Version) => void;
+  setVersionName: (id: number, name: string) => void;
   setPublishedVersionId: (id: number) => void;
 };
 
@@ -22,6 +23,7 @@ const DocumentContext = createContext<DocumentContextType>({
   isArchived: false,
   isDirty: false,
   addVersion: () => {},
+  setVersionName: () => {},
   setPublishedVersionId: () => {},
 });
 
