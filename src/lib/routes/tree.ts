@@ -38,3 +38,4 @@ export async function getRouteTree(options: GetRouteTreeOptions = {}): Promise<R
 
   return routes.filter((route) => route.parentId === null).map(buildTree);
 }
+
