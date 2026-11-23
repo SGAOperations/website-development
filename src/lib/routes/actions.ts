@@ -9,6 +9,8 @@ import type {
 } from "../types";
 import { wrapAction } from "../utils";
 import { assertValidRoutePath } from "./utils";
+import { userCan } from '@/types/user';
+import { useAuth } from '@/providers/AuthContext';
 
 export async function createRouteAction(
   input: CreateRouteInput

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, createContext} from "react";
 import { useRouter } from "next/navigation";
 import { useDocumentContext } from "./document-context";
 import { useUnsavedChangesContext } from "./unsaved-changes-context";
@@ -10,6 +10,8 @@ import { runAction } from "../../runAction";
 import { VersionListPanel } from "./VersionListPanel";
 import { useDialogs } from "@/components/ui/dialog-provider";
 import { toast } from "sonner";
+import { userCan } from "@/types/user"
+import { useAuth } from '@/providers/AuthContext';
 
 export function VersionPluginContainer() {
   const router = useRouter();
@@ -19,6 +21,8 @@ export function VersionPluginContainer() {
   const { alert } = useDialogs();
 
   const handlePublishVersion = (targetVersionId: number) => {
+    const {user} = useAuth();
+    if (userCan(user, 'publishPages')) {
     startTransition(async () => {
       const result = await runAction(publishVersionAction({ documentId, versionId: targetVersionId }));
 
@@ -30,6 +34,7 @@ export function VersionPluginContainer() {
       setPublishedVersionId(targetVersionId);
       toast.success("Published");
     });
+  }
   };
 
   const handleLoadVersion = async (versionIdToLoad: number) => {

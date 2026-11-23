@@ -11,6 +11,8 @@ import {
 import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import { useAuth} from '@/providers/AuthContext';
+import { userCan } from "@/types/user";
 
 type RouteRow = {
   id: number;
@@ -189,28 +191,34 @@ export function RouteTable({
   const { confirm, alert } = useDialogs();
 
   function handleCreate(path: string, documentId: number) {
-    setCreating(false);
-    startTransition(async () => {
-      const result = await runAction(createRouteAction({ path, documentId }));
-      if (result.success) {
-        const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
-      } else {
-        await alert(result.error);
-      }
-    });
+    const {user} = useAuth();
+    if (userCan(user, 'publishPages')){
+      setCreating(false);
+      startTransition(async () => {
+        const result = await runAction(createRouteAction({ path, documentId }));
+        if (result.success) {
+          const doc = documents.find((d) => d.id === documentId)!;
+          setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
+        } else {
+          await alert(result.error);
+        }
+      });
+    }
   }
 
   function handleUpdate(id: number, path: string, documentId: number) {
-    startTransition(async () => {
-      const result = await runAction(updateRouteAction({ id, path, documentId }));
-      if (result.success) {
-        const doc = documents.find((d) => d.id === documentId)!;
-        setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
-      } else {
-        await alert(result.error);
-      }
-    });
+    const {user} = useAuth();
+    if (userCan(user, 'publishPages')){  
+      startTransition(async () => {
+        const result = await runAction(updateRouteAction({ id, path, documentId }));
+        if (result.success) {
+          const doc = documents.find((d) => d.id === documentId)!;
+          setRoutes((prev) => prev.map((r) => (r.id === id ? { ...r, path, documentId, documentName: doc.name } : r)));
+        } else {
+          await alert(result.error);
+        }
+      });
+    }
   }
 
   async function handleDelete(route: RouteRow) {
