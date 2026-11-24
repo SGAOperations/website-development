@@ -7,6 +7,7 @@ import { Media } from "@/components/puck/blocks/media";
 import { PuckButton } from "@/components/puck/blocks/button";
 import { Marquee } from "@/components/puck/blocks/marquee";
 import { Anchor } from "@/components/puck/blocks/anchor";
+import { ElectionResultsComponent } from "@/components/puck/blocks/election-bar";
 import { Footer } from "@/components/puck/blocks/footer";
 
 export const config = {
@@ -15,7 +16,7 @@ export const config = {
       title: "Layout",
       components: ["Anchor", "Group", "Columns", "Grid", "Marquee", "Footer"],
     },
-    content: { title: "Content", components: ["Text", "Image"] },
+    content: { title: "Content", components: ["Text", "Image", "ElectionResults"] },
     interactive: { title: "Interactive", components: ["Button"] },
   },
   components: {
@@ -28,6 +29,7 @@ export const config = {
     Text: RichTextComponent,
     Image: Media,
     Button: PuckButton,
+    ElectionResults: ElectionResultsComponent,
   },
 } satisfies Config;
 
