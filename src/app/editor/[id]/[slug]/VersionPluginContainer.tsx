@@ -19,9 +19,9 @@ export function VersionPluginContainer() {
   const { confirmDiscardChanges } = useUnsavedChangesContext();
   const [isPublishing, startTransition] = useTransition();
   const { alert } = useDialogs();
+  const {user} = useAuth();
 
   const handlePublishVersion = (targetVersionId: number) => {
-    const {user} = useAuth();
     if (userCan(user, 'publishPages')) {
     startTransition(async () => {
       const result = await runAction(publishVersionAction({ documentId, versionId: targetVersionId }));

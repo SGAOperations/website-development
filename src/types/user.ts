@@ -34,3 +34,4 @@ export interface AuthContextType {
     refresh: () => Promise<void>;
     isLoading: boolean;
 }
+

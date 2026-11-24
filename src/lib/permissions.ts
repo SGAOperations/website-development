@@ -12,3 +12,10 @@ const POSITIONS: Record<Capability, readonly string[]> = {
         'executive-vice-president',
     ],
 }
+export function capabilitiesForPositions(
+  positions: readonly string[],
+): Capability[] {
+  return (Object.keys(POSITIONS) as Capability[]).filter((capability) =>
+    POSITIONS[capability].some((position) => positions.includes(position)),
+  );
+}

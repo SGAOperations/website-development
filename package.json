@@ -51,5 +51,13 @@
     "tsx": "^4.21.0",
     "typescript": "^5.5.4",
     "vitest": "^4.1.0"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.5.0": true,
+    "esbuild@0.27.4": true,
+    "msw@2.12.13": true,
+    "prisma@7.5.0": true,
+    "sharp@0.34.5": true,
+    "supabase@2.81.3": true
   }
 }
