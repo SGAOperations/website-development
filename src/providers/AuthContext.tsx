@@ -13,7 +13,7 @@ const mockUser: User = {
     email: "mockuser@example.com",
     name: "Mock User for Testing Permissions",
     positions: ["webmaster"],
-    capabilities: capabilitiesForPositions(["none"]),
+    capabilities: capabilitiesForPositions(["webmaster"]),
 }
 
 const mockAuthContextType = {
