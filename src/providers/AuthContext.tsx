@@ -12,8 +12,8 @@ const mockUser: User = {
     id: "mock-user",
     email: "mockuser@example.com",
     name: "Mock User for Testing Permissions",
-    positions: ["nothing!"],
-    capabilities: capabilitiesForPositions(["nothing!"]),
+    positions: ["webmaster"],
+    capabilities: capabilitiesForPositions(["none"]),
 }
 
 const mockAuthContextType = {

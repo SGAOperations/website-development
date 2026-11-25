@@ -106,6 +106,7 @@ function EditableRouteRow({
   );
 }
 
+
 function RouteRowComponent({
   route,
   documents,
@@ -120,6 +121,7 @@ function RouteRowComponent({
   onDelete: (route: RouteRow) => void;
 }) {
   const [editing, setEditing] = useState(false);
+  const { user } = useAuth();
 
   if (editing) {
     return (
@@ -139,6 +141,18 @@ function RouteRowComponent({
     );
   }
 
+  function trySetEditingTrue(){
+    if (userCan(user, 'publishPages')){
+      setEditing(true);
+    }
+  }
+
+  function tryOnDelete(route: RouteRow){
+    if (userCan(user, 'publishPages')){
+      onDelete(route);
+    }
+  }
+
   return (
     <tr className="border-t">
       <td className="py-1">
@@ -156,7 +170,7 @@ function RouteRowComponent({
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setEditing(true)}
+            onClick={() => trySetEditingTrue()}
             disabled={isPending}
             className="text-gray-400 hover:text-gray-700 disabled:opacity-60"
             title="Edit route"
@@ -165,7 +179,7 @@ function RouteRowComponent({
           </button>
           <button
             type="button"
-            onClick={() => onDelete(route)}
+            onClick={() => tryOnDelete(route)}
             disabled={isPending}
             className="text-gray-400 hover:text-red-600 disabled:opacity-60"
             title="Delete route"
@@ -189,25 +203,22 @@ export function RouteTable({
   const [creating, setCreating] = useState(false);
   const [routes, setRoutes] = useState(initialRoutes);
   const { confirm, alert } = useDialogs();
+  const {user} = useAuth();
 
   function handleCreate(path: string, documentId: number) {
-    const {user} = useAuth();
-    if (userCan(user, 'publishPages')){
-      setCreating(false);
-      startTransition(async () => {
-        const result = await runAction(createRouteAction({ path, documentId }));
-        if (result.success) {
-          const doc = documents.find((d) => d.id === documentId)!;
-          setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
-        } else {
-          await alert(result.error);
-        }
-      });
-    }
+    setCreating(false);
+    startTransition(async () => {
+      const result = await runAction(createRouteAction({ path, documentId }));
+      if (result.success) {
+        const doc = documents.find((d) => d.id === documentId)!;
+        setRoutes((prev) => [...prev, { id: result.data.routeId, path, documentId, documentName: doc.name }]);
+      } else {
+        await alert(result.error);
+      }
+    });
   }
 
   function handleUpdate(id: number, path: string, documentId: number) {
-    const {user} = useAuth();
     if (userCan(user, 'publishPages')){  
       startTransition(async () => {
         const result = await runAction(updateRouteAction({ id, path, documentId }));
@@ -233,13 +244,19 @@ export function RouteTable({
     });
   }
 
+  function trySetCreatingTrue(){
+    if (userCan(user, 'publishPages')){
+      setCreating(true)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Routes</h1>
         <button
           type="button"
-          onClick={() => setCreating(true)}
+          onClick={() => trySetCreatingTrue()}
           disabled={isPending || creating}
           className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:opacity-60"
         >
