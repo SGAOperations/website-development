@@ -37,7 +37,9 @@ export default async function EditorIndexPage() {
         documents={documents.map((doc) => ({
           id: doc.id,
           name: getDocumentName(doc),
+          folderId: doc.folderId,
         }))}
+        folders={folders}
       />
 
       <DocumentList documents={activeDocuments} folders={folders} />

@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
 import { createRouteAction, updateRouteAction, deleteRouteAction } from "../../lib/routes/actions";
 import { getEditorUrl } from "../../lib/editor-url";
 import { runAction } from "./runAction";
 import { useDialogs } from "@/components/ui/dialog-provider";
+import type { FolderSummary } from "@/lib/folders/queries";
 
 type RouteRow = {
   id: number;
@@ -19,12 +20,58 @@ type RouteRow = {
 type DocumentOption = {
   id: number;
   name: string;
+  folderId: number | null;
 };
+
+type DocumentGroup = {
+  label: string;
+  documents: DocumentOption[];
+};
+
+const UNCATEGORIZED_LABEL = "Uncategorized";
+
+function getFolderPath(folderId: number, folderMap: Map<number, FolderSummary>): string {
+  const segments: string[] = [];
+  let current = folderMap.get(folderId);
+  while (current) {
+    segments.unshift(current.name);
+    current = current.parentId !== null ? folderMap.get(current.parentId) : undefined;
+  }
+  return segments.join(" / ");
+}
+
+function groupDocumentsByFolder(
+  documents: DocumentOption[],
+  folders: FolderSummary[],
+): DocumentGroup[] {
+  const folderMap = new Map(folders.map((f) => [f.id, f]));
+  const groups = new Map<string, DocumentOption[]>();
+
+  for (const doc of documents) {
+    const label =
+      doc.folderId !== null ? getFolderPath(doc.folderId, folderMap) : UNCATEGORIZED_LABEL;
+    if (!groups.has(label)) groups.set(label, []);
+    groups.get(label)!.push(doc);
+  }
+
+  const uncategorized = groups.get(UNCATEGORIZED_LABEL);
+  groups.delete(UNCATEGORIZED_LABEL);
+
+  const result = Array.from(groups.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([label, docs]) => ({ label, documents: docs }));
+
+  if (uncategorized) {
+    result.push({ label: UNCATEGORIZED_LABEL, documents: uncategorized });
+  }
+
+  return result;
+}
 
 function EditableRouteRow({
   defaultPath,
   defaultDocumentId,
-  documents,
+  documentGroups,
   isPending,
   parentId,
   parentPath,
@@ -33,7 +80,7 @@ function EditableRouteRow({
 }: {
   defaultPath?: string;
   defaultDocumentId: number;
-  documents: DocumentOption[];
+  documentGroups: DocumentGroup[];
   isPending: boolean;
   parentId?: number;
   parentPath?: string;
@@ -77,10 +124,14 @@ function EditableRouteRow({
           disabled={isPending}
           className="border rounded px-1 py-0.5"
         >
-          {documents.map((doc) => (
-            <option key={doc.id} value={doc.id}>
-              {doc.name}
-            </option>
+          {documentGroups.map((group) => (
+            <optgroup key={group.label} label={group.label}>
+              {group.documents.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </td>
@@ -112,14 +163,14 @@ function EditableRouteRow({
 
 function RouteRowComponent({
   route,
-  documents,
+  documentGroups,
   isPending,
   onUpdate,
   onDelete,
   onAddChild,
 }: {
   route: RouteRow;
-  documents: DocumentOption[];
+  documentGroups: DocumentGroup[];
   isPending: boolean;
   onUpdate: (id: number, path: string, documentId: number) => void;
   onDelete: (route: RouteRow) => void;
@@ -132,7 +183,7 @@ function RouteRowComponent({
       <EditableRouteRow
         defaultPath={route.path}
         defaultDocumentId={route.documentId}
-        documents={documents}
+        documentGroups={documentGroups}
         isPending={isPending}
         onSubmit={(path, documentId) => {
           if (path !== route.path || documentId !== route.documentId) {
@@ -199,15 +250,21 @@ function RouteRowComponent({
 export function RouteTable({
   routes: initialRoutes,
   documents,
+  folders,
 }: {
   routes: RouteRow[];
   documents: DocumentOption[];
+  folders: FolderSummary[];
 }) {
   const [isPending, startTransition] = useTransition();
   const [creating, setCreating] = useState(false);
   const [creatingChildOf, setCreatingChildOf] = useState<number | null>(null);
   const [routes, setRoutes] = useState(initialRoutes);
   const { confirm, alert } = useDialogs();
+  const documentGroups = useMemo(
+    () => groupDocumentsByFolder(documents, folders),
+    [documents, folders],
+  );
 
   function handleAddChild(route: RouteRow) {
     setCreating(false);
@@ -300,7 +357,7 @@ export function RouteTable({
             <RouteRowComponent
               key={route.id}
               route={route}
-              documents={documents}
+              documentGroups={documentGroups}
               isPending={isPending}
               onUpdate={handleUpdate}
               onDelete={handleDelete}
@@ -310,7 +367,7 @@ export function RouteTable({
           {(creating || creatingChildOf !== null) && (
             <EditableRouteRow
               defaultDocumentId={documents[0]?.id}
-              documents={documents}
+              documentGroups={documentGroups}
               isPending={isPending}
               parentId={creatingChildOf ?? undefined}
               parentPath={routes.find((route) => route.id === creatingChildOf)?.path}
